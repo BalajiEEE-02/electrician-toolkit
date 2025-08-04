@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Solar Panel Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: green;
+    }
+    label, input {
+      display: block;
+      margin-bottom: 10px;
+    }
+    input {
+      padding: 8px;
+      width: 100%;
+      max-width: 300px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Solar Panel Calculator</h1>
+
+  <label for="dailyUsage">Daily Energy Usage (in kWh):</label>
+  <input type="number" id="dailyUsage" placeholder="e.g. 5">
+
+  <label for="sunHours">Average Sunlight Hours per Day:</label>
+  <input type="number" id="sunHours" placeholder="e.g. 5">
+
+  <button onclick="calculateSolar()">Calculate Panel Size</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    function calculateSolar() {
+      const usage = parseFloat(document.getElementById('dailyUsage').value);
+      const sunHours = parseFloat(document.getElementById('sunHours').value);
+
+      if (!usage || !sunHours) {
+        document.getElementById('result').innerText = 'Please fill in both fields.';
+        return;
+      }
+
+      const panelSize = usage / sunHours;
+      document.getElementById('result').innerText = 
+        `Recommended total solar panel capacity: ${panelSize.toFixed(2)} kW`;
+    }
+  </script>
+</body>
+</html>

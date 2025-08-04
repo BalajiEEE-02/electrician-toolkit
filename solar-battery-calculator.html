@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Solar & Battery Calculator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Solar & Battery Calculator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,12 +13,12 @@
     }
     h1 {
       text-align: center;
-      color: green;
+      color: darkgreen;
     }
     label {
       font-weight: bold;
+      margin-top: 12px;
       display: block;
-      margin-top: 15px;
     }
     input {
       padding: 8px;
@@ -37,29 +37,28 @@
     .result {
       margin-top: 20px;
       font-weight: bold;
+      line-height: 1.6;
     }
   </style>
 </head>
 <body>
-  <h1>Solar & Battery Calculator</h1>
 
-  <label for="energy">Energy Usage (kWh/day):</label>
-  <input type="number" id="energy" placeholder="e.g. 5">
+  <h1>Advanced Solar & Battery Calculator</h1>
 
-  <label for="sunlight">Sunlight Hours (hr/day):</label>
-  <input type="number" id="sunlight" placeholder="e.g. 5">
+  <label for="batteryAh">Battery Capacity (Ah):</label>
+  <input type="number" id="batteryAh" placeholder="e.g. 120">
 
-  <label for="panel">Solar Panel Size (kW):</label>
-  <input type="number" id="panel" placeholder="e.g. 1.5">
+  <label for="batteryVoltage">Battery Voltage (V):</label>
+  <input type="number" id="batteryVoltage" placeholder="e.g. 12">
 
-  <label for="voltage">Voltage (V):</label>
-  <input type="number" id="voltage" placeholder="e.g. 12">
+  <label for="loadWatts">Load Power (Watts):</label>
+  <input type="number" id="loadWatts" placeholder="e.g. 100">
 
-  <label for="current">Current (A):</label>
-  <input type="number" id="current" placeholder="e.g. 10">
+  <label for="panelKW">Solar Panel Size (kW):</label>
+  <input type="number" id="panelKW" placeholder="e.g. 1.5">
 
-  <label for="battery">Battery Capacity (Ah):</label>
-  <input type="number" id="battery" placeholder="e.g. 120">
+  <label for="sunHours">Sunlight Hours per Day:</label>
+  <input type="number" id="sunHours" placeholder="e.g. 5">
 
   <button onclick="calculate()">Calculate</button>
 
@@ -67,45 +66,44 @@
 
   <script>
     function calculate() {
-      const E = parseFloat(document.getElementById('energy').value);
-      const H = parseFloat(document.getElementById('sunlight').value);
-      const P = parseFloat(document.getElementById('panel').value);
-      const V = parseFloat(document.getElementById('voltage').value);
-      const I = parseFloat(document.getElementById('current').value);
-      const B = parseFloat(document.getElementById('battery').value);
+      const Ah = parseFloat(document.getElementById('batteryAh').value);
+      const V = parseFloat(document.getElementById('batteryVoltage').value);
+      const loadW = parseFloat(document.getElementById('loadWatts').value);
+      const panelKW = parseFloat(document.getElementById('panelKW').value);
+      const sunHours = parseFloat(document.getElementById('sunHours').value);
 
-      let resultText = "";
-
-      // Solar calculation: E = P × H
-      if (!isNaN(E) && !isNaN(H) && isNaN(P)) {
-        resultText += `Panel Size: ${(E / H).toFixed(2)} kW<br>`;
-      } else if (!isNaN(E) && !isNaN(P) && isNaN(H)) {
-        resultText += `Required Sunlight Hours: ${(E / P).toFixed(2)} hrs<br>`;
-      } else if (!isNaN(P) && !isNaN(H) && isNaN(E)) {
-        resultText += `Energy Usage: ${(P * H).toFixed(2)} kWh/day<br>`;
+      if (isNaN(Ah) || isNaN(V) || isNaN(loadW) || isNaN(panelKW) || isNaN(sunHours)) {
+        document.getElementById('result').innerHTML = "⚠️ Please fill in all fields.";
+        return;
       }
 
-      // Voltage & Current check
-      if (!isNaN(V) && !isNaN(I)) {
-        const power = V * I;
-        resultText += `Power: ${power.toFixed(2)} Watts<br>`;
+      const batteryWh = Ah * V; // Total battery energy in Watt-hours
+      const backupTime = batteryWh / loadW; // Time battery can support load alone (no charging)
+
+      const panelWatt = panelKW * 1000;
+      const dailyPanelOutputWh = panelWatt * sunHours;
+
+      const netChargePerDay = dailyPanelOutputWh - (loadW * sunHours); // Effective energy into battery
+
+      let rechargeTime = 0;
+      let rechargeNote = "";
+
+      if (netChargePerDay > 0) {
+        rechargeTime = batteryWh / netChargePerDay;
+        rechargeNote = `✅ Battery can be charged in approx <strong>${rechargeTime.toFixed(2)} day(s)</strong> even with load running.`;
+      } else {
+        rechargeNote = `❌ Battery cannot be fully charged with current panel and load. Consider increasing panel size or reducing load.`;
       }
 
-      // Battery recharge time (in hours)
-      // Recharge Time = (Battery Capacity × Voltage) / (Panel Output in Watts)
-      if (!isNaN(B) && !isNaN(V) && !isNaN(P)) {
-        const batteryWh = B * V;
-        const panelWatt = P * 1000;
-        const rechargeTime = batteryWh / panelWatt;
-        resultText += `Battery Recharge Time: ${rechargeTime.toFixed(2)} hrs<br>`;
-      }
-
-      if (resultText === "") {
-        resultText = "Please fill at least two values to calculate others.";
-      }
-
-      document.getElementById('result').innerHTML = resultText;
+      document.getElementById('result').innerHTML = `
+        🔋 Battery Capacity: ${batteryWh.toFixed(2)} Wh<br>
+        ⏱️ Backup Time without charging: ${backupTime.toFixed(2)} hrs<br>
+        ☀️ Daily Solar Energy: ${dailyPanelOutputWh.toFixed(2)} Wh<br>
+        ⚡ Net Charge into Battery per Day (after powering load): ${netChargePerDay.toFixed(2)} Wh<br>
+        ${rechargeNote}
+      `;
     }
   </script>
+
 </body>
 </html>

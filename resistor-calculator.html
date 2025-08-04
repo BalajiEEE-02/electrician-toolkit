@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resistor Color Code Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: darkred;
+    }
+    select, input {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      max-width: 200px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+    .color-strip {
+      height: 30px;
+      width: 40px;
+      display: inline-block;
+      margin-right: 8px;
+      border: 1px solid #000;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    .band-row {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Resistor Color Code Calculator</h1>
+
+  <!-- Number of Bands -->
+  <label for="bandCount">Select Number of Bands:</label>
+  <select id="bandCount" onchange="renderBands()">
+    <option value="4">4 Bands</option>
+    <option value="5">5 Bands</option>
+    <option value="6">6 Bands</option>
+  </select>
+
+  <!-- Color Bands Selection -->
+  <div id="bandsArea"></div>
+
+  <!-- Output -->
+  <div class="result" id="resistorResult"></div>
+
+  <!-- Value to Color -->
+  <h2>Convert Value to Color Bands</h2>
+  <label for="resistorValue">Resistance (Ohms):</label>
+  <input type="number" id="resistorValue" placeholder="e.g. 4700">
+
+  <label for="toleranceValue">Tolerance (%):</label>
+  <select id="toleranceValue">
+    <option value="5">±5%</option>
+    <option value="1">±1%</option>
+    <option value="2">±2%</option>
+    <option value="0.5">±0.5%</option>
+    <option value="0.25">±0.25%</option>
+    <option value="0.1">±0.1%</option>
+  </select>
+
+  <button onclick="valueToColor()">Convert to Bands</button>
+  <div class="result" id="colorBandsOutput"></div>
+
+  <script>
+    const colorCodes = [
+      { color: "black",  digit: 0, multiplier: 1,       hex: "#000000" },
+      { color: "brown",  digit: 1, multiplier: 10,      hex: "#8B4513" },
+      { color: "red",    digit: 2, multiplier: 100,     hex: "#FF0000" },
+      { color: "orange", digit: 3, multiplier: 1000,    hex: "#FFA500" },
+      { color: "yellow", digit: 4, multiplier: 10000,   hex: "#FFFF00" },
+      { color: "green",  digit: 5, multiplier: 100000,  hex: "#008000" },
+      { color: "blue",   digit: 6, multiplier: 1000000, hex: "#0000FF" },
+      { color: "violet", digit: 7, multiplier: 10000000,hex: "#EE82EE" },
+      { color: "gray",   digit: 8, multiplier: 100000000,hex: "#808080" },
+      { color: "white",  digit: 9, multiplier: 1000000000, hex: "#FFFFFF" }
+    ];
+
+    const toleranceCodes = {
+      brown: 1,
+      red: 2,
+      green: 0.5,
+      blue: 0.25,
+      violet: 0.1,
+      gray: 0.05,
+      gold: 5,
+      silver: 10
+    };
+
+    function renderBands() {
+      const bandCount = parseInt(document.getElementById('bandCount').value);
+      const area = document.getElementById('bandsArea');
+      area.innerHTML = '';
+
+      for (let i = 0; i < bandCount; i++) {
+        let label = `Band ${i + 1}`;
+        if (bandCount === 4 && i === 3) label = "Tolerance";
+        if (bandCount === 5 && i === 4) label = "Tolerance";
+        if (bandCount === 6 && i === 5) label = "Temp. Coefficient";
+
+        const row = document.createElement("div");
+        row.classList.add("band-row");
+
+        const lbl = document.createElement("label");
+        lbl.textContent = label;
+        row.appendChild(lbl);
+
+        const select = document.createElement("select");
+        select.id = `band${i}`;
+
+        const options = (i === bandCount - 1 || (bandCount >= 4 && i === bandCount - 2))
+          ? Object.keys(toleranceCodes).map(tol => `<option value="${tol}">${tol}</option>`)
+          : colorCodes.map(c => `<option value="${c.color}">${c.color}</option>`);
+
+        select.innerHTML = options.join("");
+        row.appendChild(select);
+
+        area.appendChild(row);
+      }
+
+      const calcBtn = document.createElement("button");
+      calcBtn.textContent = "Calculate Resistance";
+      calcBtn.onclick = calculateResistance;
+      area.appendChild(calcBtn);
+    }
+
+    function calculateResistance() {
+      const bandCount = parseInt(document.getElementById('bandCount').value);
+      const bands = [];
+
+      for (let i = 0; i < bandCount; i++) {
+        bands.push(document.getElementById(`band${i}`).value);
+      }
+
+      let resistance = 0;
+      if (bandCount === 4) {
+        const d1 = colorCodes.find(c => c.color === bands[0]).digit;
+        const d2 = colorCodes.find(c => c.color === bands[1]).digit;
+        const mul = colorCodes.find(c => c.color === bands[2]).multiplier;
+        const tol = toleranceCodes[bands[3]];
+
+        resistance = (d1 * 10 + d2) * mul;
+        document.getElementById('resistorResult').innerHTML =
+          `Resistance: ${resistance} Ω ±${tol}%`;
+      }
+      // Add 5-band and 6-band decoding later
+    }
+
+    function valueToColor() {
+      const value = parseFloat(document.getElementById('resistorValue').value);
+      const tolerance = parseFloat(document.getElementById('toleranceValue').value);
+
+      if (isNaN(value) || value <= 0) {
+        document.getElementById('colorBandsOutput').innerText = "Enter a valid resistance value.";
+        return;
+      }
+
+      let digits = Math.floor(Math.log10(value));
+      let sigDigits = Math.floor(value / Math.pow(10, digits - 1));
+
+      const d1 = Math.floor(sigDigits / 10);
+      const d2 = sigDigits % 10;
+      const mul = digits - 1;
+
+      const band1 = colorCodes.find(c => c.digit === d1)?.color || "";
+      const band2 = colorCodes.find(c => c.digit === d2)?.color || "";
+      const band3 = colorCodes.find(c => c.multiplier === Math.pow(10, mul))?.color || "";
+
+      const tolBand = Object.keys(toleranceCodes).find(key => toleranceCodes[key] === tolerance);
+
+      document.getElementById('colorBandsOutput').innerHTML =
+        `Bands: 
+        <span class="color-strip" style="background:${band1}"></span>
+        <span class="color-strip" style="background:${band2}"></span>
+        <span class="color-strip" style="background:${band3}"></span>
+        <span class="color-strip" style="background:${tolBand}"></span>`;
+    }
+
+    // Initialize on load
+    renderBands();
+  </script>
+
+</body>
+</html>

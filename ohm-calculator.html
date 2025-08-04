@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ohm's Law Calculator</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f8f8f8; }
+    input, button { padding: 10px; margin: 5px; }
+  </style>
+</head>
+<body>
+  <h1>⚡ Ohm's Law Calculator</h1>
+  <p>Enter any two values:</p>
+  <input id="voltage" placeholder="Voltage (V)">
+  <input id="current" placeholder="Current (I)">
+  <input id="resistance" placeholder="Resistance (Ω)">
+  <br><br>
+  <button onclick="calculate()">Calculate</button>
+  <p id="result"></p>
+
+  <script>
+    function calculate() {
+      let V = parseFloat(document.getElementById("voltage").value);
+      let I = parseFloat(document.getElementById("current").value);
+      let R = parseFloat(document.getElementById("resistance").value);
+      let result = "";
+
+      if (!isNaN(V) && !isNaN(I)) result = `Resistance = ${(V / I).toFixed(2)} Ω`;
+      else if (!isNaN(V) && !isNaN(R)) result = `Current = ${(V / R).toFixed(2)} A`;
+      else if (!isNaN(I) && !isNaN(R)) result = `Voltage = ${(I * R).toFixed(2)} V`;
+      else result = "Enter any two values.";
+
+      document.getElementById("result").innerText = result;
+    }
+  </script>
+</body>
+</html>

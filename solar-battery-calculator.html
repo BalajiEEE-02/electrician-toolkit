@@ -77,29 +77,29 @@
         return;
       }
 
-      const batteryWh = Ah * V; // Total battery energy in Watt-hours
-      const backupTime = batteryWh / loadW; // Time battery can support load alone (no charging)
-
+      const batteryWh = Ah * V;
+      const backupTime = batteryWh / loadW;
       const panelWatt = panelKW * 1000;
       const dailyPanelOutputWh = panelWatt * sunHours;
 
-      const netChargePerDay = dailyPanelOutputWh - (loadW * sunHours); // Effective energy into battery
+      const loadEnergyKWh = (loadW * sunHours) / 1000;
 
-      let rechargeTime = 0;
+      const netChargePerDay = dailyPanelOutputWh - (loadW * sunHours);
+
       let rechargeNote = "";
-
       if (netChargePerDay > 0) {
-        rechargeTime = batteryWh / netChargePerDay;
+        const rechargeTime = batteryWh / netChargePerDay;
         rechargeNote = `✅ Battery can be charged in approx <strong>${rechargeTime.toFixed(2)} day(s)</strong> even with load running.`;
       } else {
-        rechargeNote = `❌ Battery cannot be fully charged with current panel and load. Consider increasing panel size or reducing load.`;
+        rechargeNote = `❌ Battery cannot be fully charged with current panel and load. Increase panel size or reduce load.`;
       }
 
       document.getElementById('result').innerHTML = `
         🔋 Battery Capacity: ${batteryWh.toFixed(2)} Wh<br>
         ⏱️ Backup Time without charging: ${backupTime.toFixed(2)} hrs<br>
-        ☀️ Daily Solar Energy: ${dailyPanelOutputWh.toFixed(2)} Wh<br>
-        ⚡ Net Charge into Battery per Day (after powering load): ${netChargePerDay.toFixed(2)} Wh<br>
+        ☀️ Daily Solar Output: ${dailyPanelOutputWh.toFixed(2)} Wh<br>
+        ⚡ Load Energy Usage Per Day: ${loadEnergyKWh.toFixed(2)} kWh/day<br>
+        📉 Net Solar Energy into Battery: ${netChargePerDay.toFixed(2)} Wh<br>
         ${rechargeNote}
       `;
     }

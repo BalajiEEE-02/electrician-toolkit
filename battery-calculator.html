@@ -8,32 +8,30 @@
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      background: #f9f9f9;
-      color: #333;
+      background: #f3f6fa;
     }
     h1 { color: #007bff; }
     label {
-      display: block;
-      margin-top: 10px;
       font-weight: bold;
+      margin-top: 15px;
+      display: block;
     }
     input {
-      padding: 5px;
-      width: 250px;
-      margin-bottom: 10px;
+      padding: 8px;
+      margin-top: 5px;
+      width: 240px;
     }
     button {
-      margin-top: 15px;
+      margin-top: 20px;
       padding: 10px 20px;
-      background-color: #007bff;
-      border: none;
+      background: #007bff;
       color: white;
+      border: none;
       font-size: 16px;
-      cursor: pointer;
     }
     .result {
       margin-top: 20px;
-      background: #e9f5ff;
+      background: #e7f1ff;
       padding: 15px;
       border-left: 5px solid #007bff;
     }
@@ -41,13 +39,19 @@
 </head>
 <body>
 
-  <h1>🔋 Battery & Inverter Calculator</h1>
+  <h1>🔋 Battery & Inverter Smart Calculator</h1>
 
   <label>Load (Watts):</label>
   <input type="number" id="load" placeholder="e.g., 500" />
 
   <label>Backup Time (Hours):</label>
-  <input type="number" id="backup" placeholder="e.g., 4" />
+  <input type="number" id="backup" placeholder="e.g., 3" />
+
+  <label>Energy Consumption (kWh / Units):</label>
+  <input type="number" id="energy" placeholder="e.g., 1.5" />
+
+  <label>Inverter Rating (VA):</label>
+  <input type="number" id="inverter" placeholder="e.g., 625" />
 
   <label>Battery Voltage (V):</label>
   <input type="number" id="voltage" placeholder="e.g., 12" />
@@ -59,54 +63,72 @@
   <input type="number" id="charge" placeholder="e.g., 10" />
 
   <label>Number of Batteries:</label>
-  <input type="number" id="batteries" placeholder="e.g., 1 or 2" />
+  <input type="number" id="batteries" placeholder="e.g., 2" />
 
-  <button onclick="calculate()">Calculate</button>
+  <button onclick="calculate()">🔍 Calculate</button>
 
   <div class="result" id="result" style="display:none;"></div>
 
   <script>
     function calculate() {
-      const load = parseFloat(document.getElementById('load').value);
-      const backup = parseFloat(document.getElementById('backup').value);
-      const voltage = parseFloat(document.getElementById('voltage').value);
-      const capacity = parseFloat(document.getElementById('capacity').value);
-      const charge = parseFloat(document.getElementById('charge').value);
-      const batteries = parseFloat(document.getElementById('batteries').value);
+      let load = parseFloat(document.getElementById("load").value);
+      let backup = parseFloat(document.getElementById("backup").value);
+      let energy = parseFloat(document.getElementById("energy").value);
+      let inverter = parseFloat(document.getElementById("inverter").value);
+      const voltage = parseFloat(document.getElementById("voltage").value);
+      const capacity = parseFloat(document.getElementById("capacity").value);
+      const charge = parseFloat(document.getElementById("charge").value);
+      const batteries = parseFloat(document.getElementById("batteries").value);
 
+      let pf = 0.8;
       let output = "";
 
-      // ✅ 1. Energy Consumption (kWh)
-      if (!isNaN(load) && !isNaN(backup)) {
-        const energy = (load * backup) / 1000;
-        output += `<b>🔌 Energy Consumption:</b> ${energy.toFixed(2)} kWh (units)<br>`;
+      // 1. Smart energy calculations
+      if (isNaN(energy) && !isNaN(load) && !isNaN(backup)) {
+        energy = (load * backup) / 1000;
+        output += `<b>🔌 Energy Consumption:</b> ${energy.toFixed(2)} kWh<br>`;
       }
 
-      // ✅ 2. Required Ah
+      if (isNaN(load) && !isNaN(energy) && !isNaN(backup)) {
+        load = (energy * 1000) / backup;
+        output += `<b>⚡ Load Required:</b> ${load.toFixed(1)} W<br>`;
+      }
+
+      if (isNaN(backup) && !isNaN(load) && !isNaN(energy)) {
+        backup = (energy * 1000) / load;
+        output += `<b>⏱ Backup Time:</b> ${backup.toFixed(2)} hrs<br>`;
+      }
+
+      // 2. Inverter rating
+      if (isNaN(inverter) && !isNaN(load)) {
+        inverter = load / pf;
+        output += `<b>🔌 Suggested Inverter Rating:</b> ${Math.ceil(inverter)} VA<br>`;
+      }
+
+      if (!isNaN(inverter) && isNaN(load)) {
+        load = inverter * pf;
+        output += `<b>⚡ Estimated Load from Inverter:</b> ${Math.round(load)} W<br>`;
+      }
+
+      // 3. Required Battery Capacity
       if (!isNaN(load) && !isNaN(backup) && !isNaN(voltage)) {
-        const ah = (load * backup) / voltage;
-        output += `<b>🔋 Required Battery Capacity:</b> ${ah.toFixed(1)} Ah<br>`;
+        const requiredAh = (load * backup) / voltage;
+        output += `<b>🔋 Required Battery Capacity:</b> ${requiredAh.toFixed(1)} Ah<br>`;
       }
 
-      // ✅ 3. Charging Time
+      // 4. Charging Time
       if (!isNaN(capacity) && !isNaN(charge)) {
         const time = capacity / charge;
-        output += `<b>⚡ Charging Time:</b> ${time.toFixed(1)} hours<br>`;
+        output += `<b>⚡ Charging Time:</b> ${time.toFixed(1)} hrs<br>`;
       }
 
-      // ✅ 4. Inverter VA Rating
-      if (!isNaN(load)) {
-        const inverterVA = load / 0.8; // assuming PF = 0.8
-        output += `<b>💡 Suggested Inverter Rating:</b> ${Math.ceil(inverterVA)} VA<br>`;
-      }
-
-      // ✅ 5. Total Battery Voltage
+      // 5. Total Voltage
       if (!isNaN(voltage) && !isNaN(batteries)) {
         const totalV = voltage * batteries;
-        output += `<b>🔌 Total System Voltage:</b> ${totalV} V (${batteries} battery${batteries > 1 ? 'ies' : ''})<br>`;
+        output += `<b>🔋 Total Battery Bank Voltage:</b> ${totalV} V<br>`;
       }
 
-      document.getElementById("result").innerHTML = output;
+      document.getElementById("result").innerHTML = output || "Please enter at least 2 values.";
       document.getElementById("result").style.display = "block";
     }
   </script>

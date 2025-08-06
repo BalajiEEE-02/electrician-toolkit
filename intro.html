@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Balaji Audios & Electricals</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body, html {
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+    .intro-container {
+      position: relative;
+      height: 100vh;
+      background: url('assets/intro.png') no-repeat center center/cover;
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+    }
+    .center-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #fff;
+    }
+    h1 {
+      font-size: 3em;
+      margin-bottom: 30px;
+      animation: floatText 2s ease-in-out infinite alternate;
+    }
+    button {
+      font-size: 18px;
+      padding: 12px 24px;
+      background-color: #00c853;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #009624;
+    }
+    @keyframes floatText {
+      from { transform: translate(-50%, -55%); }
+      to { transform: translate(-50%, -45%); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="intro-container">
+    <div class="overlay"></div>
+    <div class="center-content">
+      <h1>⚡ Balaji Audios & Electricals</h1>
+      <button onclick="enterSite()">Start</button>
+    </div>
+  </div>
+
+  <script>
+    function enterSite() {
+      window.location.href = 'index.html'; // Goes to your main site
+    }
+  </script>
+
+</body>
+</html>

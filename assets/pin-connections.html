@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pin Connections | Balaji Toolkit</title>
+  <link rel="icon" href="favicon.png" type="image/png">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: url('assets/ethernet-bg.png') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      padding: 0 20px;
+      backdrop-filter: brightness(0.6);
+    }
+    header {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+    }
+    .connector-block {
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 0 12px #444;
+    }
+    .connector-block img {
+      max-width: 220px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+
+<header>🔌 Pin Connections & Connector Details</header>
+
+<div class="connector-block">
+  <h2>USB-A Male</h2>
+  <img src="connectors/usb-a-male.png" alt="USB-A Male" />
+  <ul>
+    <li><b>Pin 1:</b> VBUS (+5V)</li>
+    <li><b>Pin 2:</b> D-</li>
+    <li><b>Pin 3:</b> D+</li>
+    <li><b>Pin 4:</b> GND</li>
+  </ul>
+  <p><b>Polarity:</b> Insert with flat side up</p>
+</div>
+
+<!-- More blocks will be added for other connectors -->
+
+</body>
+</html>

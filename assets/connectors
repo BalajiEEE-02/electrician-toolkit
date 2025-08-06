@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Connector Pin Configurations</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f7f7f7;
+    }
+    h1 {
+      text-align: center;
+    }
+    .connector {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin: 30px auto;
+      max-width: 800px;
+    }
+    .connector img {
+      max-width: 100%;
+      display: block;
+      margin: 0 auto 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+
+<h1>⚡ Connector Pin Configurations</h1>
+
+<!-- Categories Placeholder -->
+<section class="connector">
+  <h2>Connector Categories</h2>
+  <ul>
+    <li><a href="#power">🔌 Power Connectors</a></li>
+    <li><a href="#data">🔧 Data & Communication</a></li>
+    <li><a href="#av">📺 Audio/Video</a></li>
+    <li><a href="#diy">🧪 DIY & Prototyping</a></li>
+    <li><a href="#auto">🚗 Automotive & Industrial</a></li>
+    <li><a href="#rf">🛰️ RF / High Frequency</a></li>
+  </ul>
+</section>
+
+<!-- Each Section Starts Here -->
+<section class="connector" id="power">
+  <h2>🔌 Power Connectors</h2>
+  <img src="assets/connectors/power-connectors.png" alt="Power Connectors Overview">
+  <table>
+    <tr><th>Connector</th><th>Male</th><th>Female</th><th>Use</th></tr>
+    <tr><td>AC Plug (Indian/IEC)</td><td>2/3-pin plug</td><td>Wall socket</td><td>Home appliances</td></tr>
+    <tr><td>DC Barrel Jack</td><td>Outer barrel</td><td>Inner pin</td><td>CCTV, routers</td></tr>
+    <tr><td>Molex</td><td>4-pin plug</td><td>Receptacle</td><td>PC power supply</td></tr>
+    <tr><td>XT60 / XT90</td><td>Yellow plug</td><td>Jack</td><td>Drones, LiPo</td></tr>
+    <tr><td>Anderson Powerpole</td><td>Plug housing</td><td>Contact</td><td>High current wiring</td></tr>
+  </table>
+</section>
+
+<section class="connector" id="data">
+  <h2>🔧 Data & Communication</h2>
+  <img src="assets/connectors/data-connectors.png" alt="Data Connectors">
+  <table>
+    <tr><th>Connector</th><th>Male</th><th>Female</th><th>Use</th></tr>
+    <tr><td>USB-A</td><td>Plug</td><td>Port</td><td>Keyboard, PC</td></tr>
+    <tr><td>USB-B</td><td>Square plug</td><td>Socket</td><td>Printer, Arduino</td></tr>
+    <tr><td>USB-C</td><td>Reversible plug</td><td>Port</td><td>Phones, laptops</td></tr>
+    <tr><td>HDMI</td><td>19-pin plug</td><td>Display socket</td><td>Audio/video</td></tr>
+    <tr><td>VGA</td><td>D-sub 15</td><td>Display socket</td><td>Older monitors</td></tr>
+    <tr><td>DVI</td><td>Multi-pin</td><td>Display port</td><td>Digital video</td></tr>
+    <tr><td>RJ45</td><td>Ethernet plug</td><td>LAN port</td><td>Networking</td></tr>
+    <tr><td>RJ11</td><td>Phone plug</td><td>Line socket</td><td>Telephones</td></tr>
+    <tr><td>DB9 / DB25</td><td>D-sub plug</td><td>Serial socket</td><td>RS232</td></tr>
+  </table>
+</section>
+
+<section class="connector" id="av">
+  <h2>📺 Audio/Video Connectors</h2>
+  <img src="assets/connectors/av-connectors.png" alt="AV Connectors">
+  <table>
+    <tr><th>Connector</th><th>Male</th><th>Female</th><th>Use</th></tr>
+    <tr><td>RCA</td><td>Round pin</td><td>Color jack</td><td>Audio/Video</td></tr>
+    <tr><td>TRS (3.5mm/6.5mm)</td><td>Aux plug</td><td>Audio jack</td><td>Headphones</td></tr>
+    <tr><td>XLR</td><td>3-pin circular</td><td>XLR socket</td><td>Microphones</td></tr>
+    <tr><td>BNC</td><td>Twist plug</td><td>BNC socket</td><td>CCTV, RF</td></tr>
+  </table>
+</section>
+
+<section class="connector" id="diy">
+  <h2>🧪 Electronics & DIY</h2>
+  <img src="assets/connectors/diy-connectors.png" alt="DIY Connectors">
+  <table>
+    <tr><th>Connector</th><th>Male</th><th>Female</th><th>Use</th></tr>
+    <tr><td>Jumper Wires</td><td>Pin</td><td>Socket</td><td>Breadboard</td></tr>
+    <tr><td>Dupont</td><td>Header pin</td><td>Receptacle</td><td>GPIO</td></tr>
+    <tr><td>JST</td><td>White plug</td><td>Jack</td><td>RC, battery</td></tr>
+    <tr><td>FRC</td><td>Header pin</td><td>IDC socket</td><td>Flat ribbon</td></tr>
+    <tr><td>Banana Plug</td><td>Gold tip</td><td>Banana socket</td><td>Multimeter</td></tr>
+    <tr><td>Crocodile Clip</td><td>Metal clip</td><td>—</td><td>Testing</td></tr>
+  </table>
+</section>
+
+<section class="connector" id="auto">
+  <h2>🚗 Automotive & Industrial</h2>
+  <img src="assets/connectors/auto-connectors.png" alt="Automotive Connectors">
+  <table>
+    <tr><th>Connector</th><th>Male</th><th>Female</th><th>Use</th></tr>
+    <tr><td>OBD-II</td><td>16-pin plug</td><td>Socket</td><td>Car diagnostics</td></tr>
+    <tr><td>Deutsch / AMP</td><td>Sealed plug</td><td>Receptacle</td><td>Heavy vehicles</td></tr>
+    <tr><td>Ring/Fork</td><td>Metal eye</td><td>Bolt terminal</td><td>Terminal wiring</td></tr>
+  </table>
+</section>
+
+<section class="connector" id="rf">
+  <h2>🛰️ RF / High Frequency</h2>
+  <img src="assets/connectors/rf-connectors.png" alt="RF Connectors">
+  <table>
+    <tr><th>Connector</th><th>Male</th><th>Female</th><th>Use</th></tr>
+    <tr><td>SMA</td><td>Threaded plug</td><td>Jack</td><td>Antenna, RF</td></tr>
+    <tr><td>N-Type</td><td>Large RF plug</td><td>Socket</td><td>Base stations</td></tr>
+    <tr><td>TNC</td><td>Threaded BNC-style</td><td>Socket</td><td>RF modules</td></tr>
+  </table>
+</section>
+
+</body>
+</html>

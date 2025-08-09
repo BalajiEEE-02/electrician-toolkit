@@ -5,23 +5,124 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Balaji Electrician Toolkit</title>
   <link rel="icon" href="weppage.png" type="image/png">
+  <!-- Google font (optional) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body style="font-family: Arial; padding: 20px;">
-  <h1>⚡ Balaji Audios & Electricals</h1>
-  <p>Welcome to your electrician web toolkit!</p>
+<body>
+  <div class="site">
+    <header class="header">
+      <a class="brand" href="index.html">
+        <div class="logo"><img src="weppage.png" alt="logo" style="width:100%;height:100%;object-fit:cover"></div>
+        <div>
+          <h1>Balaji Audios & Electricals</h1>
+          <p>Electrician Toolkit • Calculators • Guides</p>
+        </div>
+      </a>
+    </header>
 
-  <h2>📋 Available Tools</h2>
-  <ul style="line-height: 1.8;">
-    <a href="solar-battery-calculator.html">Solar & Battery Load Calculator</a>
-    <li><a href="ohm-calculator.html">Ohm's Law Calculator</a></li>
-    <li><a href="solar-calculator.html">Solar Panel Load Calculator</a></li>
-    <li><a href="connectors.html" class="tool-link">🔌 Connector Pin Configurations</a></li>
-   <li> <a href="resistor-calculator.html">Resistor Color Code Calculator</a></li>
-  <li> <a href="battery-calculator.html" class="tool-link">🔋 Battery & Inverter Calculator</a></li>
-    <li><a href="unit-converter.html">Unit Conversion</a></li>
-    <li><a href="pin-config.html">Pin Configuration (USB, Ethernet, etc)</a></li>
-    <li><a href="#">Work Calendar (Coming Soon)</a></li>
-    <li><a href="#">Photo Storage (Coming Soon)</a></li>
-  </ul>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-left">
+        <h2 id="hero-title">Smart tools for electricians — calculators, pinouts, and field guides</h2>
+        <p>Fast calculators for solar, battery, inverter sizing, resistor code, connector pinouts and real-world troubleshooting tips to help you on site.</p>
+
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="battery-calculator.html">Open Battery Calculator</a>
+          <a class="btn btn-ghost" href="connectors.html">View Connector Guide</a>
+        </div>
+
+        <div class="search" style="margin-top:16px">
+          <input class="input" type="search" placeholder="Search tools (e.g., inverter, RJ45, resistor)">
+        </div>
+      </div>
+
+      <div class="hero-right" role="img" aria-label="Engineer at work background"></div>
+    </section>
+
+    <section class="tools" aria-labelledby="tools-title">
+      <h3 id="tools-title" style="grid-column:1/-1; margin:6px 0 0 0">Available Tools</h3>
+
+      <a class="tool-card" href="ohm-calculator.html">
+        <div class="tool-icon">Ω</div>
+        <div>
+          <div class="tool-title">Ohm's Law</div>
+          <div class="tool-desc">Voltage, current, resistance calculators</div>
+        </div>
+      </a>
+
+      <a class="tool-card" href="solar-battery-calculator.html">
+        <div class="tool-icon">☀️</div>
+        <div>
+          <div class="tool-title">Solar & Battery</div>
+          <div class="tool-desc">Panel sizing & battery charge time</div>
+        </div>
+      </a>
+
+      <a class="tool-card" href="battery-calculator.html">
+        <div class="tool-icon">🔋</div>
+        <div>
+          <div class="tool-title">Battery & Inverter</div>
+          <div class="tool-desc">Sizing, backup time, inverter suggestions</div>
+        </div>
+      </a>
+
+      <a class="tool-card" href="resistor-calculator.html">
+        <div class="tool-icon">🎨</div>
+        <div>
+          <div class="tool-title">Resistor Color Code</div>
+          <div class="tool-desc">4/5/6 band calculators</div>
+        </div>
+      </a>
+
+      <a class="tool-card" href="connectors.html">
+        <div class="tool-icon">🔌</div>
+        <div>
+          <div class="tool-title">Connector Pin Config</div>
+          <div class="tool-desc">Pinouts for 50+ connectors</div>
+        </div>
+      </a>
+
+      <a class="tool-card" href="unit-converter.html">
+        <div class="tool-icon">🔧</div>
+        <div>
+          <div class="tool-title">Unit Converter</div>
+          <div class="tool-desc">Quick unit conversions</div>
+        </div>
+      </a>
+
+      <a class="tool-card" href="pin-config.html">
+        <div class="tool-icon">🧩</div>
+        <div>
+          <div class="tool-title">Pin Configs</div>
+          <div class="tool-desc">USB, Ethernet and more</div>
+        </div>
+      </a>
+
+      <a class="tool-card" href="#">
+        <div class="tool-icon">📅</div>
+        <div>
+          <div class="tool-title">Work Calendar</div>
+          <div class="tool-desc">Coming soon</div>
+        </div>
+      </a>
+
+      <a class="tool-card" href="#">
+        <div class="tool-icon">🖼️</div>
+        <div>
+          <div class="tool-title">Photo Gallery</div>
+          <div class="tool-desc">Upload & share work photos</div>
+        </div>
+      </a>
+    </section>
+
+    <footer class="footer">
+      © <span id="year"></span> Balaji Audios & Electricals — Built for electricians. <br>
+      <small style="color:var(--muted)">Tip: Press Ctrl+F5 to refresh cached assets after update</small>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>

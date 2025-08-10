@@ -5,15 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Balaji Electrician Toolkit</title>
   <link rel="icon" href="weppage.png" type="image/png">
-  <!-- Google font (optional) -->
+  <!-- Google font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="site">
+    <!-- HEADER -->
     <header class="header">
       <a class="brand" href="index.html">
-        <div class="logo"><img src="weppage.png" alt="logo" style="width:100%;height:100%;object-fit:cover"></div>
+        <div class="logo">
+          <img src="weppage.png" alt="logo" style="width:100%;height:100%;object-fit:cover">
+        </div>
         <div>
           <h1>Balaji Audios & Electricals</h1>
           <p>Electrician Toolkit • Calculators • Guides</p>
@@ -21,14 +24,18 @@
       </a>
     </header>
 
+    <!-- HERO SECTION -->
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-left">
-        <h2 id="hero-title">Smart tools for electricians — calculators, pinouts, and field guides</h2>
-        <p>Fast calculators for solar, battery, inverter sizing, resistor code, connector pinouts and real-world troubleshooting tips to help you on site.</p>
+        <h2 id="hero-title">Smart Tools for Electricians — Calculators, Pinouts & Field Guides</h2>
+        <p>
+          Fast calculators for solar, battery, inverter sizing, resistor codes, connector pinouts 
+          and real-world troubleshooting tips to help you on-site.
+        </p>
 
         <div class="hero-cta">
-          <a class="btn btn-primary" href="battery-calculator.html">Open Battery Calculator</a>
-          <a class="btn btn-ghost" href="connectors.html">View Connector Guide</a>
+          <a class="btn btn-primary" href="battery-calculator.html">🔋 Battery Calculator</a>
+          <a class="btn btn-accent" href="connectors.html">🔌 Connector Tool</a>
         </div>
 
         <div class="search" style="margin-top:16px">
@@ -39,6 +46,7 @@
       <div class="hero-right" role="img" aria-label="Engineer at work background"></div>
     </section>
 
+    <!-- TOOLS GRID -->
     <section class="tools" aria-labelledby="tools-title">
       <h3 id="tools-title" style="grid-column:1/-1; margin:6px 0 0 0">Available Tools</h3>
 
@@ -97,26 +105,11 @@
           <div class="tool-desc">USB, Ethernet and more</div>
         </div>
       </a>
-
-      <a class="tool-card" href="#">
-        <div class="tool-icon">📅</div>
-        <div>
-          <div class="tool-title">Work Calendar</div>
-          <div class="tool-desc">Coming soon</div>
-        </div>
-      </a>
-
-      <a class="tool-card" href="#">
-        <div class="tool-icon">🖼️</div>
-        <div>
-          <div class="tool-title">Photo Gallery</div>
-          <div class="tool-desc">Upload & share work photos</div>
-        </div>
-      </a>
     </section>
 
+    <!-- FOOTER -->
     <footer class="footer">
-      © <span id="year"></span> Balaji Audios & Electricals — Built for electricians. <br>
+      © <span id="year"></span> Balaji Audios & Electricals — Built for electricians.<br>
       <small style="color:var(--muted)">Tip: Press Ctrl+F5 to refresh cached assets after update</small>
     </footer>
   </div>

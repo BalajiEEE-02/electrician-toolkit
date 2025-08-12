@@ -1,155 +1,492 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Multi-Parameter Unit Converter</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Unit Converter — Balaji Audios & Electricals</title>
+<link rel="icon" href="weppage.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-/* Premium UI Styling */
-body {
-  font-family: 'Inter', sans-serif;
-  background: linear-gradient(to right, #101820, #1c1c1c);
-  color: white;
-  padding: 20px;
-}
-.container {
-  max-width: 900px;
-  margin: auto;
-  background: #222;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.4);
-}
-h1 {
-  text-align: center;
-  color: #ffcc00;
-}
-.input-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-select, input {
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  font-size: 16px;
-}
-button {
-  background: #ffcc00;
-  color: black;
-  padding: 12px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-}
-button:hover {
-  background: #ffd633;
-}
-.results {
-  margin-top: 25px;
-  background: #333;
-  padding: 20px;
-  border-radius: 8px;
-}
-.result-item {
-  padding: 8px 0;
-  border-bottom: 1px solid #444;
-}
+  /* Page-specific premium polish */
+  body { font-family: 'Inter', sans-serif; background: linear-gradient(90deg,#0f1720,#111827); color:#e6eef8; margin:0; padding:28px; }
+  .card { max-width:1100px; margin:0 auto; background: linear-gradient(180deg,#0b1220,#111827); padding:22px; border-radius:12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6);}
+  h1 { color:#ffd24d; margin:0 0 12px 0; }
+  .controls { display:grid; grid-template-columns: 1fr 140px; gap:12px; align-items:start; margin-bottom:12px; }
+  .inputs { margin-bottom:12px; }
+  .row { display:grid; grid-template-columns: 1fr 1fr 60px; gap:10px; margin-bottom:10px; align-items:center; }
+  select, input[type="number"] { width:100%; padding:8px 10px; border-radius:8px; border:none; background:#0e1620; color:#e6eef8; }
+  button { padding:10px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:600; }
+  .btn-add { background:#2dd4bf; color:#052d26; }
+  .btn-calc { background:#ffd24d; color:#141414; }
+  .results { margin-top:16px; background:#071022; padding:14px; border-radius:10px; max-height:520px; overflow:auto; }
+  .group-title { color:#9ad0ff; margin:8px 0 6px; font-weight:700; }
+  .result-line { padding:6px 8px; border-radius:6px; background: linear-gradient(90deg,#071022,#081428); margin-bottom:6px; display:flex; justify-content:space-between; gap:12px; }
+  .muted { color:#98a8bf; font-size:13px; }
+  .small { font-size:13px; color:#cfe8ff; }
+  .top-row { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
+  .explain { font-size:13px; color:#9fb6d4; }
+  .remove-btn { background:#ff6b6b; color:white; padding:6px 8px; border-radius:8px; border:none; }
+  @media (max-width:820px) {
+    .controls { grid-template-columns:1fr; }
+    .row { grid-template-columns: 1fr 1fr 48px; }
+  }
 </style>
 </head>
 <body>
-<div class="container">
-  <h1>⚡ Multi-Parameter Unit Converter</h1>
+  <div class="card">
+    <div class="top-row">
+      <div>
+        <h1>⚡ Multi-Parameter Unit Converter</h1>
+        <div class="explain">Add one or more inputs (voltage, current, power, energy, resistance, time, capacity...). Click <strong>Calculate</strong> — the tool automatically computes all related outputs and shows many unit formats.</div>
+      </div>
+      <div class="muted">Outputs include W, kW, HP, Wh, kWh, J, Ah, mAh, C, V, A, Ω, VA, mW, kJ, etc.</div>
+    </div>
 
-  <div id="inputs">
-    <div class="input-row">
-      <select class="unit-type">
-        <option value="voltage">Voltage (V)</option>
-        <option value="current">Current (A)</option>
-        <option value="power">Power (W)</option>
-        <option value="energy">Energy (kWh)</option>
-        <option value="time">Time (hours)</option>
-        <option value="resistance">Resistance (Ω)</option>
-      </select>
-      <input type="number" class="unit-value" placeholder="Enter value">
-      <button type="button" onclick="removeRow(this)">❌</button>
+    <div class="inputs" id="inputs">
+      <!-- initial input row -->
+      <div class="row">
+        <select class="kind">
+          <!-- 30+ selectable input units (including scaled variants) -->
+          <option value="voltage_v">Voltage — V</option>
+          <option value="voltage_mv">Voltage — mV</option>
+          <option value="voltage_kv">Voltage — kV</option>
+
+          <option value="current_a">Current — A</option>
+          <option value="current_ma">Current — mA</option>
+          <option value="current_ka">Current — kA</option>
+
+          <option value="power_w">Power — W</option>
+          <option value="power_kw">Power — kW</option>
+          <option value="power_mw">Power — mW</option>
+          <option value="power_hp">Power — HP</option>
+
+          <option value="energy_wh">Energy — Wh</option>
+          <option value="energy_kwh">Energy — kWh</option>
+          <option value="energy_j">Energy — J</option>
+          <option value="energy_kj">Energy — kJ</option>
+
+          <option value="time_s">Time — s</option>
+          <option value="time_min">Time — min</option>
+          <option value="time_h">Time — h</option>
+
+          <option value="resistance_ohm">Resistance — Ω</option>
+          <option value="resistance_kohm">Resistance — kΩ</option>
+          <option value="resistance_mohm">Resistance — mΩ</option>
+
+          <option value="capacity_ah">Capacity — Ah</option>
+          <option value="capacity_mah">Capacity — mAh</option>
+
+          <option value="charge_c">Charge — C (Coulomb)</option>
+
+          <option value="voltage_rms">Voltage — V (rms)</option>
+
+          <option value="apparent_va">Apparent power — VA</option>
+        </select>
+
+        <input type="number" class="value" placeholder="Value">
+        <button class="remove-btn" onclick="removeRow(this)">✖</button>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div style="display:flex;gap:8px;">
+        <button class="btn-add" onclick="addRow()">➕ Add input</button>
+        <button class="btn-calc" onclick="calculateAll()">⚡ Calculate</button>
+      </div>
+      <div style="text-align:right;">
+        <div class="small">Tip: enter Voltage + Current, or Power + Time, or Voltage + Resistance, or Power alone — tool finds all related outputs.</div>
+      </div>
+    </div>
+
+    <div class="results" id="results">
+      <div class="muted">No calculation yet — add inputs and click <strong>Calculate</strong>.</div>
     </div>
   </div>
 
-  <button onclick="addRow()">➕ Add Another Input</button>
-  <button onclick="calculate()">Calculate</button>
-
-  <div class="results" id="results"></div>
-</div>
-
 <script>
+/*
+  Strategy:
+  - Normalize inputs to base SI units:
+      V (volts), A (amps), W (watts), Ohm (ohm), s (seconds), Wh (watt-hours), J (joules), C (coulombs), VA (volt-amp)
+  - After reading inputs, compute derived base quantities when possible:
+      P = V * I
+      I = P / V
+      V = P / I
+      R = V / I
+      Energy(Wh) = P(W) * time(h)
+      Energy(J) = Wh * 3600
+      Ah = Wh / V  (if V known)
+      C = Ah * 3600
+      HP = W / 745.7
+      etc.
+  - For every derived base quantity, print many alternate unit representations.
+*/
+
+// Helper: parse inputs into normalized object
+function parseInputs() {
+  const rows = document.querySelectorAll('#inputs .row');
+  const data = { V: null, A: null, W: null, R: null, s: null, Wh: null, J: null, Ah: null, C: null, VA: null };
+  rows.forEach(row => {
+    const kind = row.querySelector('.kind').value;
+    const raw = row.querySelector('.value').value;
+    if (raw === '' || raw === null) return;
+    const val = Number(raw);
+    if (!isFinite(val)) return;
+    switch(kind) {
+      // Voltage
+      case 'voltage_v': data.V = val; break;
+      case 'voltage_mv': data.V = val * 1e-3; break;
+      case 'voltage_kv': data.V = val * 1e3; break;
+      case 'voltage_rms': data.V = val; break;
+      // Current
+      case 'current_a': data.A = val; break;
+      case 'current_ma': data.A = val * 1e-3; break;
+      case 'current_ka': data.A = val * 1e3; break;
+      // Power
+      case 'power_w': data.W = val; break;
+      case 'power_kw': data.W = val * 1e3; break;
+      case 'power_mw': data.W = val * 1e-3; break;
+      case 'power_hp': data.W = val * 745.7; break;
+      // Energy
+      case 'energy_wh': data.Wh = val; break;
+      case 'energy_kwh': data.Wh = val * 1000; break;
+      case 'energy_j': data.J = val; break;
+      case 'energy_kj': data.J = val * 1000; break;
+      // Time
+      case 'time_s': data.s = val; break;
+      case 'time_min': data.s = val * 60; break;
+      case 'time_h': data.s = val * 3600; break;
+      // Resistance
+      case 'resistance_ohm': data.R = val; break;
+      case 'resistance_kohm': data.R = val * 1000; break;
+      case 'resistance_mohm': data.R = val * 1e-3; break;
+      // Capacity
+      case 'capacity_ah': data.Ah = val; break;
+      case 'capacity_mah': data.Ah = val / 1000; break;
+      // Charge
+      case 'charge_c': data.C = val; break;
+      // Apparent power
+      case 'apparent_va': data.VA = val; break;
+      default: break;
+    }
+  });
+  // Sync J <-> Wh if only one provided
+  if (data.J !== null && data.Wh === null) data.Wh = data.J / 3600;
+  if (data.Wh !== null && data.J === null) data.J = data.Wh * 3600;
+  // If Ah known and V known -> compute Wh
+  if (data.Ah !== null && data.V !== null && data.Wh === null) data.Wh = data.Ah * data.V;
+  if (data.Wh !== null && data.Ah === null && data.V !== null) data.Ah = data.Wh / data.V;
+  if (data.C !== null && data.Ah === null) data.Ah = data.C / 3600;
+  if (data.Ah !== null && data.C === null) data.C = data.Ah * 3600;
+
+  return data;
+}
+
+// Compute derived quantities iteratively until no change (simple propagation)
+function deriveAll(data) {
+  // We'll attempt multiple passes to propagate derived values
+  for (let iter=0; iter<6; iter++) {
+    // P from V & I
+    if (data.W === null && data.V !== null && data.A !== null) {
+      data.W = data.V * data.A;
+    }
+    // I from P & V
+    if (data.A === null && data.W !== null && data.V !== null && data.V !== 0) {
+      data.A = data.W / data.V;
+    }
+    // V from P & I
+    if (data.V === null && data.W !== null && data.A !== null && data.A !== 0) {
+      data.V = data.W / data.A;
+    }
+    // V from I & R
+    if (data.V === null && data.A !== null && data.R !== null) {
+      data.V = data.A * data.R;
+    }
+    // I from V & R
+    if (data.A === null && data.V !== null && data.R !== null && data.R !== 0) {
+      data.A = data.V / data.R;
+    }
+    // R from V & I
+    if (data.R === null && data.V !== null && data.A !== null && data.A !== 0) {
+      data.R = data.V / data.A;
+    }
+    // Wh from W & s (seconds -> hours)
+    if (data.Wh === null && data.W !== null && data.s !== null) {
+      data.Wh = data.W * (data.s / 3600);
+      data.J = data.Wh * 3600;
+    }
+    // J from W & s
+    if (data.J === null && data.W !== null && data.s !== null) {
+      data.J = data.W * data.s;
+      data.Wh = data.J / 3600;
+    }
+    // Wh from Ah & V
+    if (data.Wh === null && data.Ah !== null && data.V !== null) {
+      data.Wh = data.Ah * data.V;
+      data.J = data.Wh * 3600;
+    }
+    // Ah from Wh & V
+    if (data.Ah === null && data.Wh !== null && data.V !== null && data.V !== 0) {
+      data.Ah = data.Wh / data.V;
+      data.C = data.Ah * 3600;
+    }
+    // C from A & s
+    if (data.C === null && data.A !== null && data.s !== null) {
+      data.C = data.A * data.s;
+      if (data.Ah === null) data.Ah = data.C / 3600;
+    }
+    // VA from V & A
+    if (data.VA === null && data.V !== null && data.A !== null) {
+      data.VA = data.V * data.A;
+    }
+    // If VA and power factor assumption 1 -> W approx=VA
+    if (data.W === null && data.VA !== null) {
+      data.W = data.VA; // assume PF=1 if no other data
+    }
+    // HP from W
+    // (leave conversion in output stage)
+  }
+  return data;
+}
+
+// Formatting helpers
+function f(n, prec=4) {
+  if (n === null || n === undefined || !isFinite(n)) return '—';
+  if (Math.abs(n) >= 1e6 || Math.abs(n) < 1e-3) return Number(n).toExponential(4);
+  return Number(n).toFixed(prec).replace(/\.?0+$/,'');
+}
+
+// Build outputs (lots of alternative units)
+function buildOutputs(data) {
+  const out = [];
+  // POWER
+  if (data.W !== null) {
+    out.push({title:'Power', rows: [
+      ['W', f(data.W,4)],
+      ['kW', f(data.W/1000,6)],
+      ['MW', f(data.W/1e6,6)],
+      ['mW', f(data.W*1000,4)],
+      ['Horsepower (metric)', f(data.W/745.7,5)],
+      ['BTU/h', f(data.W*3.412142,4)],
+      ['VA (assume PF=1)', f(data.W,4)]
+    ]});
+  }
+
+  // VOLTAGE
+  if (data.V !== null) {
+    out.push({title:'Voltage', rows: [
+      ['V', f(data.V,4)],
+      ['mV', f(data.V*1e3,4)],
+      ['kV', f(data.V/1000,6)]
+    ]});
+  }
+
+  // CURRENT
+  if (data.A !== null) {
+    out.push({title:'Current', rows: [
+      ['A', f(data.A,4)],
+      ['mA', f(data.A*1000,3)],
+      ['kA', f(data.A/1000,6)]
+    ]});
+  }
+
+  // RESISTANCE
+  if (data.R !== null) {
+    out.push({title:'Resistance', rows: [
+      ['Ω', f(data.R,4)],
+      ['kΩ', f(data.R/1000,6)],
+      ['mΩ', f(data.R*1000,4)]
+    ]});
+  }
+
+  // ENERGY
+  if (data.Wh !== null || data.J !== null) {
+    const Wh = data.Wh !== null ? data.Wh : (data.J !== null ? data.J/3600 : null);
+    const J = data.J !== null ? data.J : (Wh !== null ? Wh*3600 : null);
+    out.push({title:'Energy', rows: [
+      ['Wh', f(Wh,4)],
+      ['kWh', f(Wh/1000,6)],
+      ['J', f(J,4)],
+      ['kJ', f(J/1000,6)],
+      ['Calories (thermochemical)', f(J/4.184,4)]
+    ]});
+  }
+
+  // BATTERY CAPACITY
+  if (data.Ah !== null || data.C !== null) {
+    const Ah = data.Ah !== null ? data.Ah : (data.C !== null ? data.C/3600 : null);
+    out.push({title:'Battery/Charge', rows: [
+      ['Ah', f(Ah,5)],
+      ['mAh', f(Ah*1000,3)],
+      ['Coulombs (C)', f((Ah!==null?Ah*3600:null),4)],
+      ['Wh (if V known)', f((data.V!==null && Ah!==null) ? Ah*data.V : null,4)]
+    ]});
+  }
+
+  // TIME
+  if (data.s !== null) {
+    out.push({title:'Time', rows: [
+      ['s', f(data.s,4)],
+      ['min', f(data.s/60,4)],
+      ['hours', f(data.s/3600,5)]
+    ]});
+  }
+
+  // APPARENT POWER VA
+  if (data.VA !== null) {
+    out.push({title:'Apparent Power', rows: [
+      ['VA', f(data.VA,4)],
+      ['kVA', f(data.VA/1000,6)]
+    ]});
+  }
+
+  // Derived combos (if possible)
+  const combos = [];
+  // If V & I known — show P, VA, R cross-check
+  if (data.V !== null && data.A !== null) {
+    combos.push(['Computed P = V × I', `${f(data.V*data.A,4)} W`]);
+    combos.push(['Computed VA = V × I', `${f(data.V*data.A,4)} VA`]);
+    combos.push(['Computed R = V / I', `${f((data.A!==0?data.V/data.A:null),4)} Ω`]);
+  }
+  if (data.W !== null && data.V !== null && data.V !== 0) {
+    combos.push(['Computed I = P / V', `${f(data.W/data.V,4)} A`]);
+  }
+  if (data.W !== null && data.A !== null && data.A !== 0) {
+    combos.push(['Computed V = P / I', `${f(data.W/data.A,4)} V`]);
+  }
+  if (data.W !== null && data.s !== null) {
+    const Wh = data.W * (data.s/3600);
+    combos.push(['Energy from P & time', `${f(Wh,4)} Wh (${f(Wh/1000,6)} kWh)`]);
+    combos.push(['Energy (J)', `${f(Wh*3600,4)} J`]);
+  }
+  if (data.Wh !== null && data.V !== null) {
+    combos.push(['Capacity = Wh / V', `${f(data.Wh/data.V,5)} Ah`]);
+    combos.push(['Capacity (mAh)', `${f(data.Wh/data.V*1000,3)} mAh`]);
+  }
+
+  // If only energy (Wh) known show equivalent power at 1h,30min,1min
+  if (data.Wh !== null) {
+    combos.push(['Average power if delivered in 1 hour', `${f(data.Wh,4)} W`]);
+    combos.push(['Average power if delivered in 30 min', `${f(data.Wh/0.5,4)} W`]);
+    combos.push(['Average power if delivered in 1 minute', `${f(data.Wh/ (1/60),4)} W`]);
+  }
+
+  // Pack combos as a group
+  if (combos.length) {
+    out.push({title:'Derived Calculations', rows: combos});
+  }
+
+  // Provide quick reference conversions for common single-values if given
+  // Example: if only W known, show many power units
+  if (data.W !== null && (data.V===null && data.A===null && data.R===null)) {
+    out.push({title:'Quick power conversions', rows:[
+      ['W', f(data.W,4)],
+      ['kW', f(data.W/1000,6)],
+      ['HP', f(data.W/745.7,5)],
+      ['BTU/h', f(data.W*3.412142,4)],
+      ['kcal/s', f(data.W/4184,6)]
+    ]});
+  }
+
+  return out;
+}
+
+// UI helpers to add/remove rows
 function addRow() {
-  let inputs = document.getElementById('inputs');
-  let div = document.createElement('div');
-  div.classList.add('input-row');
+  const container = document.getElementById('inputs');
+  const div = document.createElement('div');
+  div.className = 'row';
   div.innerHTML = `
-    <select class="unit-type">
-      <option value="voltage">Voltage (V)</option>
-      <option value="current">Current (A)</option>
-      <option value="power">Power (W)</option>
-      <option value="energy">Energy (kWh)</option>
-      <option value="time">Time (hours)</option>
-      <option value="resistance">Resistance (Ω)</option>
+    <select class="kind">
+      <option value="voltage_v">Voltage — V</option>
+      <option value="voltage_mv">Voltage — mV</option>
+      <option value="voltage_kv">Voltage — kV</option>
+
+      <option value="current_a">Current — A</option>
+      <option value="current_ma">Current — mA</option>
+      <option value="current_ka">Current — kA</option>
+
+      <option value="power_w">Power — W</option>
+      <option value="power_kw">Power — kW</option>
+      <option value="power_mw">Power — mW</option>
+      <option value="power_hp">Power — HP</option>
+
+      <option value="energy_wh">Energy — Wh</option>
+      <option value="energy_kwh">Energy — kWh</option>
+      <option value="energy_j">Energy — J</option>
+      <option value="energy_kj">Energy — kJ</option>
+
+      <option value="time_s">Time — s</option>
+      <option value="time_min">Time — min</option>
+      <option value="time_h">Time — h</option>
+
+      <option value="resistance_ohm">Resistance — Ω</option>
+      <option value="resistance_kohm">Resistance — kΩ</option>
+      <option value="resistance_mohm">Resistance — mΩ</option>
+
+      <option value="capacity_ah">Capacity — Ah</option>
+      <option value="capacity_mah">Capacity — mAh</option>
+
+      <option value="charge_c">Charge — C</option>
+
+      <option value="voltage_rms">Voltage — V (rms)</option>
+
+      <option value="apparent_va">Apparent power — VA</option>
     </select>
-    <input type="number" class="unit-value" placeholder="Enter value">
-    <button type="button" onclick="removeRow(this)">❌</button>
+    <input type="number" class="value" placeholder="Value">
+    <button class="remove-btn" onclick="removeRow(this)">✖</button>
   `;
-  inputs.appendChild(div);
+  container.appendChild(div);
 }
 
 function removeRow(btn) {
-  btn.parentElement.remove();
+  const row = btn.parentElement;
+  const container = document.getElementById('inputs');
+  if (container.children.length === 1) {
+    // clear instead of remove if only one row
+    row.querySelector('.value').value = '';
+    row.querySelector('.kind').selectedIndex = 0;
+    return;
+  }
+  row.remove();
 }
 
-function calculate() {
-  let inputs = document.querySelectorAll('.input-row');
-  let values = {};
-  inputs.forEach(row => {
-    let type = row.querySelector('.unit-type').value;
-    let value = parseFloat(row.querySelector('.unit-value').value);
-    if (!isNaN(value)) {
-      values[type] = value;
-    }
+// Main calculate function wired to button
+function calculateAll() {
+  const resultsEl = document.getElementById('results');
+  resultsEl.innerHTML = '<div class="muted">Calculating…</div>';
+  // Parse and normalize
+  let parsed = parseInputs();
+  // Derive
+  parsed = deriveAll(parsed);
+  // Build output groups
+  const groups = buildOutputs(parsed);
+
+  if (!groups.length) {
+    resultsEl.innerHTML = '<div class="muted">No computable outputs — provide two or more compatible inputs (e.g., Voltage + Current, or Power + Time, or Voltage + Resistance, or Power alone).</div>';
+    return;
+  }
+
+  // Render
+  let html = '';
+  groups.forEach(g => {
+    html += `<div class="group-title">${g.title}</div>`;
+    g.rows.forEach(r => {
+      html += `<div class="result-line"><div>${r[0]}</div><div style="font-weight:700">${r[1]}</div></div>`;
+    });
   });
 
-  let results = [];
-  
-  // Example Calculations (expand with more formulas)
-  if (values.voltage && values.current) {
-    let power = values.voltage * values.current;
-    results.push(`Power: ${power.toFixed(2)} W`);
-    results.push(`Power: ${(power/1000).toFixed(4)} kW`);
-    results.push(`Horsepower: ${(power/745.7).toFixed(4)} HP`);
-  }
-
-  if (values.power && values.time) {
-    let energy = values.power * values.time; // Wh
-    results.push(`Energy: ${energy.toFixed(2)} Wh`);
-    results.push(`Energy: ${(energy/1000).toFixed(4)} kWh`);
-  }
-
-  if (values.voltage && values.resistance) {
-    let current = values.voltage / values.resistance;
-    results.push(`Current: ${current.toFixed(2)} A`);
-  }
-
-  if (values.current && values.resistance) {
-    let voltage = values.current * values.resistance;
-    results.push(`Voltage: ${voltage.toFixed(2)} V`);
-  }
-
-  document.getElementById('results').innerHTML = results.map(r => `<div class="result-item">${r}</div>`).join('');
+  resultsEl.innerHTML = html;
 }
+
+// Allow Enter key on the last input to trigger calculation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    calculateAll();
+  }
+});
 </script>
 </body>
 </html>

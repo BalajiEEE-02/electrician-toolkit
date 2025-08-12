@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Unit Converter | Balaji Electrician Toolkit</title>
+  <link rel="icon" href="weppage.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .converter-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px;
+      background: linear-gradient(180deg,#111217,#151821);
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+    }
+    .converter-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .input-group {
+      background: #1e1f26;
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .input-group label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .unit-search {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #333;
+      background: #222;
+      color: #fff;
+    }
+    .value-input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 8px;
+      border-radius: 6px;
+      border: 1px solid #333;
+      background: #222;
+      color: #fff;
+    }
+    .results-box {
+      background: #1b1c22;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-family: monospace;
+      overflow-x: auto;
+    }
+    .unit-suggestions {
+      max-height: 150px;
+      overflow-y: auto;
+      background: #222;
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+    .unit-suggestions div {
+      padding: 6px 8px;
+      cursor: pointer;
+    }
+    .unit-suggestions div:hover {
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="site">
+    <header class="header">
+      <a class="brand" href="index.html">
+        <div class="logo">
+          <img src="weppage.png" alt="logo" style="width:120%;height:120%;object-fit:cover">
+        </div>
+        <div>
+          <h1>Balaji Audios & Electricals</h1>
+          <p>Electrician Toolkit • Unit Converter</p>
+        </div>
+      </a>
+    </header>
+
+    <section class="converter-container">
+      <h2>🔧 Multi-Unit Converter</h2>
+      <p>Type a unit name in either box (case-insensitive), enter a value, and see instant conversions.</p>
+
+      <div class="converter-row">
+        <!-- FROM -->
+        <div class="input-group">
+          <label for="fromUnit">From Unit</label>
+          <input id="fromUnit" class="unit-search" placeholder="e.g., watt, meter, kg">
+          <div id="fromSuggestions" class="unit-suggestions"></div>
+          <input id="fromValue" type="number" class="value-input" placeholder="Enter value">
+        </div>
+        <!-- TO -->
+        <div class="input-group">
+          <label for="toUnit">To Unit</label>
+          <input id="toUnit" class="unit-search" placeholder="e.g., hp, feet, pound">
+          <div id="toSuggestions" class="unit-suggestions"></div>
+          <input id="toValue" type="text" class="value-input" placeholder="Converted value" readonly>
+        </div>
+      </div>
+
+      <div class="results-box" id="results"></div>
+    </section>
+
+    <footer class="footer">
+      © <span id="year"></span> Balaji Audios & Electricals
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const units = {
+      // POWER
+      watt: { category: "Power", factor: 1 },
+      kilowatt: { category: "Power", factor: 1000 },
+      megawatt: { category: "Power", factor: 1e6 },
+      horsepower: { category: "Power", factor: 745.7 },
+      // LENGTH
+      meter: { category: "Length", factor: 1 },
+      kilometer: { category: "Length", factor: 1000 },
+      centimeter: { category: "Length", factor: 0.01 },
+      millimeter: { category: "Length", factor: 0.001 },
+      inch: { category: "Length", factor: 0.0254 },
+      foot: { category: "Length", factor: 0.3048 },
+      yard: { category: "Length", factor: 0.9144 },
+      mile: { category: "Length", factor: 1609.34 },
+      // WEIGHT
+      gram: { category: "Weight", factor: 1 },
+      kilogram: { category: "Weight", factor: 1000 },
+      tonne: { category: "Weight", factor: 1e6 },
+      pound: { category: "Weight", factor: 453.592 },
+      ounce: { category: "Weight", factor: 28.3495 },
+      // TEMPERATURE handled separately
+      celsius: { category: "Temperature" },
+      fahrenheit: { category: "Temperature" },
+      kelvin: { category: "Temperature" }
+    };
+
+    const fromUnitInput = document.getElementById("fromUnit");
+    const toUnitInput = document.getElementById("toUnit");
+    const fromValueInput = document.getElementById("fromValue");
+    const toValueInput = document.getElementById("toValue");
+    const resultsBox = document.getElementById("results");
+
+    function showSuggestions(inputElem, suggestionsElem) {
+      const query = inputElem.value.toLowerCase();
+      suggestionsElem.innerHTML = "";
+      if (!query) return;
+      Object.keys(units).filter(u => u.includes(query)).forEach(unit => {
+        const div = document.createElement("div");
+        div.textContent = unit;
+        div.onclick = () => { inputElem.value = unit; suggestionsElem.innerHTML = ""; };
+        suggestionsElem.appendChild(div);
+      });
+    }
+
+    fromUnitInput.addEventListener("input", () => showSuggestions(fromUnitInput, document.getElementById("fromSuggestions")));
+    toUnitInput.addEventListener("input", () => showSuggestions(toUnitInput, document.getElementById("toSuggestions")));
+
+    function convert() {
+      const fromUnit = fromUnitInput.value.toLowerCase();
+      const toUnit = toUnitInput.value.toLowerCase();
+      const value = parseFloat(fromValueInput.value);
+      if (!units[fromUnit] || !units[toUnit] || isNaN(value)) return;
+
+      let result;
+      if (units[fromUnit].category === "Temperature" && units[toUnit].category === "Temperature") {
+        result = convertTemp(value, fromUnit, toUnit);
+      } else if (units[fromUnit].category === units[toUnit].category) {
+        result = value * units[fromUnit].factor / units[toUnit].factor;
+      } else {
+        result = "Incompatible units";
+      }
+      toValueInput.value = typeof result === "number" ? result.toLocaleString() : result;
+
+      // Show conversions to all units in same category
+      if (typeof result === "number") {
+        const cat = units[fromUnit].category;
+        let html = `<strong>All ${cat} conversions from ${value} ${fromUnit}:</strong><br>`;
+        Object.keys(units).filter(u => units[u].category === cat).forEach(u => {
+          const val = (cat === "Temperature") ? convertTemp(value, fromUnit, u) : value * units[fromUnit].factor / units[u].factor;
+          html += `${val} ${u}<br>`;
+        });
+        resultsBox.innerHTML = html;
+      }
+    }
+
+    function convertTemp(val, from, to) {
+      if (from === to) return val;
+      let c;
+      if (from === "celsius") c = val;
+      else if (from === "fahrenheit") c = (val - 32) * 5/9;
+      else if (from === "kelvin") c = val - 273.15;
+      if (to === "celsius") return c;
+      if (to === "fahrenheit") return c * 9/5 + 32;
+      if (to === "kelvin") return c + 273.15;
+    }
+
+    fromValueInput.addEventListener("input", convert);
+    fromUnitInput.addEventListener("change", convert);
+    toUnitInput.addEventListener("change", convert);
+  </script>
+</body>
+</html>

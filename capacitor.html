@@ -1,111 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Motor Capacitor Calculator</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Capacitor Calculator • Electric Master</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --bg1:#0b1220; --bg2:#0e1628; --card:#101b2f; --accent:#22c55e; }
+    body{background: radial-gradient(1200px 600px at 20% -10%,#1a2540 0%,var(--bg1) 40%), linear-gradient(180deg,var(--bg1),var(--bg2));}
+    .glass{background:rgba(255,255,255,.06); backdrop-filter:saturate(130%) blur(12px); border:1px solid rgba(255,255,255,.08);}
+    .number{appearance:textfield;} .number::-webkit-outer-spin-button,.number::-webkit-inner-spin-button{appearance:none;margin:0;}
+    .k{color:#a3e635} .m{color:#60a5fa} .y{color:#facc15}
+  </style>
 </head>
-<body class="bg-gray-100 p-6">
-  <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-lg p-6">
-    <h1 class="text-2xl font-bold text-center text-blue-700 mb-4">Motor Capacitor Calculator</h1>
+<body class="text-slate-200 min-h-screen">
 
-    <!-- Motor Parameters to Capacitor -->
-    <div class="mb-6 border-b pb-4">
-      <h2 class="text-xl font-semibold text-gray-700 mb-2">Parameters ➝ Capacitor</h2>
-      <label>Motor Power:
-        <input id="motorPower" type="number" class="border p-2 rounded w-32" placeholder="e.g. 1.5">
-      </label>
-      <select id="powerUnit" class="border p-2 rounded">
-        <option value="hp">HP</option>
-        <option value="kw">kW</option>
-      </select>
-      <label class="ml-4">Voltage:
-        <input id="voltage" type="number" class="border p-2 rounded w-32" placeholder="230">
-      </label>
-      <label class="ml-4">Frequency:
-        <input id="frequency" type="number" class="border p-2 rounded w-32" placeholder="50">
-      </label>
-      <button onclick="calculateCapacitor()" class="bg-blue-600 text-white px-4 py-2 rounded ml-4">Calculate</button>
-
-      <div id="capResult" class="mt-4 text-green-700 font-semibold"></div>
-    </div>
-
-    <!-- Capacitor to Parameters -->
-    <div class="mb-6 border-b pb-4">
-      <h2 class="text-xl font-semibold text-gray-700 mb-2">Capacitor ➝ Motor Parameters</h2>
-      <label>Capacitance (µF):
-        <input id="capInput" type="number" class="border p-2 rounded w-32" placeholder="40">
-      </label>
-      <label class="ml-4">Voltage:
-        <input id="capVoltage" type="number" class="border p-2 rounded w-32" placeholder="230">
-      </label>
-      <label class="ml-4">Frequency:
-        <input id="capFreq" type="number" class="border p-2 rounded w-32" placeholder="50">
-      </label>
-      <button onclick="calculateMotorFromCap()" class="bg-green-600 text-white px-4 py-2 rounded ml-4">Calculate</button>
-
-      <div id="motorResult" class="mt-4 text-blue-700 font-semibold"></div>
-    </div>
-
-    <!-- Series & Parallel -->
-    <div>
-      <h2 class="text-xl font-semibold text-gray-700 mb-2">Series & Parallel Capacitors</h2>
-      <textarea id="capList" class="border p-2 w-full rounded" rows="3" placeholder="Enter capacitances (µF) separated by commas e.g. 10,20,30"></textarea>
-      <div class="mt-2">
-        <button onclick="calcParallel()" class="bg-purple-600 text-white px-4 py-2 rounded mr-2">Parallel</button>
-        <button onclick="calcSeries()" class="bg-yellow-600 text-white px-4 py-2 rounded">Series</button>
+  <!-- Header -->
+  <header class="max-w-6xl mx-auto px-4 py-6">
+    <a href="index.html" class="inline-flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-emerald-500/20 grid place-items-center text-emerald-400">⚡</div>
+      <div>
+        <div class="text-xl font-semibold tracking-wide">ELECTRIC MASTER</div>
+        <div class="text-xs text-slate-400 -mt-0.5">Capacitor Calculator</div>
       </div>
-      <div id="seriesParallelResult" class="mt-4 text-red-700 font-semibold"></div>
-    </div>
-  </div>
+    </a>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 pb-16 grid gap-6 md:grid-cols-2">
+
+    <!-- Card: Parameters → Capacitor -->
+    <section class="glass rounded-2xl p-6 shadow-xl">
+      <h2 class="text-lg font-semibold mb-1">Parameters → <span class="k">Capacitor</span></h2>
+      <p class="text-slate-400 text-sm mb-5">Accurate run/start capacitor from motor power, voltage & frequency.</p>
+
+      <div class="grid grid-cols-2 gap-3">
+        <label class="col-span-2">
+          <span class="text-sm text-slate-300">Motor Power</span>
+          <div class="flex gap-2 mt-1">
+            <input id="pValue" type="number" step="0.001" class="number w-full px-3 py-2 rounded-lg bg-slate-900/60 border border-white/10" placeholder="e.g. 1.5">
+            <select id="pUnit" class="px-3 py-2 rounded-lg bg-slate-900/60 border border-white/10">
+              <option value="hp">HP</option>
+              <option value="kw">kW</option>
+            </select>
+          </div>
+        </label>
+
+        <label>
+          <span class="text-sm text-slate-300">Line Voltage (V)</span>
+          <input id="vLine" type="number" class="number w-full mt-1 px-3 py-2 rounded-lg bg-slate-900/60 border border-white/10" value="230">
+        </label>
+
+        <label>
+          <span class="text-sm text-slate-300">Frequency (Hz)</span>
+          <input id="freq" type="number" class="number w-full mt-1 px-3 py-2 rounded-lg bg-slate-900/60 border border-white/10" value="50">
+        </label>
+
+        <label class="col-span-2">
+          <span class="text-sm text-slate-300">Start/Run Ratio</span>
+          <div class="flex gap-2 mt-1">
+            <input id="startFactor" type="number" step="0.1" class="number w-full px-3 py-2 rounded-lg bg-slate-900/60 border border-white/10" value="2.5">
+            <span class="text-sm text-slate-400 self-center">× (Start = factor × Run)</span>
+          </div>
+        </label>
+      </div>
+
+      <button id="btnParam2Cap" class="mt-5 w-full py-2.5 rounded-xl bg-emerald-500 text-slate-900 font-semibold hover:bg-emerald-400 transition">Calculate Capacitors</button>
+
+      <div id="outParam2Cap" class="mt-5 hidden">
+        <div class="text-sm text-slate-400 mb-1">Results</div>
+        <div class="grid md:grid-cols-2 gap-3">
+          <div class="rounded-xl bg-slate-900/60 p-4 border border-white/10">
+            <div class="text-xs text-slate-400">Running Capacitor</div>
+            <div class="text-2xl font-bold k" id="runCap">— µF</div>
+          </div>
+          <div class="rounded-xl bg-slate-900/60 p-4 border border-white/10">
+            <div class="text-xs text-slate-400">Starting Capacitor</div>
+            <div class="text-2xl font-bold y" id="startCap">— µF</div>
+          </div>
+        </div>
+        <div class="mt-3 text-xs text-slate-400" id="capNote"></div>
+      </div>
+    </section>
+
+    <!-- Card: Capacitor → Parameters -->
+    <section class="glass rounded-2xl p-6 shadow-xl">
+      <h2 class="text-lg font-semibold mb-1"><span class="k">Capacitor</span> → Parameters</h2>
+      <p class="text-slate-400 text-sm mb-5">Estimate motor power from capacitance, voltage & frequency.</p>
+
+      <div class="grid grid-cols-2 gap-3">
+        <label>
+          <span class="text-sm text-slate-300">Capacitance (µF)</span>
+          <input id="cValue" type="number" class="number w-full mt-1 px-3 py-2 rounded-lg bg-slate-900/60 border border-white/10" placeholder="e.g. 40">
+        </label>
+        <label>
+          <span class="text-sm text-slate-300">Line Voltage (V)</span>
+          <input id="cvLine" type="number" class="number w-full mt-1 px-3 py-2 rounded-lg bg-slate-900/60 border border-white/10" value="230">
+        </label>
+        <label>
+          <span class="text-sm text-slate-300">Frequency (Hz)</span>
+          <input id="cfreq" type="number" class="number w-full mt-1 px-3 py-2 rounded-lg bg-slate-900/60 border border-white/10" value="50">
+        </label>
+        <label>
+          <span class="text-sm text-slate-300">Show Power In</span>
+          <select id="outUnit" class="w-full mt-1 px-3 py-2 rounded-lg bg-slate-900/60 border border-white/10">
+            <option value="kw">kW & HP</option>
+            <option value="hp">HP & kW</option>
+          </select>
+        </label>
+      </div>
+
+      <button id="btnCap2Param" class="mt-5 w-full py-2.5 rounded-xl bg-sky-500 text-slate-900 font-semibold hover:bg-sky-400 transition">Estimate Motor Power</button>
+
+      <div id="outCap2Param" class="mt-5 hidden">
+        <div class="rounded-xl bg-slate-900/60 p-4 border border-white/10">
+          <div class="text-xs text-slate-400 mb-1">Estimated Motor Power</div>
+          <div class="text-2xl font-bold m" id="estPower">—</div>
+        </div>
+        <div class="mt-3 text-xs text-slate-400">Note: This is an approximation based on ideal relationships; actual motors vary by design.</div>
+      </div>
+    </section>
+
+    <!-- Card: Series / Parallel -->
+    <section class="glass rounded-2xl p-6 shadow-xl md:col-span-2">
+      <h2 class="text-lg font-semibold mb-1">Series & Parallel Capacitors</h2>
+      <p class="text-slate-400 text-sm mb-5">Enter any number of capacitors with voltage ratings to get equivalent capacitance and voltage.</p>
+
+      <div class="grid md:grid-cols-3 gap-3">
+        <textarea id="capList" rows="4" class="md:col-span-2 w-full px-3 py-2 rounded-lg bg-slate-900/60 border border-white/10" placeholder="Values in µF, separated by commas (e.g. 10, 22, 47)"></textarea>
+        <textarea id="voltList" rows="4" class="w-full px-3 py-2 rounded-lg bg-slate-900/60 border border-white/10" placeholder="Voltage ratings in V, same count (e.g. 250, 400, 450)"></textarea>
+      </div>
+
+      <div class="flex flex-wrap gap-2 mt-4">
+        <button id="btnParallel" class="px-4 py-2 rounded-xl bg-indigo-500 text-slate-900 font-semibold hover:bg-indigo-400">Parallel</button>
+        <button id="btnSeries" class="px-4 py-2 rounded-xl bg-amber-400 text-slate-900 font-semibold hover:bg-amber-300">Series</button>
+        <button id="btnClearSP" class="px-4 py-2 rounded-xl bg-slate-700 text-slate-200 font-semibold hover:bg-slate-600">Clear</button>
+      </div>
+
+      <div id="outSP" class="mt-5 hidden grid md:grid-cols-3 gap-3">
+        <div class="rounded-xl bg-slate-900/60 p-4 border border-white/10">
+          <div class="text-xs text-slate-400">Equivalent Capacitance</div>
+          <div class="text-2xl font-bold y" id="eqC">— µF</div>
+        </div>
+        <div class="rounded-xl bg-slate-900/60 p-4 border border-white/10">
+          <div class="text-xs text-slate-400">Equivalent Voltage Rating</div>
+          <div class="text-2xl font-bold k" id="eqV">— V</div>
+        </div>
+        <div class="rounded-xl bg-slate-900/60 p-4 border border-white/10">
+          <div class="text-xs text-slate-400">Recommendation</div>
+          <div class="text-sm" id="eqNote">—</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
 
   <script>
-    function calculateCapacitor() {
-      let power = parseFloat(document.getElementById("motorPower").value);
-      let unit = document.getElementById("powerUnit").value;
-      let V = parseFloat(document.getElementById("voltage").value);
-      let f = parseFloat(document.getElementById("frequency").value);
+    // Helpers
+    const el = id => document.getElementById(id);
+    const show = (id, on=true)=>{const n=el(id); n.classList.toggle('hidden',!on);};
 
-      if (unit === "hp") power = power * 0.746; // convert hp → kW
+    // --- Parameters → Capacitor ---
+    el('btnParam2Cap').addEventListener('click', () => {
+      const pUnit = el('pUnit').value;
+      let P = parseFloat(el('pValue').value);           // power in HP or kW
+      const V = parseFloat(el('vLine').value);
+      const f = parseFloat(el('freq').value);
+      const k = parseFloat(el('startFactor').value);
 
-      // Running capacitor approx formula
-      let Cr = (power * 1000) / (2 * Math.PI * f * (V * V) * 0.8 * 0.9) * 1e6;
-      if (Cr < 10) Cr = power * 60; // fallback rule of thumb
+      if (isNaN(P) || isNaN(V) || isNaN(f) || isNaN(k) || V<=0 || f<=0 || P<=0) {
+        alert('Please enter valid positive values.'); return;
+      }
+      // convert to kW if needed
+      if (pUnit === 'hp') P = P * 0.746;
 
-      let Cs = 2.5 * Cr;
+      // C_run(µF) = (P_kW * 1000) / (2π f V^2) * 1e6
+      const Cr = (P * 1000) / (2*Math.PI*f*V*V) * 1e6;
+      const Cs = k * Cr;
 
-      document.getElementById("capResult").innerHTML =
-        `Running Capacitor ≈ ${Cr.toFixed(2)} µF<br>Starting Capacitor ≈ ${Cs.toFixed(2)} µF`;
+      el('runCap').textContent   = `${Cr.toFixed(2)} µF`;
+      el('startCap').textContent = `${Cs.toFixed(2)} µF`;
+      const vSuggest = Math.round(V * 1.5);
+      el('capNote').innerHTML = `Use capacitors rated ≥ <b>${vSuggest} V AC</b> (≈1.5× line). At 50 Hz, 230 V the rule of thumb is ~<b>${(Cr/(P||1)).toFixed(1)}</b> µF/kW.`;
+      show('outParam2Cap', true);
+    });
+
+    // --- Capacitor → Parameters ---
+    el('btnCap2Param').addEventListener('click', () => {
+      const C = parseFloat(el('cValue').value); // µF
+      const V = parseFloat(el('cvLine').value);
+      const f = parseFloat(el('cfreq').value);
+      const outUnit = el('outUnit').value;
+
+      if (isNaN(C) || isNaN(V) || isNaN(f) || C<=0 || V<=0 || f<=0) {
+        alert('Please enter valid positive values.'); return;
+      }
+
+      // P_kW = C(µF) * (2π f V^2) / 1e9
+      const PkW = C * (2*Math.PI*f*V*V) / 1e9;
+      const PHP = PkW / 0.746;
+
+      el('estPower').innerHTML = (outUnit==='kw')
+        ? `${PkW.toFixed(3)} kW  <span class="text-slate-400 text-base">(${PHP.toFixed(3)} HP)</span>`
+        : `${PHP.toFixed(3)} HP  <span class="text-slate-400 text-base">(${PkW.toFixed(3)} kW)</span>`;
+
+      show('outCap2Param', true);
+    });
+
+    // --- Series / Parallel ---
+    function parseLists() {
+      const c = el('capList').value.split(',').map(s => parseFloat(s.trim())).filter(x => !isNaN(x) && x>0);
+      const v = el('voltList').value.split(',').map(s => parseFloat(s.trim())).filter(x => !isNaN(x) && x>0);
+      if (c.length===0 || v.length===0 || c.length!==v.length) {
+        alert('Enter the SAME COUNT of capacitances (µF) and voltage ratings (V).'); return null;
+      }
+      return {c,v};
     }
 
-    function calculateMotorFromCap() {
-      let C = parseFloat(document.getElementById("capInput").value);
-      let V = parseFloat(document.getElementById("capVoltage").value);
-      let f = parseFloat(document.getElementById("capFreq").value);
+    el('btnParallel').addEventListener('click', () => {
+      const data = parseLists(); if (!data) return;
+      const Ceq = data.c.reduce((a,b)=>a+b,0);
+      const Veq = Math.min(...data.v); // weakest part defines voltage rating
+      el('eqC').textContent = `${Ceq.toFixed(2)} µF`;
+      el('eqV').textContent = `${Veq.toFixed(0)} V`;
+      el('eqNote').innerHTML = `Parallel adds capacitance; voltage rating is limited by the <b>lowest-rated</b> part.`;
+      show('outSP', true);
+    });
 
-      // Approx reverse calculation
-      let PkW = (C / 60);
-      let Php = PkW / 0.746;
+    el('btnSeries').addEventListener('click', () => {
+      const data = parseLists(); if (!data) return;
+      const inv = data.c.reduce((a,b)=> a + 1/b, 0);
+      const Ceq = 1/inv;
+      const Veq = data.v.reduce((a,b)=>a+b,0); // ratings add in ideal series
+      el('eqC').textContent = `${Ceq.toFixed(2)} µF`;
+      el('eqV').textContent = `${Veq.toFixed(0)} V`;
+      el('eqNote').innerHTML = `Series reduces capacitance; voltage ratings add (use balancing resistors in real builds).`;
+      show('outSP', true);
+    });
 
-      document.getElementById("motorResult").innerHTML =
-        `Motor Power ≈ ${PkW.toFixed(2)} kW (${Php.toFixed(2)} HP)<br>Voltage: ${V} V, Frequency: ${f} Hz`;
-    }
-
-    function calcParallel() {
-      let caps = document.getElementById("capList").value.split(",").map(Number);
-      let sum = caps.reduce((a, b) => a + b, 0);
-      document.getElementById("seriesParallelResult").innerHTML =
-        `Parallel Equivalent = ${sum.toFixed(2)} µF`;
-    }
-
-    function calcSeries() {
-      let caps = document.getElementById("capList").value.split(",").map(Number);
-      let invSum = caps.reduce((a, b) => a + 1 / b, 0);
-      let Ceq = 1 / invSum;
-      document.getElementById("seriesParallelResult").innerHTML =
-        `Series Equivalent = ${Ceq.toFixed(2)} µF`;
-    }
+    el('btnClearSP').addEventListener('click', ()=>{
+      el('capList').value=''; el('voltList').value=''; show('outSP', false);
+    });
   </script>
 </body>
 </html>

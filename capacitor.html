@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Capacitor Calculator</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-gray-800 shadow-md p-4 text-center text-xl font-bold text-yellow-400">
+    Capacitor Calculator
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6">
+    <div class="grid gap-8 md:grid-cols-2">
+
+      <!-- Motor Capacitor Calculator -->
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+        <h2 class="text-lg font-semibold text-yellow-300 mb-4">Motor Capacitor Calculator</h2>
+        
+        <label class="block mb-2">Motor Power (HP)</label>
+        <input id="motorPower" type="number" class="w-full p-2 rounded text-black mb-4" placeholder="e.g. 1.5">
+
+        <label class="block mb-2">Voltage (V)</label>
+        <input id="motorVoltage" type="number" class="w-full p-2 rounded text-black mb-4" placeholder="e.g. 230">
+
+        <label class="block mb-2">Frequency (Hz)</label>
+        <input id="motorFrequency" type="number" class="w-full p-2 rounded text-black mb-4" placeholder="50">
+
+        <button onclick="calculateMotorCapacitor()" class="w-full bg-yellow-500 hover:bg-yellow-600 p-2 rounded font-bold">Calculate</button>
+
+        <div id="motorResult" class="mt-4 text-green-400 font-semibold"></div>
+      </div>
+
+      <!-- Series / Parallel Calculator -->
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+        <h2 class="text-lg font-semibold text-yellow-300 mb-4">Series / Parallel Calculator</h2>
+        
+        <label class="block mb-2">Capacitor Values (µF) — comma separated</label>
+        <input id="capValues" type="text" class="w-full p-2 rounded text-black mb-4" placeholder="10, 20, 30">
+
+        <button onclick="calculateSeries()" class="w-full bg-blue-500 hover:bg-blue-600 p-2 rounded font-bold mb-2">Series</button>
+        <button onclick="calculateParallel()" class="w-full bg-green-500 hover:bg-green-600 p-2 rounded font-bold">Parallel</button>
+
+        <div id="capResult" class="mt-4 text-green-400 font-semibold"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Script -->
+  <script>
+    function calculateMotorCapacitor() {
+      let hp = parseFloat(document.getElementById('motorPower').value);
+      let v = parseFloat(document.getElementById('motorVoltage').value);
+      let f = parseFloat(document.getElementById('motorFrequency').value);
+
+      if (!hp || !v || !f) {
+        document.getElementById('motorResult').innerHTML = "⚠ Please enter all fields.";
+        return;
+      }
+
+      // Approx formula: C (µF) ≈ (2650 * HP) / V²
+      let C_run = (2650 * hp) / (v * v);
+      let C_start = 2.5 * C_run;
+
+      document.getElementById('motorResult').innerHTML = 
+        `Running Capacitor ≈ <span class="text-yellow-400">${C_run.toFixed(2)} µF</span><br>
+         Starting Capacitor ≈ <span class="text-yellow-400">${C_start.toFixed(2)} µF</span>`;
+    }
+
+    function calculateSeries() {
+      let values = document.getElementById('capValues').value.split(',').map(Number);
+      if (values.some(isNaN)) {
+        document.getElementById('capResult').innerHTML = "⚠ Enter valid numbers.";
+        return;
+      }
+      let invSum = values.reduce((acc, c) => acc + (1 / c), 0);
+      let seriesC = 1 / invSum;
+      document.getElementById('capResult').innerHTML = `Equivalent Series Capacitance: <span class="text-yellow-400">${seriesC.toFixed(2)} µF</span>`;
+    }
+
+    function calculateParallel() {
+      let values = document.getElementById('capValues').value.split(',').map(Number);
+      if (values.some(isNaN)) {
+        document.getElementById('capResult').innerHTML = "⚠ Enter valid numbers.";
+        return;
+      }
+      let parallelC = values.reduce((a, b) => a + b, 0);
+      document.getElementById('capResult').innerHTML = `Equivalent Parallel Capacitance: <span class="text-yellow-400">${parallelC.toFixed(2)} µF</span>`;
+    }
+  </script>
+
+</body>
+</html>

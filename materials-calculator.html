@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Materials Calculator - Electrician Toolkit</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <script>
+    function calculateMaterials() {
+      let length = parseFloat(document.getElementById("length").value) || 0;
+      let breadth = parseFloat(document.getElementById("breadth").value) || 0;
+      let height = parseFloat(document.getElementById("height").value) || 0;
+      let lights = parseInt(document.getElementById("lights").value) || 0;
+      let fans = parseInt(document.getElementById("fans").value) || 0;
+      let sockets = parseInt(document.getElementById("sockets").value) || 0;
+      let switches = parseInt(document.getElementById("switches").value) || 0;
+      let wiringType = document.getElementById("wiringType").value;
+      let earthing = document.getElementById("earthing").checked;
+
+      // Base wire estimation (room perimeter × height × factor)
+      let perimeter = 2 * (length + breadth);
+      let baseWire = (perimeter * height) + (lights*5 + fans*10 + sockets*8);
+      let factor = wiringType === "concealed" ? 1.2 : 1.0;
+      let wireLength = baseWire * factor;
+
+      // Add extra 15% margin
+      wireLength = wireLength * 1.15;
+
+      // Conduit estimation
+      let conduitLength = wireLength * 0.8;
+
+      // Earthing wire
+      let earthingWire = earthing ? (perimeter * 1.5) : 0;
+
+      // Display results
+      document.getElementById("results").innerHTML = `
+        <div class="p-4 bg-white rounded-2xl shadow-lg">
+          <h2 class="text-xl font-bold mb-2 text-blue-600">Materials Estimate</h2>
+          <p><strong>Total Wire Length:</strong> ${wireLength.toFixed(1)} meters</p>
+          <p><strong>Conduit Pipe Length:</strong> ${conduitLength.toFixed(1)} meters</p>
+          <p><strong>Switches:</strong> ${switches}</p>
+          <p><strong>Sockets:</strong> ${sockets}</p>
+          <p><strong>Fans:</strong> ${fans}</p>
+          <p><strong>Lights:</strong> ${lights}</p>
+          <p><strong>Earthing Wire:</strong> ${earthingWire.toFixed(1)} meters</p>
+        </div>
+      `;
+    }
+  </script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+  <div class="max-w-3xl mx-auto p-6">
+    <h1 class="text-3xl font-bold text-center mb-6 text-indigo-700">Materials Calculator</h1>
+
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <input id="length" type="number" placeholder="Room Length (m)" class="p-2 rounded-lg border">
+      <input id="breadth" type="number" placeholder="Room Breadth (m)" class="p-2 rounded-lg border">
+      <input id="height" type="number" placeholder="Room Height (m)" class="p-2 rounded-lg border">
+      <input id="lights" type="number" placeholder="No. of Lights" class="p-2 rounded-lg border">
+      <input id="fans" type="number" placeholder="No. of Fans" class="p-2 rounded-lg border">
+      <input id="sockets" type="number" placeholder="No. of Sockets" class="p-2 rounded-lg border">
+      <input id="switches" type="number" placeholder="No. of Switches" class="p-2 rounded-lg border">
+    </div>
+
+    <div class="flex items-center gap-4 mb-4">
+      <select id="wiringType" class="p-2 rounded-lg border">
+        <option value="surface">Surface Wiring</option>
+        <option value="concealed">Concealed Wiring</option>
+      </select>
+      <label class="flex items-center space-x-2">
+        <input id="earthing" type="checkbox"> <span>Include Earthing</span>
+      </label>
+    </div>
+
+    <button onclick="calculateMaterials()" class="w-full bg-indigo-600 text-white py-2 rounded-xl shadow-md hover:bg-indigo-700">Calculate</button>
+
+    <div id="results" class="mt-6"></div>
+  </div>
+</body>
+</html>

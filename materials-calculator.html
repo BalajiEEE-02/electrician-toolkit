@@ -3,78 +3,199 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Materials Calculator - Electrician Toolkit</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <title>Materials Calculator - Balaji Electricals</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6 shadow-md">
+    <h1 class="text-3xl font-bold text-center">🛠 Materials Calculator</h1>
+    <p class="text-center text-sm mt-2">Balaji Audios & Electricals</p>
+  </header>
+
+  <!-- CUSTOMER DETAILS -->
+  <section class="max-w-5xl mx-auto bg-white p-6 mt-6 rounded-2xl shadow-lg">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">📑 Customer Details</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <input type="text" id="custName" placeholder="Customer Name" class="p-3 border rounded-lg">
+      <input type="text" id="location" placeholder="Location" class="p-3 border rounded-lg">
+      <input type="text" id="measurements" placeholder="House Measurements" class="p-3 border rounded-lg">
+      <input type="text" id="contact" placeholder="Contact Number" class="p-3 border rounded-lg">
+      <input type="text" id="electrician" placeholder="Electrician Name" class="p-3 border rounded-lg">
+      <input type="date" id="date" class="p-3 border rounded-lg">
+    </div>
+  </section>
+
+  <!-- MATERIAL SELECTION -->
+  <section class="max-w-5xl mx-auto bg-white p-6 mt-6 rounded-2xl shadow-lg">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">📦 Add Materials</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+      <select id="material" class="p-3 border rounded-lg">
+        <option value="">-- Select Material --</option>
+        <!-- Expanded 100+ Material List -->
+        <option value="Wire">Wire</option>
+        <option value="Switch">Switch</option>
+        <option value="Socket">Socket</option>
+        <option value="Concealed Box">Concealed Box</option>
+        <option value="Open Box">Open Box</option>
+        <option value="MCB">MCB</option>
+        <option value="Pipe">Pipe</option>
+        <option value="Screws">Screws</option>
+        <option value="Nails">Nails</option>
+        <option value="Insulation Tape">Insulation Tape</option>
+        <option value="Wall Cutting Blade">Wall Cutting Blade</option>
+        <option value="Junction Box">Junction Box</option>
+        <option value="Distribution Board">Distribution Board</option>
+        <option value="Earthing Rod">Earthing Rod</option>
+        <option value="PVC Conduit">PVC Conduit</option>
+        <option value="Flexible Conduit">Flexible Conduit</option>
+        <option value="Metal Conduit">Metal Conduit</option>
+        <option value="Coupler">Coupler</option>
+        <option value="Bend">Bend</option>
+        <option value="Fan Regulator">Fan Regulator</option>
+        <option value="LED Bulb">LED Bulb</option>
+        <option value="Tube Light">Tube Light</option>
+        <option value="Flood Light">Flood Light</option>
+        <option value="Ceiling Fan">Ceiling Fan</option>
+        <option value="Exhaust Fan">Exhaust Fan</option>
+        <option value="Cable Tie">Cable Tie</option>
+        <option value="Gland">Cable Gland</option>
+        <option value="Lug">Cable Lug</option>
+        <option value="Busbar">Busbar</option>
+        <option value="Contactor">Contactor</option>
+        <option value="Relay">Relay</option>
+        <option value="Capacitor">Capacitor</option>
+        <option value="Starter">Starter</option>
+        <option value="Timer">Timer</option>
+        <option value="RCCB">RCCB</option>
+        <option value="ELCB">ELCB</option>
+        <option value="MCB Box">MCB Box</option>
+        <option value="Panel Board">Panel Board</option>
+        <option value="Switchgear">Switchgear</option>
+        <option value="Cable Tray">Cable Tray</option>
+        <option value="GI Wire">GI Wire</option>
+        <option value="Binding Wire">Binding Wire</option>
+        <option value="Earth Pit">Earth Pit</option>
+        <option value="Earthing Plate">Earthing Plate</option>
+        <option value="Earthing Compound">Earthing Compound</option>
+        <option value="Saddle">Saddle</option>
+        <option value="Clamp">Clamp</option>
+        <option value="Washer">Washer</option>
+        <option value="Nut Bolt">Nut Bolt</option>
+        <option value="Drill Bit">Drill Bit</option>
+        <option value="Hammer">Hammer</option>
+        <option value="Plier">Plier</option>
+        <option value="Screwdriver">Screwdriver</option>
+        <option value="Tester">Tester</option>
+        <option value="Measuring Tape">Measuring Tape</option>
+        <option value="Safety Gloves">Safety Gloves</option>
+        <option value="Safety Helmet">Safety Helmet</option>
+        <option value="Ladder">Ladder</option>
+        <option value="Cutter">Cutter</option>
+        <option value="Hacksaw">Hacksaw</option>
+        <option value="Grinding Wheel">Grinding Wheel</option>
+        <option value="PVC Tape">PVC Tape</option>
+        <option value="Wire Clip">Wire Clip</option>
+        <option value="Wall Plug">Wall Plug</option>
+        <option value="Drilling Machine">Drilling Machine</option>
+        <option value="Tester Lamp">Tester Lamp</option>
+        <option value="Multimeter">Multimeter</option>
+        <option value="Clamp Meter">Clamp Meter</option>
+        <option value="Phase Tester">Phase Tester</option>
+        <option value="Line Tester">Line Tester</option>
+        <option value="Digital Meter">Digital Meter</option>
+        <option value="Energy Meter">Energy Meter</option>
+        <option value="Light Dimmer">Light Dimmer</option>
+        <option value="Switch Socket Combo">Switch Socket Combo</option>
+        <option value="Modular Plate">Modular Plate</option>
+        <option value="Modular Box">Modular Box</option>
+        <option value="Fan Box">Fan Box</option>
+        <option value="Round Box">Round Box</option>
+        <option value="Square Box">Square Box</option>
+        <option value="U Clamp">U Clamp</option>
+        <option value="C Clamp">C Clamp</option>
+        <option value="Welding Rod">Welding Rod</option>
+        <option value="PVC Elbow">PVC Elbow</option>
+        <option value="PVC Tee">PVC Tee</option>
+        <option value="PVC Junction">PVC Junction</option>
+        <option value="Coupling">Coupling</option>
+        <option value="Reducer">Reducer</option>
+        <option value="Bush">Bush</option>
+        <option value="Panel Meter">Panel Meter</option>
+        <option value="Volt Meter">Volt Meter</option>
+        <option value="Ammeter">Ammeter</option>
+        <option value="Phase Indicator">Phase Indicator</option>
+        <option value="Alarm Bell">Alarm Bell</option>
+        <option value="Indicator Lamp">Indicator Lamp</option>
+        <option value="Cable Drum">Cable Drum</option>
+        <option value="Flexible Wire">Flexible Wire</option>
+        <option value="Armoured Cable">Armoured Cable</option>
+      </select>
+
+      <input type="text" id="type" placeholder="Type (e.g. 1.5 sqmm / 16A / 1 inch)" class="p-3 border rounded-lg">
+      <input type="text" id="quantity" placeholder="Quantity (e.g. 10m / 5nos / 2kg)" class="p-3 border rounded-lg">
+      <button onclick="addMaterial()" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-800">➕ Add</button>
+    </div>
+
+    <!-- MATERIAL LIST -->
+    <table class="w-full mt-6 border-collapse border border-gray-300">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="border p-2">Material</th>
+          <th class="border p-2">Type</th>
+          <th class="border p-2">Quantity</th>
+          <th class="border p-2">Action</th>
+        </tr>
+      </thead>
+      <tbody id="materialList"></tbody>
+    </table>
+  </section>
+
+  <!-- DOWNLOAD BUTTON -->
+  <div class="text-center mt-6">
+    <button onclick="downloadPDF()" class="bg-green-600 text-white px-6 py-3 rounded-2xl shadow-lg hover:bg-green-800">
+      ⬇ Download Material List (PDF)
+    </button>
+  </div>
+
   <script>
-    function calculateMaterials() {
-      let length = parseFloat(document.getElementById("length").value) || 0;
-      let breadth = parseFloat(document.getElementById("breadth").value) || 0;
-      let height = parseFloat(document.getElementById("height").value) || 0;
-      let lights = parseInt(document.getElementById("lights").value) || 0;
-      let fans = parseInt(document.getElementById("fans").value) || 0;
-      let sockets = parseInt(document.getElementById("sockets").value) || 0;
-      let switches = parseInt(document.getElementById("switches").value) || 0;
-      let wiringType = document.getElementById("wiringType").value;
-      let earthing = document.getElementById("earthing").checked;
-
-      // Base wire estimation (room perimeter × height × factor)
-      let perimeter = 2 * (length + breadth);
-      let baseWire = (perimeter * height) + (lights*5 + fans*10 + sockets*8);
-      let factor = wiringType === "concealed" ? 1.2 : 1.0;
-      let wireLength = baseWire * factor;
-
-      // Add extra 15% margin
-      wireLength = wireLength * 1.15;
-
-      // Conduit estimation
-      let conduitLength = wireLength * 0.8;
-
-      // Earthing wire
-      let earthingWire = earthing ? (perimeter * 1.5) : 0;
-
-      // Display results
-      document.getElementById("results").innerHTML = `
-        <div class="p-4 bg-white rounded-2xl shadow-lg">
-          <h2 class="text-xl font-bold mb-2 text-blue-600">Materials Estimate</h2>
-          <p><strong>Total Wire Length:</strong> ${wireLength.toFixed(1)} meters</p>
-          <p><strong>Conduit Pipe Length:</strong> ${conduitLength.toFixed(1)} meters</p>
-          <p><strong>Switches:</strong> ${switches}</p>
-          <p><strong>Sockets:</strong> ${sockets}</p>
-          <p><strong>Fans:</strong> ${fans}</p>
-          <p><strong>Lights:</strong> ${lights}</p>
-          <p><strong>Earthing Wire:</strong> ${earthingWire.toFixed(1)} meters</p>
-        </div>
+    function addMaterial() {
+      const material = document.getElementById("material").value;
+      const type = document.getElementById("type").value;
+      const quantity = document.getElementById("quantity").value;
+      if (!material || !type || !quantity) {
+        alert("Please enter all fields!");
+        return;
+      }
+      const table = document.getElementById("materialList");
+      const row = table.insertRow();
+      row.innerHTML = `
+        <td class="border p-2">${material}</td>
+        <td class="border p-2">${type}</td>
+        <td class="border p-2">${quantity}</td>
+        <td class="border p-2 text-center"><button onclick="this.parentElement.parentElement.remove()" class="text-red-500">❌</button></td>
       `;
     }
+
+    function downloadPDF() {
+      const element = document.createElement("div");
+      element.innerHTML = `
+        <h2 style="text-align:center;">Balaji Audios & Electricals</h2>
+        <h3>Customer Details</h3>
+        <p><b>Name:</b> ${document.getElementById("custName").value}</p>
+        <p><b>Location:</b> ${document.getElementById("location").value}</p>
+        <p><b>Measurements:</b> ${document.getElementById("measurements").value}</p>
+        <p><b>Contact:</b> ${document.getElementById("contact").value}</p>
+        <p><b>Electrician:</b> ${document.getElementById("electrician").value}</p>
+        <p><b>Date:</b> ${document.getElementById("date").value}</p>
+        <br>
+        <h3>Materials List</h3>
+        ${document.getElementById("materialList").outerHTML}
+      `;
+      html2pdf().from(element).save("Material_List.pdf");
+    }
   </script>
-</head>
-<body class="bg-gray-100 text-gray-900">
-  <div class="max-w-3xl mx-auto p-6">
-    <h1 class="text-3xl font-bold text-center mb-6 text-indigo-700">Materials Calculator</h1>
-
-    <div class="grid grid-cols-2 gap-4 mb-4">
-      <input id="length" type="number" placeholder="Room Length (m)" class="p-2 rounded-lg border">
-      <input id="breadth" type="number" placeholder="Room Breadth (m)" class="p-2 rounded-lg border">
-      <input id="height" type="number" placeholder="Room Height (m)" class="p-2 rounded-lg border">
-      <input id="lights" type="number" placeholder="No. of Lights" class="p-2 rounded-lg border">
-      <input id="fans" type="number" placeholder="No. of Fans" class="p-2 rounded-lg border">
-      <input id="sockets" type="number" placeholder="No. of Sockets" class="p-2 rounded-lg border">
-      <input id="switches" type="number" placeholder="No. of Switches" class="p-2 rounded-lg border">
-    </div>
-
-    <div class="flex items-center gap-4 mb-4">
-      <select id="wiringType" class="p-2 rounded-lg border">
-        <option value="surface">Surface Wiring</option>
-        <option value="concealed">Concealed Wiring</option>
-      </select>
-      <label class="flex items-center space-x-2">
-        <input id="earthing" type="checkbox"> <span>Include Earthing</span>
-      </label>
-    </div>
-
-    <button onclick="calculateMaterials()" class="w-full bg-indigo-600 text-white py-2 rounded-xl shadow-md hover:bg-indigo-700">Calculate</button>
-
-    <div id="results" class="mt-6"></div>
-  </div>
 </body>
 </html>

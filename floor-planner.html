@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animated Floor Planner</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #f9fafb; }
+    canvas { border: 2px solid #374151; border-radius: 12px; }
+    .fade-in { animation: fadeIn 1s ease-in-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center p-6">
+  <h1 class="text-3xl font-bold text-indigo-600 mb-6">🏠 Animated Floor Planner</h1>
+
+  <!-- Input Section -->
+  <div class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-2xl mb-6">
+    <label class="block mb-2 font-semibold">Enter Plot Size (ft):</label>
+    <div class="flex gap-2">
+      <input type="number" id="plotWidth" placeholder="Width" class="border p-2 rounded w-1/2">
+      <input type="number" id="plotHeight" placeholder="Height" class="border p-2 rounded w-1/2">
+    </div>
+    <button onclick="drawFloorPlan()" 
+            class="mt-4 w-full bg-indigo-600 text-white font-semibold p-3 rounded-xl shadow hover:bg-indigo-700">
+      Generate Floor Plan
+    </button>
+  </div>
+
+  <!-- Canvas -->
+  <canvas id="floorCanvas" width="600" height="400" class="fade-in"></canvas>
+
+  <!-- Instructions -->
+  <p class="mt-6 text-gray-600 text-center">💡 Coming soon: add rooms, stairs, lofts, and concealed wiring!</p>
+
+  <script>
+    const canvas = document.getElementById("floorCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function drawFloorPlan() {
+      const width = document.getElementById("plotWidth").value || 400;
+      const height = document.getElementById("plotHeight").value || 300;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw boundary
+      ctx.strokeStyle = "#1f2937";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(50, 50, width, height);
+
+      // Animate rooms (demo: Hall + Kitchen)
+      drawRoom("Hall", 60, 60, width/2 - 20, height/2 - 20, "#93c5fd");
+      drawRoom("Kitchen", width/2 + 40, 60, width/2 - 40, height/2 - 20, "#fca5a5");
+    }
+
+    function drawRoom(name, x, y, w, h, color) {
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 0.7;
+      ctx.fillRect(x, y, w, h);
+
+      ctx.globalAlpha = 1.0;
+      ctx.strokeStyle = "#111827";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, w, h);
+
+      ctx.font = "16px Arial";
+      ctx.fillStyle = "#111827";
+      ctx.fillText(name, x + w/2 - ctx.measureText(name).width/2, y + h/2);
+    }
+  </script>
+</body>
+</html>

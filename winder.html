@@ -3,337 +3,129 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Winder — Transformer Designer</title>
+<title>Winder — Transformer & Motor Designer</title>
 <style>
-  /* Premium dark slideshow-like animated background */
-  :root{--card:#0b1220;--muted:#95a3b8;--accent:#7c3aed;--glass:rgba(255,255,255,0.03);--glass-2:rgba(255,255,255,0.02);} 
-  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;color:#e6eef8;background:#07080b;}
-  .bg{
-    position:fixed;inset:0;z-index:-2;overflow:hidden;
-    background: linear-gradient(120deg,#06070a 0%, #071022 30%, #081026 55%, #0b0f1a 100%);
+  :root{
+    --card:#0b1220;--muted:#95a3b8;--accent:#7c3aed;--glass:rgba(255,255,255,0.03);
   }
-  /* Animated layered blobs/slideshow */
+  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;color:#e6eef8;background:#07080b;}
+
+  /* Background */
+  .bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background: linear-gradient(120deg,#06070a 0%, #071022 30%, #081026 55%, #0b0f1a 100%);}
   .blob{position:absolute;border-radius:40%;filter:blur(70px);opacity:0.6;mix-blend-mode:screen;animation:move 18s ease-in-out infinite;}
   .blob.b1{width:900px;height:600px;left:-10%;top:-10%;background:linear-gradient(90deg,#2b6ef6,#7c3aed);} 
   .blob.b2{width:650px;height:500px;right:-15%;top:5%;background:linear-gradient(90deg,#06b6d4,#06b6a4);animation-duration:22s;}
   .blob.b3{width:700px;height:700px;left:20%;bottom:-25%;background:linear-gradient(90deg,#f97316,#ef4444);animation-duration:26s;}
   @keyframes move{0%{transform:translateY(0) rotate(0deg) scale(1)}50%{transform:translateY(40px) rotate(18deg) scale(1.07)}100%{transform:translateY(0) rotate(0deg) scale(1)}}
-
-  /* Grid overlay */
   .overlay{position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px, transparent 1px);background-size:120px 120px;opacity:0.25}
 
-  /* App container */
+  /* Container */
   .app{max-width:1200px;margin:40px auto;padding:24px;display:grid;grid-template-columns:420px 1fr;gap:20px;}
 
-  /* Left panel */
+  /* Left Panel */
   .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);padding:18px;border-radius:14px;box-shadow:0 10px 30px rgba(2,6,23,0.6);} 
   .brand{display:flex;gap:12px;align-items:center;margin-bottom:12px}
   .logo{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#2b6ef6);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px}
   h1{margin:0;font-size:20px}
   .muted{color:var(--muted);font-size:13px}
 
+  /* Mode Selector */
+  .modes{display:flex;gap:8px;margin-bottom:12px}
+  .mode-btn{flex:1;padding:8px;border-radius:10px;border:none;cursor:pointer;font-weight:700;background:rgba(255,255,255,0.02);color:#e6eef8;}
+  .mode-btn.active{background:linear-gradient(90deg,#7c3aed,#2b6ef6);color:white;}
+
+  /* Forms */
   .form{margin-top:12px;display:grid;gap:10px}
+  .form-group{display:none;flex-direction:column;gap:10px}
+  .form-group.active{display:flex;}
   .row{display:flex;gap:8px}
   label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
   input,select{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#e6eef8;outline:none}
-  .small{font-size:12px;color:var(--muted)}
   .btn{padding:10px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,#7c3aed,#2b6ef6);color:white;font-weight:700;cursor:pointer}
   .ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:#e6eef8}
-  .actions{display:flex;gap:8px;margin-top:8px}
 
   /* Results */
   .results{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);}
   .r-row{display:flex;justify-content:space-between;padding:8px 4px;border-bottom:1px dashed rgba(255,255,255,0.02)}
   .r-row:last-child{border-bottom:none}
-  .ok{color:#7ee787}
 
-  /* Right panel - schematic & preview */
+  /* Right Panel */
   .preview{position:relative;padding:18px;border-radius:14px;min-height:520px;background:linear-gradient(180deg, rgba(8,13,23,0.55), rgba(4,6,10,0.4));border:1px solid rgba(255,255,255,0.03);}
   .schematic{display:flex;align-items:center;justify-content:center;height:380px}
   svg{max-width:100%;height:100%}
-  .info{margin-top:12px;display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-  .chip{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);}
 
   @media(max-width:980px){.app{grid-template-columns:1fr;}.schematic{height:300px}}
 </style>
 </head>
 <body>
-  <div class="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
-  <div class="overlay"></div>
+<div class="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="overlay"></div>
 
-  <div class="app">
-    <div class="panel">
-      <div class="brand"><div class="logo">W</div><div><h1>Winder — Transformer</h1><div class="muted">Beginner-friendly winding assistant • Transformer mode</div></div></div>
+<div class="app">
+  <div class="panel">
+    <div class="brand"><div class="logo">W</div><div><h1>Winder</h1><div class="muted">Multi-tool winding assistant</div></div></div>
 
-      <div class="form">
-        <div>
-          <label>Frequency (Hz)</label>
-          <input id="freq" type="number" placeholder="50" value="50">
-        </div>
-
-        <div class="row">
-          <div style="flex:1"><label>Primary Voltage Vp (V)</label><input id="vp" type="number" placeholder="e.g. 230"></div>
-          <div style="flex:1"><label>Secondary Voltage Vs (V)</label><input id="vs" type="number" placeholder="e.g. 12"></div>
-        </div>
-
-        <div class="row">
-          <div style="flex:1"><label>Primary Current Ip (A)</label><input id="ip" type="number" placeholder="e.g. 0.2"></div>
-          <div style="flex:1"><label>Secondary Current Is (A)</label><input id="is" type="number" placeholder="e.g. 2"></div>
-        </div>
-
-        <div class="row">
-          <div style="flex:1"><label>Primary Turns Tp (turns)</label><input id="tp" type="number" placeholder="optional"></div>
-          <div style="flex:1"><label>Secondary Turns Ts (turns)</label><input id="ts" type="number" placeholder="optional"></div>
-        </div>
-
-        <div class="row">
-          <div style="flex:1"><label>Core Area A (cm²)</label><input id="area" type="number" placeholder="e.g. 6"></div>
-          <div style="flex:1"><label>Bmax (T)</label><input id="bmax" type="number" placeholder="1.2" value="1.2"></div>
-        </div>
-
-        <div class="row">
-          <div style="flex:1"><label>Primary Wire Gauge (optional)</label><input id="gaugeP" placeholder="e.g. AWG20 or leave blank"></div>
-          <div style="flex:1"><label>Secondary Wire Gauge (optional)</label><input id="gaugeS" placeholder="e.g. AWG22 or leave blank"></div>
-        </div>
-
-        <div class="actions">
-          <button class="btn" onclick="calcAll()">Calculate</button>
-          <button class="btn ghost" onclick="resetAll()">Reset</button>
-        </div>
-
-        <div style="margin-top:12px" class="muted">Tip: enter any two or more independent parameters. The solver will compute the rest using transformer turns ratio, power balance, and EMF equation.</div>
-      </div>
-
-      <div style="margin-top:14px" class="results" id="results" hidden>
-        <!-- result rows injected -->
-      </div>
+    <!-- Mode Selector -->
+    <div class="modes">
+      <button class="mode-btn active" data-mode="transformer">Transformer</button>
+      <button class="mode-btn" data-mode="motor1">1-Phase Motor</button>
+      <button class="mode-btn" data-mode="motor3">3-Phase Motor</button>
     </div>
 
-    <div class="preview">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div style="color:#cfe9ff;font-weight:700">Animated Transformer Preview</div>
-        <div style="color:var(--muted);font-size:13px">Schematic updates from computed values</div>
-      </div>
+    <!-- Transformer Form -->
+    <div class="form-group active" id="form-transformer">
+      <div class="row"><div style="flex:1"><label>Primary Voltage Vp (V)</label><input id="vp" type="number"></div>
+      <div style="flex:1"><label>Secondary Voltage Vs (V)</label><input id="vs" type="number"></div></div>
+      <div class="row"><div style="flex:1"><label>Primary Current Ip (A)</label><input id="ip" type="number"></div>
+      <div style="flex:1"><label>Secondary Current Is (A)</label><input id="is" type="number"></div></div>
+      <button class="btn" onclick="calcAll()">Calculate Transformer</button>
+      <div class="results" id="results-transformer" hidden></div>
+    </div>
 
-      <div class="schematic" id="schematic">
-        <!-- SVG inserted -->
-        <svg viewBox="0 0 800 360" id="svg">
-          <defs>
-            <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#2b6ef6"/></linearGradient>
-          </defs>
+    <!-- 1-Phase Motor Form -->
+    <div class="form-group" id="form-motor1">
+      <div class="row"><div style="flex:1"><label>Voltage V (V)</label><input id="mv1_v" type="number"></div>
+      <div style="flex:1"><label>Power P (W)</label><input id="mv1_p" type="number"></div></div>
+      <div class="row"><div style="flex:1"><label>Frequency f (Hz)</label><input id="mv1_f" type="number" value="50"></div>
+      <div style="flex:1"><label>Speed n (rpm)</label><input id="mv1_n" type="number"></div></div>
+      <button class="btn" onclick="calcMotor1()">Calculate 1-Phase Motor</button>
+      <div class="results" id="results-motor1" hidden></div>
+    </div>
 
-          <!-- Core -->
-          <rect x="360" y="60" width="80" height="240" rx="14" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)"/>
-
-          <!-- Primary coil group -->
-          <g id="coilP" transform="translate(220,40)">
-            <rect x="-40" y="20" width="120" height="280" rx="12" fill="rgba(255,255,255,0.01)" stroke="rgba(255,255,255,0.03)"/>
-            <!-- turns will be drawn by JS -->
-          </g>
-
-          <!-- Secondary coil group -->
-          <g id="coilS" transform="translate(500,40)">
-            <rect x="-40" y="20" width="120" height="280" rx="12" fill="rgba(255,255,255,0.01)" stroke="rgba(255,255,255,0.03)"/>
-          </g>
-
-          <!-- Labels -->
-          <text id="labelVp" x="80" y="320" fill="#dbeafe" font-size="14">Vp: -- V</text>
-          <text id="labelVs" x="620" y="320" fill="#dbeafe" font-size="14">Vs: -- V</text>
-
-          <g id="animatedCurrent">
-            <!-- moving dots to indicate current -->
-          </g>
-        </svg>
-      </div>
-
-      <div class="info" id="infoPanel">
-        <div class="chip">Turns ratio: <strong id="ratio">-</strong></div>
-        <div class="chip">Estimated power: <strong id="power">-</strong></div>
-        <div class="chip">Primary suggested gauge: <strong id="sgp">-</strong></div>
-        <div class="chip">Secondary suggested gauge: <strong id="sgs">-</strong></div>
-      </div>
-
+    <!-- 3-Phase Motor Form -->
+    <div class="form-group" id="form-motor3">
+      <div class="row"><div style="flex:1"><label>Line Voltage V (V)</label><input id="mv3_v" type="number"></div>
+      <div style="flex:1"><label>Power P (W)</label><input id="mv3_p" type="number"></div></div>
+      <div class="row"><div style="flex:1"><label>Frequency f (Hz)</label><input id="mv3_f" type="number" value="50"></div>
+      <div style="flex:1"><label>Speed n (rpm)</label><input id="mv3_n" type="number"></div></div>
+      <button class="btn" onclick="calcMotor3()">Calculate 3-Phase Motor</button>
+      <div class="results" id="results-motor3" hidden></div>
     </div>
   </div>
 
+  <div class="preview">
+    <div class="schematic" id="schematic-preview">
+      <!-- Dynamic schematic per mode -->
+    </div>
+  </div>
+</div>
+
 <script>
-  // Utilities
-  const get = id => parseFloat(document.getElementById(id).value) || NaN;
-  const text = (id, v) => (document.getElementById(id).innerText = v);
-  const showResults = (rows) => {
-    const el = document.getElementById('results');
-    el.hidden = false;
-    el.innerHTML = rows.map(r=>`<div class="r-row"><div>${r.k}</div><div><strong>${r.v}</strong></div></div>`).join('');
-  }
+  // Mode selector logic
+  document.querySelectorAll('.mode-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const mode = btn.dataset.mode;
+      document.querySelectorAll('.form-group').forEach(f=>f.classList.remove('active'));
+      document.getElementById('form-'+mode).classList.add('active');
+      document.getElementById('schematic-preview').innerHTML = ''; // clear schematic
+    });
+  });
 
-  function resetAll(){ ['freq','vp','vs','ip','is','tp','ts','area','bmax','gaugeP','gaugeS'].forEach(id=>document.getElementById(id).value=''); document.getElementById('results').hidden=true; updateSVG({tp:0,ts:0}); }
-
-  // Simple suggested gauge mapping by current (A)
-  function suggestGauge(I){ if(!isFinite(I)) return '-'; I = Math.abs(I);
-    if(I<=0.5) return 'AWG26-28';
-    if(I<=2) return 'AWG22-24';
-    if(I<=6) return 'AWG18-20';
-    if(I<=11) return 'AWG16';
-    if(I<=20) return 'AWG12-14';
-    if(I<=30) return 'AWG10';
-    if(I<=45) return 'AWG8';
-    return 'AWG6 or thicker';
-  }
-
-  // EMF equation to compute turns from voltage: V = 4.44 * f * N * B * A
-  function turnsFromVoltage(V, f, B, A_cm2){
-    if(!isFinite(V) || !isFinite(f) || !isFinite(B) || !isFinite(A_cm2) || A_cm2<=0) return NaN;
-    const A = A_cm2 * 1e-4; // cm^2 to m^2
-    const N = V / (4.44 * f * B * A);
-    return N;
-  }
-
-  function calcAll(){
-    const f = get('freq');
-    const Vp = get('vp'); const Vs = get('vs');
-    const Ip = get('ip'); const Is = get('is');
-    let Tp = get('tp'); let Ts = get('ts');
-    const A = get('area'); const B = get('bmax');
-    const gaugeP = document.getElementById('gaugeP').value.trim();
-    const gaugeS = document.getElementById('gaugeS').value.trim();
-
-    // try to deduce turns ratio
-    let ratio = NaN;
-    if(isFinite(Vp) && isFinite(Vs) && Vs!==0) ratio = Vp / Vs;
-    else if(isFinite(Tp) && isFinite(Ts) && Ts!==0) ratio = Tp / Ts;
-    else if(isFinite(Is) && isFinite(Ip) && Ip!==0) ratio = Is / Ip;
-
-    // If turns missing but voltages and area provided, compute turns via EMF eq
-    if(!isFinite(Tp) && isFinite(Vp) && isFinite(f) && isFinite(B) && isFinite(A)) Tp = turnsFromVoltage(Vp,f,B,A);
-    if(!isFinite(Ts) && isFinite(Vs) && isFinite(f) && isFinite(B) && isFinite(A)) Ts = turnsFromVoltage(Vs,f,B,A);
-
-    // If ratio known and one of Tp/Ts unknown, fill
-    if(isFinite(ratio)){
-      if(!isFinite(Tp) && isFinite(Ts)) Tp = ratio * Ts;
-      if(!isFinite(Ts) && isFinite(Tp)) Ts = Tp / ratio;
-      if(!isFinite(Vp) && isFinite(Vs)) {
-        // Vp = ratio * Vs
-        document.getElementById('vp').value = (ratio * Vs).toFixed(3);
-      }
-      if(!isFinite(Vs) && isFinite(Vp)) {
-        document.getElementById('vs').value = (Vp / ratio).toFixed(3);
-      }
-    }
-
-    // If voltages known, compute ratio and relate turns
-    if(isFinite(Vp) && isFinite(Vs)) ratio = Vp / Vs;
-
-    // Currents via power balance: Vp*Ip = Vs*Is (approx)
-    // If Ip missing and Is & Vp & Vs known
-    if(!isFinite(Ip) && isFinite(Is) && isFinite(Vs) && isFinite(Vp)) Ip = (Vs * Is) / Vp;
-    if(!isFinite(Is) && isFinite(Ip) && isFinite(Vp) && isFinite(Vs)) Is = (Vp * Ip) / Vs;
-
-    // If ratio known and currents missing, Ip = Is / ratio
-    if(isFinite(ratio)){
-      if(!isFinite(Ip) && isFinite(Is)) Ip = Is / ratio;
-      if(!isFinite(Is) && isFinite(Ip)) Is = Ip * ratio;
-    }
-
-    // If turns known and voltages missing but area and EMF available, compute voltages
-    if(!isFinite(Vp) && isFinite(Tp) && isFinite(f) && isFinite(B) && isFinite(A)){
-      const A_m2 = A * 1e-4;
-      const Vcalc = 4.44 * f * Tp * B * A_m2;
-      document.getElementById('vp').value = Vcalc.toFixed(3);
-    }
-    if(!isFinite(Vs) && isFinite(Ts) && isFinite(f) && isFinite(B) && isFinite(A)){
-      const Vcalc = 4.44 * f * Ts * B * (A * 1e-4);
-      document.getElementById('vs').value = Vcalc.toFixed(3);
-    }
-
-    // recompute live values from fields after filling
-    const Vp2 = get('vp'); const Vs2 = get('vs'); const Ip2 = Ip; const Is2 = Is; const Tp2 = Tp; const Ts2 = Ts;
-
-    // compute approximate power (VA)
-    let power = NaN;
-    if(isFinite(Vs2) && isFinite(Is2)) power = Vs2 * Is2;
-    else if(isFinite(Vp2) && isFinite(Ip2)) power = Vp2 * Ip2;
-
-    // Suggested gauges if not provided
-    const sgp = gaugeP || suggestGauge(Ip2);
-    const sgs = gaugeS || suggestGauge(Is2);
-
-    // Final ratio display
-    const finalRatio = isFinite(Vp2) && isFinite(Vs2) && Vs2!==0 ? (Vp2/Vs2) : (isFinite(Tp2) && isFinite(Ts2) && Ts2!==0 ? (Tp2/Ts2) : NaN);
-
-    // Prepare result rows
-    const rows = [];
-    rows.push({k:'Primary Voltage Vp (V)', v: isFinite(Vp2)?Vp2.toFixed(3):'—'});
-    rows.push({k:'Secondary Voltage Vs (V)', v: isFinite(Vs2)?Vs2.toFixed(3):'—'});
-    rows.push({k:'Primary Current Ip (A)', v: isFinite(Ip2)?ipDisplay(Ip2):'—'});
-    rows.push({k:'Secondary Current Is (A)', v: isFinite(Is2)?ipDisplay(Is2):'—'});
-    rows.push({k:'Primary Turns Tp', v: isFinite(Tp2)?Math.round(Tp2):'—'});
-    rows.push({k:'Secondary Turns Ts', v: isFinite(Ts2)?Math.round(Ts2):'—'});
-    rows.push({k:'Turns ratio (Np:Ns)', v: isFinite(finalRatio)? finalRatio.toFixed(3) : '—'});
-    rows.push({k:'Estimated VA', v: isFinite(power)? power.toFixed(3)+' VA' : '—'});
-    rows.push({k:'Core Area (cm²)', v: isFinite(A)?A:'—'});
-    rows.push({k:'Bmax (T)', v: isFinite(B)?B:'—'});
-    rows.push({k:'Suggested Primary gauge', v: sgp});
-    rows.push({k:'Suggested Secondary gauge', v: sgs});
-
-    showResults(rows);
-
-    // update info chips
-    text('ratio', isFinite(finalRatio)? finalRatio.toFixed(3):'-');
-    text('power', isFinite(power)? (power.toFixed(2)+' VA') : '-');
-    text('sgp', sgp); text('sgs', sgs);
-
-    // update animated svg schematic
-    updateSVG({tp:Tp2||0, ts:Ts2||0, vp:Vp2, vs:Vs2, ip:Ip2, is:Is2});
-  }
-
-  function ipDisplay(i){ return isFinite(i)? Math.abs(i).toFixed(3)+' A' : '—'; }
-
-  // Draw coil turns as curves inside coil containers; number scaled for readability
-  function updateSVG({tp,ts,vp,vs,ip,is}){
-    const coilP = document.getElementById('coilP');
-    const coilS = document.getElementById('coilS');
-    const svg = document.getElementById('svg');
-
-    // Clear previous turns
-    // remove existing 'turn' paths
-    [...coilP.querySelectorAll('.turn')].forEach(n=>n.remove());
-    [...coilS.querySelectorAll('.turn')].forEach(n=>n.remove());
-
-    // Normalize turn counts for display (cap)
-    const displayTp = Math.min(60, Math.max(0, Math.round(tp || 0)));
-    const displayTs = Math.min(60, Math.max(0, Math.round(ts || 0)));
-
-    // draw primary turns as arcs
-    for(let i=0;i<displayTp;i++){
-      const y = 30 + (i * (240/displayTp));
-      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-      path.setAttribute('d', `M-20 ${y} C20 ${y-8}, 60 ${y+8}, 100 ${y}`);
-      path.setAttribute('stroke', 'url(#g1)'); path.setAttribute('stroke-width','2'); path.setAttribute('fill','none'); path.setAttribute('class','turn'); coilP.appendChild(path);
-    }
-    for(let i=0;i<displayTs;i++){
-      const y = 30 + (i * (240/displayTs));
-      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-      path.setAttribute('d', `M-20 ${y} C20 ${y+8}, 60 ${y-8}, 100 ${y}`);
-      path.setAttribute('stroke', '#ffcf6b'); path.setAttribute('stroke-width','2'); path.setAttribute('fill','none'); path.setAttribute('class','turn'); coilS.appendChild(path);
-    }
-
-    // update labels
-    text('labelVp', 'Vp: ' + (isFinite(vp)? vp.toFixed(2) + ' V' : '-- V'));
-    text('labelVs', 'Vs: ' + (isFinite(vs)? vs.toFixed(2) + ' V' : '-- V'));
-
-    // animated current dots (visual only)
-    const animated = document.getElementById('animatedCurrent');
-    animated.innerHTML = '';
-    if(isFinite(ip)){
-      const g1 = document.createElementNS('http://www.w3.org/2000/svg','g');
-      for(let i=0;i<6;i++){
-        const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
-        c.setAttribute('cx', 80 + (i*6)); c.setAttribute('cy', 40 + ((i%2)*8)); c.setAttribute('r', 3);
-        c.setAttribute('fill','rgba(124,58,237,0.9)'); g1.appendChild(c);
-      }
-      animated.appendChild(g1);
-    }
-  }
+  function calcAll(){ alert("Transformer calculation will run here"); }
+  function calcMotor1(){ alert("1-Phase Motor calculation will run here"); }
+  function calcMotor3(){ alert("3-Phase Motor calculation will run here"); }
 </script>
 </body>
 </html>

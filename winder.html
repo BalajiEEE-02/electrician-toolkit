@@ -2,112 +2,226 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Winder — Transformer & Motor Designer</title>
 <style>
-:root{
-  --card:#0b1220;--muted:#95a3b8;--accent:#7c3aed;--glass:rgba(255,255,255,0.03);
-}
-html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;color:#e6eef8;background:#07080b;}
+  /* Premium Dark Animated Background */
+  :root{
+    --card:#0b1220;--muted:#95a3b8;--accent:#7c3aed;--glass:rgba(255,255,255,0.03);--glass-2:rgba(255,255,255,0.02);
+  }
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#e6eef8;background:#07080b;}
+  .bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:linear-gradient(120deg,#06070a 0%, #071022 30%, #081026 55%, #0b0f1a 100%);}
+  .blob{position:absolute;border-radius:40%;filter:blur(70px);opacity:0.6;mix-blend-mode:screen;animation:move 18s ease-in-out infinite;}
+  .blob.b1{width:900px;height:600px;left:-10%;top:-10%;background:linear-gradient(90deg,#2b6ef6,#7c3aed);} 
+  .blob.b2{width:650px;height:500px;right:-15%;top:5%;background:linear-gradient(90deg,#06b6d4,#06b6a4);animation-duration:22s;}
+  .blob.b3{width:700px;height:700px;left:20%;bottom:-25%;background:linear-gradient(90deg,#f97316,#ef4444);animation-duration:26s;}
+  @keyframes move{0%{transform:translateY(0) rotate(0deg) scale(1)}50%{transform:translateY(40px) rotate(18deg) scale(1.07)}100%{transform:translateY(0) rotate(0deg) scale(1)}}
+  .overlay{position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px, transparent 1px);background-size:120px 120px;opacity:0.25}
 
-/* Animated background */
-.bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background: linear-gradient(120deg,#06070a 0%, #071022 30%, #081026 55%, #0b0f1a 100%);}
-.blob{position:absolute;border-radius:40%;filter:blur(70px);opacity:0.6;mix-blend-mode:screen;animation:move 18s ease-in-out infinite;}
-.blob.b1{width:900px;height:600px;left:-10%;top:-10%;background:linear-gradient(90deg,#2b6ef6,#7c3aed);}
-.blob.b2{width:650px;height:500px;right:-15%;top:5%;background:linear-gradient(90deg,#06b6d4,#06b6a4);animation-duration:22s;}
-.blob.b3{width:700px;height:700px;left:20%;bottom:-25%;background:linear-gradient(90deg,#f97316,#ef4444);animation-duration:26s;}
-@keyframes move{0%{transform:translateY(0) rotate(0deg) scale(1)}50%{transform:translateY(40px) rotate(18deg) scale(1.07)}100%{transform:translateY(0) rotate(0deg) scale(1)}}
-.overlay{position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px, transparent 1px);background-size:120px 120px;opacity:0.25}
-
-/* App container */
-.app{max-width:1200px;margin:40px auto;padding:24px;display:grid;grid-template-columns:420px 1fr;gap:20px;}
-.panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);padding:18px;border-radius:14px;box-shadow:0 10px 30px rgba(2,6,23,0.6);}
-.brand{display:flex;gap:12px;align-items:center;margin-bottom:12px}
-.logo{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#2b6ef6);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px}
-h1{margin:0;font-size:20px}
-.muted{color:var(--muted);font-size:13px}
-
-/* Mode selector */
-.modes{display:flex;gap:8px;margin-bottom:12px}
-.mode-btn{flex:1;padding:8px;border-radius:10px;border:none;cursor:pointer;font-weight:700;background:rgba(255,255,255,0.02);color:#e6eef8;}
-.mode-btn.active{background:linear-gradient(90deg,#7c3aed,#2b6ef6);color:white;}
-
-/* Forms */
-.form{margin-top:12px;display:grid;gap:10px}
-.form-group{display:none;flex-direction:column;gap:10px}
-.form-group.active{display:flex;}
-.row{display:flex;gap:8px}
-label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
-input,select{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#e6eef8;outline:none}
-.btn{padding:10px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,#7c3aed,#2b6ef6);color:white;font-weight:700;cursor:pointer}
-.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:#e6eef8}
-
-/* Results */
-.results{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);}
-.r-row{display:flex;justify-content:space-between;padding:8px 4px;border-bottom:1px dashed rgba(255,255,255,0.02)}
-.r-row:last-child{border-bottom:none}
-
-/* Right Panel */
-.preview{position:relative;padding:18px;border-radius:14px;min-height:520px;background:linear-gradient(180deg, rgba(8,13,23,0.55), rgba(4,6,10,0.4));border:1px solid rgba(255,255,255,0.03);}
-.schematic{display:flex;align-items:center;justify-content:center;height:380px}
-svg{max-width:100%;height:100%}
-
-@media(max-width:980px){.app{grid-template-columns:1fr;}.schematic{height:300px}}
+  /* App layout */
+  .app{max-width:1200px;margin:40px auto;padding:24px;display:grid;grid-template-columns:420px 1fr;gap:20px;}
+  .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);padding:18px;border-radius:14px;box-shadow:0 10px 30px rgba(2,6,23,0.6);} 
+  .brand{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+  .logo{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#2b6ef6);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px}
+  h1{margin:0;font-size:20px}
+  .muted{color:var(--muted);font-size:13px}
+  .form{margin-top:12px;display:grid;gap:10px}
+  .row{display:flex;gap:8px}
+  label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+  input,select{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#e6eef8;outline:none}
+  .small{font-size:12px;color:var(--muted)}
+  .btn{padding:10px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,#7c3aed,#2b6ef6);color:white;font-weight:700;cursor:pointer}
+  .ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:#e6eef8}
+  .actions{display:flex;gap:8px;margin-top:8px}
+  .results{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);}
+  .r-row{display:flex;justify-content:space-between;padding:8px 4px;border-bottom:1px dashed rgba(255,255,255,0.02)}
+  .r-row:last-child{border-bottom:none}
+  .ok{color:#7ee787}
+  .preview{position:relative;padding:18px;border-radius:14px;min-height:520px;background:linear-gradient(180deg, rgba(8,13,23,0.55), rgba(4,6,10,0.4));border:1px solid rgba(255,255,255,0.03);}
+  .schematic{display:flex;align-items:center;justify-content:center;height:380px}
+  svg{max-width:100%;height:100%}
+  .info{margin-top:12px;display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .chip{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);}
+  @media(max-width:980px){.app{grid-template-columns:1fr;}.schematic{height:300px}}
 </style>
 </head>
 <body>
-<div class="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
-<div class="overlay"></div>
+  <div class="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+  <div class="overlay"></div>
 
-<div class="app">
-  <div class="panel">
-    <div class="brand"><div class="logo">W</div><div><h1>Winder</h1><div class="muted">Professional Winding Assistant</div></div></div>
+  <div class="app">
+    <div class="panel">
+      <div class="brand"><div class="logo">W</div><div><h1>Winder — Motor Designer</h1><div class="muted">1-Phase & 3-Phase Induction Motor Winding</div></div></div>
 
-    <!-- Mode Selector -->
-    <div class="modes">
-      <button class="mode-btn active" data-mode="transformer">Transformer</button>
-      <button class="mode-btn" data-mode="motor1">1-Phase Motor</button>
-      <button class="mode-btn" data-mode="motor3">3-Phase Motor</button>
+      <div class="form">
+        <div>
+          <label>Motor Type</label>
+          <select id="motorType">
+            <option value="1">1-Phase</option>
+            <option value="3">3-Phase</option>
+          </select>
+        </div>
+        <div class="row">
+          <div style="flex:1"><label>Voltage (V)</label><input id="mv" placeholder="e.g. 230 or 400"></div>
+          <div style="flex:1"><label>Power (kW)</label><input id="mp" placeholder="e.g. 0.5"></div>
+        </div>
+        <div class="row">
+          <div style="flex:1"><label>Frequency (Hz)</label><input id="mfreq" placeholder="50" value="50"></div>
+          <div style="flex:1"><label>Speed (RPM)</label><input id="mn" placeholder="1400"></div>
+        </div>
+        <div class="row">
+          <div style="flex:1"><label>Number of Poles (optional)</label><input id="mpoles" placeholder="e.g. 4"></div>
+          <div style="flex:1"><label>Efficiency (%)</label><input id="meff" placeholder="85" value="85"></div>
+        </div>
+        <div class="row">
+          <div style="flex:1"><label>Power Factor</label><input id="mpf" placeholder="0.8" value="0.8"></div>
+          <div style="flex:1"><label>Wire Gauge (optional)</label><input id="mgauge" placeholder="AWG"></div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" onclick="calcMotor()">Calculate</button>
+          <button class="btn ghost" onclick="resetMotor()">Reset</button>
+        </div>
+
+        <div style="margin-top:12px" class="muted">Enter any 2 or more independent parameters. Solver will compute remaining motor winding & current details.</div>
+      </div>
+
+      <div style="margin-top:14px" class="results" id="mresults" hidden></div>
     </div>
 
-    <!-- Transformer Form -->
-    <div class="form-group active" id="form-transformer">
-      <!-- Inputs as before -->
-    </div>
-
-    <!-- 1-Phase Motor Form -->
-    <div class="form-group" id="form-motor1">
-      <!-- Voltage, Power, Frequency, RPM, optional poles -->
-    </div>
-
-    <!-- 3-Phase Motor Form -->
-    <div class="form-group" id="form-motor3">
-      <!-- Line Voltage, Power, Frequency, RPM, optional poles -->
+    <div class="preview">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="color:#cfe9ff;font-weight:700">Animated Motor Preview</div>
+        <div style="color:var(--muted);font-size:13px">Schematic updates from computed values</div>
+      </div>
+      <div class="schematic" id="mschematic">
+        <svg viewBox="0 0 800 360" id="msvg">
+          <circle cx="400" cy="180" r="80" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="4"/>
+          <g id="stator"></g>
+          <g id="rotor"></g>
+          <g id="currentDots"></g>
+        </svg>
+      </div>
+      <div class="info" id="minfoPanel">
+        <div class="chip">Current (A): <strong id="mcur">-</strong></div>
+        <div class="chip">Torque (Nm): <strong id="mtorque">-</strong></div>
+        <div class="chip">Estimated VA: <strong id="mva">-</strong></div>
+        <div class="chip">Suggested Gauge: <strong id="msgauge">-</strong></div>
+      </div>
     </div>
   </div>
-
-  <div class="preview">
-    <div class="schematic" id="schematic-preview">
-      <!-- Dynamic schematic updates per mode -->
-    </div>
-  </div>
-</div>
 
 <script>
-  document.querySelectorAll('.mode-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      const mode = btn.dataset.mode;
-      document.querySelectorAll('.form-group').forEach(f=>f.classList.remove('active'));
-      document.getElementById('form-'+mode).classList.add('active');
-      document.getElementById('schematic-preview').innerHTML = '';
-    });
-  });
+  function resetMotor(){
+    ['mv','mp','mfreq','mn','mpoles','meff','mpf','mgauge'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('mresults').hidden=true;
+    document.getElementById('stator').innerHTML='';
+    document.getElementById('rotor').innerHTML='';
+    document.getElementById('currentDots').innerHTML='';
+    ['mcur','mtorque','mva','msgauge'].forEach(id=>document.getElementById(id).innerText='-');
+  }
 
-  function calcAll(){ alert("Transformer calculation placeholder"); }
-  function calcMotor1(){ alert("1-Phase Motor calculation placeholder"); }
-  function calcMotor3(){ alert("3-Phase Motor calculation placeholder"); }
+  function suggestGauge(I){
+    if(!isFinite(I)) return '-'; I = Math.abs(I);
+    if(I<=0.5) return 'AWG26-28';
+    if(I<=2) return 'AWG22-24';
+    if(I<=6) return 'AWG18-20';
+    if(I<=11) return 'AWG16';
+    if(I<=20) return 'AWG12-14';
+    if(I<=30) return 'AWG10';
+    if(I<=45) return 'AWG8';
+    return 'AWG6 or thicker';
+  }
+
+  function calcMotor(){
+    const type = document.getElementById('motorType').value;
+    let V = parseFloat(document.getElementById('mv').value);
+    let PkW = parseFloat(document.getElementById('mp').value);
+    const f = parseFloat(document.getElementById('mfreq').value)||50;
+    const N = parseFloat(document.getElementById('mn').value);
+    const poles = parseFloat(document.getElementById('mpoles').value)||0;
+    const eff = parseFloat(document.getElementById('meff').value)||0.85;
+    const pf = parseFloat(document.getElementById('mpf').value)||0.8;
+    const gauge = document.getElementById('mgauge').value.trim();
+
+    // calculate current
+    let I = NaN;
+    let P = PkW*1000;
+    if(type=='1' && V && P) I = P / (V * eff * pf);
+    else if(type=='3' && V && P) I = P / (Math.sqrt(3) * V * eff * pf);
+
+    // calculate torque
+    let T = NaN;
+    if(P && N) T = 9.55 * PkW *1000 / N;
+
+    // VA
+    let VA = P;
+
+    // Suggested gauge
+    let sg = gauge || suggestGauge(I);
+
+    // Display results
+    const rows = [
+      {k:'Voltage (V)', v: V||'—'},
+      {k:'Power (kW)', v: PkW||'—'},
+      {k:'Frequency (Hz)', v: f||'—'},
+      {k:'Speed (RPM)', v: N||'—'},
+      {k:'Poles', v: poles||'—'},
+      {k:'Efficiency', v: eff},
+      {k:'Power Factor', v: pf},
+      {k:'Current (A)', v: isFinite(I)?I.toFixed(3):'—'},
+      {k:'Torque (Nm)', v: isFinite(T)?T.toFixed(2):'—'},
+      {k:'Estimated VA', v: isFinite(VA)?VA.toFixed(2)+' VA':'—'},
+      {k:'Suggested Wire Gauge', v: sg}
+    ];
+    const el = document.getElementById('mresults');
+    el.hidden=false;
+    el.innerHTML = rows.map(r=>`<div class="r-row"><div>${r.k}</div><div><strong>${r.v}</strong></div></div>`).join('');
+
+    // Update info chips
+    document.getElementById('mcur').innerText = isFinite(I)?I.toFixed(3)+' A':'-';
+    document.getElementById('mtorque').innerText = isFinite(T)?T.toFixed(2)+' Nm':'-';
+    document.getElementById('mva').innerText = isFinite(VA)?VA.toFixed(2)+' VA':'-';
+    document.getElementById('msgauge').innerText = sg;
+
+    // Update animated schematic (stator & rotor)
+    drawMotor(I);
+  }
+
+  function drawMotor(I){
+    const stator = document.getElementById('stator');
+    const rotor = document.getElementById('rotor');
+    const dots = document.getElementById('currentDots');
+    stator.innerHTML=''; rotor.innerHTML=''; dots.innerHTML='';
+
+    // Draw stator windings
+    for(let i=0;i<12;i++){
+      let angle = (i/12)*360;
+      const x = 400 + 100*Math.cos(angle*Math.PI/180);
+      const y = 180 + 100*Math.sin(angle*Math.PI/180);
+      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx',x); c.setAttribute('cy',y); c.setAttribute('r',6);
+      c.setAttribute('fill','rgba(124,58,237,0.9)');
+      stator.appendChild(c);
+    }
+    // Rotor
+    const r = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    r.setAttribute('cx',400); r.setAttribute('cy',180); r.setAttribute('r',40);
+    r.setAttribute('fill','rgba(255,255,255,0.05)');
+    r.setAttribute('stroke','rgba(255,255,255,0.06)');
+    rotor.appendChild(r);
+
+    // Animated current dots
+    if(isFinite(I)){
+      for(let i=0;i<6;i++){
+        const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        c.setAttribute('cx', 400 + Math.cos(i)*60); c.setAttribute('cy', 180 + Math.sin(i)*60);
+        c.setAttribute('r',3);
+        c.setAttribute('fill','rgba(255,205,107,0.9)');
+        dots.appendChild(c);
+      }
+    }
+  }
 </script>
 </body>
 </html>

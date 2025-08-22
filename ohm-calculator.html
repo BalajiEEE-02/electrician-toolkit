@@ -1,36 +1,441 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Ohm's Law Calculator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚡ Premium Ohm's Law & Resistor Designer</title>
   <style>
-    body { font-family: Arial; padding: 20px; background: #f8f8f8; }
-    input, button { padding: 10px; margin: 5px; }
+    :root{
+      --card-bg: rgba(255,255,255,0.12);
+      --border: rgba(255,255,255,0.25);
+      --text: #0f172a;
+      --muted: #334155;
+      --ok: #10b981;
+      --warn: #f59e0b;
+      --bad: #ef4444;
+      --shadow: 0 20px 35px rgba(0,0,0,0.18);
+    }
+
+    /* --- Unique Animated Gradient Background --- */
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      min-height:100dvh; display:flex; align-items:flex-start; justify-content:center; padding:32px;
+      background: radial-gradient(80vmax 80vmax at 15% 20%, #e0f2fe 0%, transparent 40%),
+                  radial-gradient(70vmax 70vmax at 85% 10%, #fee2e2 0%, transparent 45%),
+                  radial-gradient(60vmax 60vmax at 80% 90%, #dcfce7 0%, transparent 45%),
+                  linear-gradient(135deg, #f5f7fb 0%, #eef2ff 100%);
+      background-attachment: fixed;
+    }
+
+    /* Soft grid overlay for premium feel */
+    body::before{
+      content:""; position:fixed; inset:0; pointer-events:none;
+      background-image: linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+      background-size: 28px 28px; mix-blend-mode: multiply; opacity:.35;
+    }
+
+    .app{ width: min(1100px, 100%); position:relative; z-index:1; }
+
+    .header{
+      display:flex; gap:16px; align-items:center; justify-content:space-between; margin-bottom:20px;
+    }
+
+    .title{
+      display:flex; align-items:center; gap:12px;
+      padding:14px 18px; border-radius:16px; backdrop-filter: blur(10px);
+      background: var(--card-bg); border:1px solid var(--border); box-shadow: var(--shadow);
+    }
+    .title h1{ margin:0; font-size: clamp(20px, 3vw, 28px); letter-spacing:.2px; }
+    .title small{ color: var(--muted); display:block; }
+
+    .card{
+      background: var(--card-bg); border:1px solid var(--border); border-radius:20px; box-shadow: var(--shadow);
+      padding:16px; backdrop-filter: blur(10px);
+    }
+
+    .grid{ display:grid; gap:16px; }
+    .grid.cols-2{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .grid.cols-3{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+
+    @media (max-width: 900px){ .grid.cols-3{ grid-template-columns: 1fr; } }
+    @media (max-width: 700px){ .grid.cols-2{ grid-template-columns: 1fr; } }
+
+    .input{
+      display:flex; flex-direction:column; gap:8px; padding:12px; border-radius:14px; border:1px dashed var(--border);
+      background: rgba(255,255,255,0.55);
+    }
+    .input label{ font-size:13px; color: var(--muted); }
+    .input input, .input select{ padding:12px 12px; border-radius:12px; border:1px solid #e2e8f0; outline:none; font-size:14px; background:white; }
+    .input input:focus, .input select:focus{ border-color:#6366f1; box-shadow: 0 0 0 4px rgba(99,102,241,.15); }
+    .unit{ color:#475569; font-size:12px; }
+
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; }
+    .btn{ border:none; padding:12px 16px; border-radius:12px; font-weight:600; cursor:pointer; box-shadow: var(--shadow); }
+    .btn.primary{ background:#6366f1; color:white; }
+    .btn.ghost{ background:white; color:#111827; border:1px solid #e5e7eb; }
+
+    .result{ background:white; border:1px solid #e5e7eb; border-radius:16px; padding:12px; }
+    .result-row{ display:flex; justify-content:space-between; padding:8px 4px; border-bottom:1px dashed #e5e7eb; }
+    .result-row:last-child{ border-bottom:none; }
+    .status{ font-size:12px; padding:4px 8px; border-radius:999px; }
+    .ok{ background:#d1fae5; color:#065f46; }
+    .warn{ background:#fef3c7; color:#854d0e; }
+    .bad{ background:#fee2e2; color:#991b1b; }
+
+    .subtle{ color: var(--muted); font-size:12px; }
+    .section-title{ margin: 6px 0 12px; font-size: 18px; }
+
+    .tabs{ display:flex; gap:8px; margin: 8px 0 16px; }
+    .tab{ padding:10px 14px; border-radius:999px; border:1px solid var(--border); background:white; cursor:pointer; font-weight:600; }
+    .tab.active{ background:#111827; color:white; border-color:#111827; }
+
+    .footnote{ font-size:12px; color:#475569; margin-top:6px; }
+    .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    @media (max-width: 700px){ .two-col{ grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-  <h1>⚡ Ohm's Law Calculator</h1>
-  <p>Enter any two values:</p>
-  <input id="voltage" placeholder="Voltage (V)">
-  <input id="current" placeholder="Current (I)">
-  <input id="resistance" placeholder="Resistance (Ω)">
-  <br><br>
-  <button onclick="calculate()">Calculate</button>
-  <p id="result"></p>
+  <div class="app">
+    <div class="header">
+      <div class="title">
+        <div style="font-size:26px">⚡</div>
+        <div>
+          <h1>Ohm's Law & Resistor Designer</h1>
+          <small>Enter any two values to solve the rest • Includes Series Dropper, Voltage Divider, and Series/Parallel helpers</small>
+        </div>
+      </div>
+      <div class="card" style="display:flex; align-items:center; gap:10px">
+        <div class="input" style="border:none; background:transparent; padding:0">
+          <label>Source Type</label>
+          <select id="sourceType">
+            <option value="DC">DC (use steady/RMS values)</option>
+            <option value="AC">AC (RMS, purely resistive)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" data-tab="ohm">Ohm's Law</button>
+      <button class="tab" data-tab="series">Series Voltage Dropper</button>
+      <button class="tab" data-tab="divider">Voltage Divider</button>
+      <button class="tab" data-tab="rsp">Series/Parallel Target</button>
+    </div>
+
+    <!-- OHM'S LAW CARD -->
+    <div class="card tab-panel" id="tab-ohm">
+      <div class="section-title">Ohm's Law Solver</div>
+      <div class="grid cols-3">
+        <div class="input">
+          <label>Voltage V (volts)</label>
+          <input id="ohmV" type="number" step="any" placeholder="e.g. 12" />
+        </div>
+        <div class="input">
+          <label>Current I (amps)</label>
+          <input id="ohmI" type="number" step="any" placeholder="e.g. 0.25" />
+        </div>
+        <div class="input">
+          <label>Resistance R (ohms)</label>
+          <input id="ohmR" type="number" step="any" placeholder="e.g. 48" />
+        </div>
+      </div>
+      <div class="actions" style="margin-top:10px">
+        <button class="btn primary" onclick="solveOhm()">Calculate</button>
+        <button class="btn ghost" onclick="resetOhm()">Reset</button>
+      </div>
+      <div id="ohmOut" class="result" style="margin-top:12px; display:none"></div>
+      <div class="footnote">Tip: Provide any two among V, I, R. Power is computed as P = V × I.</div>
+    </div>
+
+    <!-- SERIES DROPPER CARD -->
+    <div class="card tab-panel" id="tab-series" style="display:none">
+      <div class="section-title">Series Voltage Dropper (to reduce from source voltage to a lower load voltage)</div>
+      <div class="grid cols-3">
+        <div class="input">
+          <label>Source Voltage Vs (V)</label>
+          <input id="sVs" type="number" step="any" placeholder="e.g. 12" />
+        </div>
+        <div class="input">
+          <label>Desired Load Voltage Vout (V)</label>
+          <input id="sVout" type="number" step="any" placeholder="e.g. 3" />
+        </div>
+        <div class="input">
+          <label>Load Resistance RL (Ω) <span class="subtle">(optional if Iload given)</span></label>
+          <input id="sRL" type="number" step="any" placeholder="e.g. 10" />
+        </div>
+        <div class="input">
+          <label>Desired Load Current Iload (A) <span class="subtle">(optional if RL given)</span></label>
+          <input id="sIload" type="number" step="any" placeholder="e.g. 0.3" />
+        </div>
+        <div class="input">
+          <label>Safety Margin on Power (×)</label>
+          <input id="sMargin" type="number" step="any" placeholder="e.g. 1.5" value="1.5" />
+        </div>
+      </div>
+      <div class="actions" style="margin-top:10px">
+        <button class="btn primary" onclick="calcSeriesDropper()">Calculate</button>
+        <button class="btn ghost" onclick="resetSeries()">Reset</button>
+      </div>
+      <div id="seriesOut" class="result" style="margin-top:12px; display:none"></div>
+      <div class="footnote">Note: A simple series resistor works only if the load current is fairly constant. For variable loads, use a regulator.</div>
+    </div>
+
+    <!-- VOLTAGE DIVIDER CARD -->
+    <div class="card tab-panel" id="tab-divider" style="display:none">
+      <div class="section-title">Voltage Divider Designer (R1 top, R2 bottom)</div>
+      <div class="grid cols-3">
+        <div class="input">
+          <label>Source Voltage Vs (V)</label>
+          <input id="dVs" type="number" step="any" placeholder="e.g. 12" />
+        </div>
+        <div class="input">
+          <label>Target Vout (no-load) (V)</label>
+          <input id="dVout" type="number" step="any" placeholder="e.g. 3" />
+        </div>
+        <div class="input">
+          <label>Preferred Divider Current Idiv (A) <span class="subtle">(or give Rt / R1 / R2)</span></label>
+          <input id="dIdiv" type="number" step="any" placeholder="e.g. 0.005" />
+        </div>
+        <div class="input">
+          <label>Total Divider Resistance Rt = R1+R2 (Ω)</label>
+          <input id="dRt" type="number" step="any" placeholder="e.g. 2400" />
+        </div>
+        <div class="input">
+          <label>Choose R1 (Ω)</label>
+          <input id="dR1" type="number" step="any" placeholder="optional" />
+        </div>
+        <div class="input">
+          <label>Choose R2 (Ω)</label>
+          <input id="dR2" type="number" step="any" placeholder="optional" />
+        </div>
+        <div class="input">
+          <label>Load Resistance RL (Ω) <span class="subtle">(optional, to estimate loaded Vout)</span></label>
+          <input id="dRL" type="number" step="any" placeholder="e.g. 100" />
+        </div>
+      </div>
+      <div class="actions" style="margin-top:10px">
+        <button class="btn primary" onclick="calcDivider()">Design</button>
+        <button class="btn ghost" onclick="resetDivider()">Reset</button>
+      </div>
+      <div id="dividerOut" class="result" style="margin-top:12px; display:none"></div>
+      <div class="footnote">Tip: With a load (RL), the effective lower leg becomes R2 || RL, which reduces Vout. Pick divider current ≫ load current to minimize error.</div>
+    </div>
+
+    <!-- SERIES / PARALLEL TARGET CARD -->
+    <div class="card tab-panel" id="tab-rsp" style="display:none">
+      <div class="section-title">Series & Parallel Target Resistance Helper</div>
+      <div class="grid cols-3">
+        <div class="input">
+          <label>Known Resistor R1 (Ω)</label>
+          <input id="tR1" type="number" step="any" placeholder="e.g. 220" />
+        </div>
+        <div class="input">
+          <label>Desired Total Resistance Rt (Ω)</label>
+          <input id="tRt" type="number" step="any" placeholder="e.g. 100" />
+        </div>
+      </div>
+      <div class="actions" style="margin-top:10px">
+        <button class="btn primary" onclick="calcSeriesParallelTarget()">Calculate</button>
+        <button class="btn ghost" onclick="resetTarget()">Reset</button>
+      </div>
+      <div id="rspOut" class="result" style="margin-top:12px; display:none"></div>
+      <div class="footnote">Parallel only possible if Rt < R1. Series only if Rt ≥ R1.</div>
+    </div>
+
+    <div class="footnote" style="margin-top:16px">⚠️ AC option assumes purely resistive loads using RMS values (no reactance). Always verify resistor power ratings with margin.</div>
+  </div>
 
   <script>
-    function calculate() {
-      let V = parseFloat(document.getElementById("voltage").value);
-      let I = parseFloat(document.getElementById("current").value);
-      let R = parseFloat(document.getElementById("resistance").value);
-      let result = "";
+    // --- Tab Logic ---
+    document.querySelectorAll('.tab').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+        btn.classList.add('active');
+        const key = btn.getAttribute('data-tab');
+        document.querySelectorAll('.tab-panel').forEach(p=>p.style.display = 'none');
+        document.getElementById('tab-'+key).style.display = '';
+      });
+    });
 
-      if (!isNaN(V) && !isNaN(I)) result = `Resistance = ${(V / I).toFixed(2)} Ω`;
-      else if (!isNaN(V) && !isNaN(R)) result = `Current = ${(V / R).toFixed(2)} A`;
-      else if (!isNaN(I) && !isNaN(R)) result = `Voltage = ${(I * R).toFixed(2)} V`;
-      else result = "Enter any two values.";
+    // --- Helpers ---
+    const N = (x) => Number.isFinite(x) ? x : NaN;
+    const rd = (x, d=4) => Number.isFinite(x) ? parseFloat(x.toFixed(d)) : NaN;
+    const ohm = (v,i,r) => ({ V:v, I:i, R:r, P: (N(v)*N(i)) });
 
-      document.getElementById("result").innerText = result;
+    const putRows = (elId, rows) => {
+      const el = document.getElementById(elId);
+      el.style.display = 'block';
+      el.innerHTML = rows.map(r=>`<div class="result-row"><div>${r.k}</div><div><strong>${r.v}</strong>${r.unit?` <span class='unit'>${r.unit}</span>`:''}</div></div>`).join('');
     }
+
+    const statusPill = (msg, type='ok') => `<span class="status ${type}">${msg}</span>`;
+
+    const parse = (id) => {
+      const v = parseFloat(document.getElementById(id).value);
+      return Number.isFinite(v) ? v : NaN;
+    }
+
+    const resetInputs = (ids) => ids.forEach(id=> document.getElementById(id).value = '');
+
+    // --- Ohm's Law ---
+    function solveOhm(){
+      const V = parse('ohmV');
+      const I = parse('ohmI');
+      const R = parse('ohmR');
+
+      let v=V, i=I, r=R;
+      const known = [!isNaN(V), !isNaN(I), !isNaN(R)].filter(Boolean).length;
+      if(known < 2){
+        putRows('ohmOut', [{k:'Status', v: statusPill('Enter any two among V, I, R', 'warn')}]);
+        return;
+      }
+      if(isNaN(v) && !isNaN(i) && !isNaN(r)) v = i * r;
+      if(isNaN(i) && !isNaN(v) && !isNaN(r)) i = v / r;
+      if(isNaN(r) && !isNaN(v) && !isNaN(i)) r = v / i;
+      const P = v*i;
+      putRows('ohmOut', [
+        {k:'Voltage (V)', v: rd(v)},
+        {k:'Current (A)', v: rd(i)},
+        {k:'Resistance (Ω)', v: rd(r)},
+        {k:'Power (W)', v: rd(P)}
+      ]);
+    }
+    function resetOhm(){ resetInputs(['ohmV','ohmI','ohmR']); document.getElementById('ohmOut').style.display='none'; }
+
+    // --- Series Voltage Dropper ---
+    function calcSeriesDropper(){
+      const Vs = parse('sVs');
+      const Vout = parse('sVout');
+      const RL = parse('sRL');
+      const Iload = parse('sIload');
+      const margin = parse('sMargin') || 1.25;
+
+      if([Vs, Vout].some(isNaN) || Vs <= Vout || Vout <= 0){
+        putRows('seriesOut', [{k:'Status', v: statusPill('Provide Vs > Vout > 0', 'bad')}]);
+        return;
+      }
+
+      let rl = RL, il = Iload;
+      if(isNaN(rl) && isNaN(il)){
+        putRows('seriesOut', [
+          {k:'Status', v: statusPill('Give either Load Resistance (RL) or Load Current (Iload)', 'warn')}
+        ]);
+        return;
+      }
+
+      if(isNaN(il) && !isNaN(rl)) il = Vout / rl;
+      if(isNaN(rl) && !isNaN(il)) rl = Vout / il;
+
+      const Rs = (Vs - Vout) / il;
+      const Ps = il*il*Rs; // power in series resistor
+      const Pload = il*il*rl;
+      const Isrc = il; // same as load current in series path
+      const eff = (Pload / (Ps + Pload)) * 100;
+      const suggest = `Use ≥ ${rd(Ps*margin)} W for series resistor`;
+
+      putRows('seriesOut', [
+        {k:'Series Resistor Rs (Ω)', v: rd(Rs)},
+        {k:'Load Resistance RL (Ω)', v: rd(rl)},
+        {k:'Load Current Iload (A)', v: rd(il)},
+        {k:'Source Current (A)', v: rd(Isrc)},
+        {k:'Power in Rs (W)', v: rd(Ps)},
+        {k:'Power in Load (W)', v: rd(Pload)},
+        {k:'Efficiency (%)', v: rd(eff)},
+        {k:'Power Rating Suggestion', v: suggest}
+      ]);
+    }
+    function resetSeries(){ resetInputs(['sVs','sVout','sRL','sIload','sMargin']); document.getElementById('seriesOut').style.display='none'; }
+
+    // --- Voltage Divider ---
+    function calcDivider(){
+      const Vs = parse('dVs');
+      const Vout = parse('dVout');
+      const Idiv = parse('dIdiv');
+      const Rt = parse('dRt');
+      let R1 = parse('dR1');
+      let R2 = parse('dR2');
+      const RL = parse('dRL');
+
+      if([Vs, Vout].some(isNaN) || !(Vs>0) || !(Vout>0) || Vout >= Vs){
+        putRows('dividerOut', [{k:'Status', v: statusPill('Provide Vs>Vout>0', 'bad')}]);
+        return;
+      }
+
+      // Selection priority: Idiv > Rt > R2 > R1
+      if(!isNaN(Idiv) && Idiv>0){
+        const total = Vs / Idiv; // Rt
+        R2 = total * (Vout / Vs);
+        R1 = total - R2;
+      } else if(!isNaN(Rt) && Rt>0){
+        R2 = Rt * (Vout / Vs);
+        R1 = Rt - R2;
+      } else if(!isNaN(R2) && R2>0){
+        R1 = R2 * (Vs / Vout - 1);
+      } else if(!isNaN(R1) && R1>0){
+        R2 = R1 * (Vout / (Vs - Vout));
+      } else {
+        putRows('dividerOut', [{k:'Status', v: statusPill('Provide one of: Idiv, Rt, R1 or R2', 'warn')}]);
+        return;
+      }
+
+      const Rt_calc = R1 + R2;
+      const I_through = Vs / Rt_calc; // current through R1 into the divider (no-load)
+      const P_R1 = (I_through*I_through)*R1;
+      const P_R2 = (I_through*I_through)*R2;
+
+      let rows = [
+        {k:'R1 (Ω)', v: rd(R1)},
+        {k:'R2 (Ω)', v: rd(R2)},
+        {k:'Total Rt = R1+R2 (Ω)', v: rd(Rt_calc)},
+        {k:'Divider Current Idiv (A)', v: rd(I_through)},
+        {k:'No-load Vout (V)', v: rd(Vout)},
+        {k:'Power in R1 (W)', v: rd(P_R1)},
+        {k:'Power in R2 (W)', v: rd(P_R2)},
+      ];
+
+      if(!isNaN(RL) && RL>0){
+        const Rlow_eff = (R2*RL)/(R2+RL); // R2 || RL
+        const V_loaded = Vs * (Rlow_eff / (R1 + Rlow_eff));
+        const I_R1 = (Vs - V_loaded)/R1; // current through R1
+        const I_load = V_loaded / RL;
+        rows = rows.concat([
+          {k:'Loaded Vout (V)', v: rd(V_loaded)},
+          {k:'Load Current (A)', v: rd(I_load)},
+          {k:'R2||RL (Ω)', v: rd(Rlow_eff)},
+          {k:'I through R1 (A)', v: rd(I_R1)},
+        ]);
+      }
+
+      putRows('dividerOut', rows);
+    }
+    function resetDivider(){ resetInputs(['dVs','dVout','dIdiv','dRt','dR1','dR2','dRL']); document.getElementById('dividerOut').style.display='none'; }
+
+    // --- Series/Parallel Target Helper ---
+    function calcSeriesParallelTarget(){
+      const R1 = parse('tR1');
+      const Rt = parse('tRt');
+      if([R1, Rt].some(isNaN) || !(R1>0) || !(Rt>0)){
+        putRows('rspOut', [{k:'Status', v: statusPill('Provide R1 and Rt > 0', 'bad')}]);
+        return;
+      }
+
+      const canSeries = Rt >= R1;
+      const canParallel = Rt < R1;
+      const Rs_needed = canSeries ? (Rt - R1) : NaN;
+      const R2_parallel = canParallel ? (1 / (1/Rt - 1/R1)) : NaN;
+
+      const rows = [
+        {k:'Given R1 (Ω)', v: rd(R1)},
+        {k:'Target Rt (Ω)', v: rd(Rt)},
+        {k:'Series: add Rs (Ω)', v: canSeries ? rd(Rs_needed) : '—'},
+        {k:'Parallel: add R2 (Ω)', v: canParallel ? rd(R2_parallel) : '—'},
+        {k:'Feasibility', v: (canSeries?statusPill('Series possible','ok'):statusPill('Series not possible','warn')) + ' ' + (canParallel?statusPill('Parallel possible','ok'):statusPill('Parallel not possible','warn'))}
+      ];
+      putRows('rspOut', rows);
+    }
+    function resetTarget(){ resetInputs(['tR1','tRt']); document.getElementById('rspOut').style.display='none'; }
   </script>
 </body>
 </html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maintenance Logbook</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+body { font-family:'Roboto',sans-serif; background:#f3f7ff; margin:0; padding:0; }
+header { text-align:center; padding:30px 0; background: linear-gradient(90deg,#4a90e2,#357ABD); color:white; font-size:2rem; font-weight:bold; }
+.container { width:90%; max-width:800px; margin:20px auto; background:white; padding:20px; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.1);}
+form input, form button { padding:10px; margin:5px 0; width:100%; border-radius:8px; border:1px solid #ccc; }
+form button { background:#4a90e2; color:white; font-weight:bold; border:none; cursor:pointer; transition:0.3s; }
+form button:hover { background:#357ABD; }
+table { width:100%; border-collapse:collapse; margin-top:20px; }
+th, td { border:1px solid #ddd; padding:10px; text-align:center; }
+th { background:#4a90e2; color:white; }
+#export-pdf { margin-top:15px; padding:10px; width:100%; background:#4a90e2; color:white; font-weight:bold; border:none; border-radius:8px; cursor:pointer; }
+#export-pdf:hover { background:#357ABD; }
+</style>
+</head>
+<body>
+
+<header>Maintenance Logbook</header>
+
+<div class="container">
+  <form id="logbook-form">
+    <input type="date" id="date" required>
+    <input type="text" id="equipment" placeholder="Equipment Name" required>
+    <input type="text" id="remarks" placeholder="Remarks" required>
+    <button type="submit">Add Entry</button>
+  </form>
+
+  <table id="logbook-table">
+    <thead><tr><th>Date</th><th>Equipment</th><th>Remarks</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <button id="export-pdf">Export to PDF</button>
+</div>
+
+<script>
+const form=document.getElementById('logbook-form');
+const tbody=document.querySelector('#logbook-table tbody');
+
+form.addEventListener('submit', e=>{
+  e.preventDefault();
+  const date=document.getElementById('date').value;
+  const eq=document.getElementById('equipment').value;
+  const rem=document.getElementById('remarks').value;
+  tbody.innerHTML+=`<tr><td>${date}</td><td>${eq}</td><td>${rem}</td></tr>`;
+  form.reset();
+});
+
+document.getElementById('export-pdf').addEventListener('click', ()=>{
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF();
+  let rows=[];
+  tbody.querySelectorAll('tr').forEach(tr=>{
+    rows.push([...tr.children].map(td=>td.innerText));
+  });
+  doc.autoTable({ head:[['Date','Equipment','Remarks']], body:rows });
+  doc.save('Maintenance_Logbook.pdf');
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+</body>
+</html>

@@ -1,171 +1,475 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Board Designer</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Panel Board Designer — Electric Master</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #0ea5e9, #6366f1);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
+    :root{
+      --bg1:#0f1724;
+      --accent-1:linear-gradient(90deg,#06b6d4,#6366f1);
+      --card: rgba(255,255,255,0.06);
+      --glass: rgba(255,255,255,0.03);
+      --muted: rgba(255,255,255,0.7);
+      --success:#22c55e;
+      --danger:#ef4444;
     }
-    h1 {
-      margin-bottom: 10px;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0; font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial}
+    body{
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(99,102,241,0.12), transparent),
+                  radial-gradient(1000px 600px at 90% 80%, rgba(6,182,212,0.08), transparent),
+                  var(--bg1);
+      color: #e6eef6;
+      -webkit-font-smoothing:antialiased;
+      padding: 28px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
     }
-    .toolbox, .panel {
-      background: #ffffff15;
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 20px;
-      margin: 15px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+
+    /* header */
+    .topbar{ width:100%; max-width:1200px; display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;}
+    .brand { display:flex; gap:12px; align-items:center }
+    .brand .logo{width:52px;height:52px;border-radius:10px;background:var(--card);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+    h1{margin:0;font-size:20px}
+
+    /* layout */
+    .wrap{ width:100%; max-width:1200px; display:grid; grid-template-columns: 360px 1fr; gap:20px; align-items:start; }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border-radius:14px;
+      padding:18px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.04);
     }
-    .toolbox {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+
+    /* toolbox */
+    .toolbox { display:flex; flex-direction:column; gap:12px; }
+    .tool-title{ font-weight:600; margin-bottom:8px; color:var(--muted) }
+    .components { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
     .component {
-      width: 70px;
-      height: 70px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #22c55e;
-      cursor: grab;
-      font-size: 12px;
-      font-weight: bold;
-      text-align: center;
-      transition: transform 0.3s;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.14));
+      border-radius:10px;
+      padding:10px;
+      text-align:center;
+      cursor:grab;
+      user-select:none;
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.03);
+      transition: transform .18s ease, box-shadow .18s ease;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      justify-content:center;
+      min-height:56px;
     }
-    .component:hover {
-      transform: scale(1.1);
-      background: #16a34a;
-    }
-    .panel {
-      width: 600px;
-      height: 400px;
-      display: grid;
+    .component:active{ cursor:grabbing }
+    .component:hover{ transform: translateY(-6px); box-shadow:0 12px 30px rgba(2,6,23,0.6); }
+
+    .comp-ico{ width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:700; background:linear-gradient(90deg,#f59e0b,#f97316); color:#111 }
+
+    /* controls */
+    .controls { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .btn { padding:10px 12px; border-radius:10px; border:none; cursor:pointer; font-weight:600; background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.04); transition:all .18s}
+    .btn.primary{ background:linear-gradient(90deg,#06b6d4,#6366f1); color:#042018; border:none }
+    .btn.warn{ background:transparent; color:var(--danger); border:1px solid rgba(239,68,68,0.12) }
+    .btn.ghost{ background:transparent }
+
+    /* panel */
+    .panel-wrapper{ display:flex; flex-direction:column; gap:14px; }
+    .panel-header{ display:flex; justify-content:space-between; align-items:center; gap:12px }
+    .panel-box{
+      width:100%;
+      height:520px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;
+      padding:18px;
+      display:grid;
       grid-template-columns: repeat(6, 1fr);
-      grid-auto-rows: 70px;
-      gap: 10px;
-      padding: 20px;
-      background: #111827;
-      border: 2px solid #fff;
+      grid-auto-rows: 80px;
+      gap:12px;
+      border:1px solid rgba(255,255,255,0.03);
+      overflow:auto;
     }
-    .slot {
-      background: #1f2937;
-      border-radius: 8px;
-      border: 1px dashed #9ca3af;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #9ca3af;
-      font-size: 0.9rem;
+    .slot{
+      border-radius:8px;
+      border:1px dashed rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.02);
+      display:flex; align-items:center; justify-content:center; color:var(--muted); font-weight:600;
+      transition: background .12s, transform .12s;
+      position:relative;
+      padding:6px;
+      min-width:80px;
     }
-    .placed {
-      width: 100%;
-      height: 100%;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      font-weight: bold;
-      background: #facc15;
-      color: #000;
+    .slot.dragover{ background: rgba(99,102,241,0.12); transform:scale(1.02); border-style:solid }
+    .slot .empty{ font-size:13px; color:rgba(255,255,255,0.45) }
+
+    .placed{
+      width:100%; height:100%; border-radius:8px; display:flex; gap:8px; align-items:center; justify-content:center;
+      font-size:13px; font-weight:700; color:#07101a; background: linear-gradient(90deg,#fff6d9,#ffd54a);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
       cursor: pointer;
+      animation: pop .18s ease;
     }
-    .actions {
-      margin-top: 20px;
-    }
-    button {
-      background: #f43f5e;
-      color: #fff;
-      border: none;
-      padding: 12px 18px;
-      border-radius: 10px;
-      font-size: 1rem;
-      margin: 0 10px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #e11d48;
-      transform: translateY(-2px);
-    }
-    .back-link {
-      display: inline-block;
-      margin-top: 20px;
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .back-link:hover {
-      color: #ffea00;
+    @keyframes pop { from{ transform: scale(.9); opacity:0 } to { transform: scale(1); opacity:1 } }
+
+    .placed .ico{ width:34px;height:34px;border-radius:6px; display:flex;align-items:center;justify-content:center; background:#fff; color:#111; font-weight:700 }
+
+    /* small helpers */
+    .meta{ font-size:13px; color:var(--muted) }
+    .footer{ margin-top:24px; text-align:center; color:rgba(255,255,255,0.6) }
+
+    /* toast */
+    .toast{ position:fixed; right:26px; bottom:26px; background:#111827; color:#fff; padding:12px 16px; border-radius:10px; box-shadow:0 8px 30px rgba(0,0,0,0.6); opacity:0; transform:translateY(10px); transition:all .25s }
+    .toast.show{ opacity:1; transform:translateY(0) }
+
+    /* responsive */
+    @media (max-width:980px){
+      .wrap{ grid-template-columns: 1fr; }
+      .panel-box{ height:520px; grid-template-columns: repeat(4,1fr) }
     }
   </style>
 </head>
 <body>
-  <h1>Panel Board Designer</h1>
-  
-  <div class="toolbox">
-    <div class="component" draggable="true" data-type="MCB-1P">MCB<br>1P</div>
-    <div class="component" draggable="true" data-type="MCB-2P">MCB<br>2P</div>
-    <div class="component" draggable="true" data-type="Switch">Switch</div>
-    <div class="component" draggable="true" data-type="Socket">Socket</div>
-    <div class="component" draggable="true" data-type="RCCB">RCCB</div>
-    <div class="component" draggable="true" data-type="Busbar">Busbar</div>
-    <div class="component" draggable="true" data-type="Indicator-R">Red</div>
-    <div class="component" draggable="true" data-type="Indicator-G">Green</div>
-    <div class="component" draggable="true" data-type="Indicator-Y">Yellow</div>
+  <div class="topbar" style="max-width:1200px;">
+    <div class="brand">
+      <div class="logo">EM</div>
+      <div>
+        <h1>Panel Board Designer</h1>
+        <div class="meta">Design & export panel layouts — drag, drop & save</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center">
+      <button class="btn ghost" onclick="goHome()">← Home</button>
+      <button class="btn" id="clearBtn" title="Clear">Clear</button>
+      <button class="btn primary" id="downloadImageBtn" title="Download PNG">Download PNG</button>
+    </div>
   </div>
 
-  <div class="panel" id="panel">
-    <!-- Slots generated by JS -->
+  <div class="wrap" style="max-width:1200px;">
+    <!-- toolbox -->
+    <div class="card toolbox">
+      <div class="tool-title">Toolbox</div>
+
+      <div class="components" id="components">
+        <!-- each .component draggable -->
+        <div class="component" draggable="true" data-type="MCB-1P" title="MCB - 1 Pole">
+          <div class="comp-ico">1P</div>
+          <div>MCB<br><small class="meta">1P</small></div>
+        </div>
+
+        <div class="component" draggable="true" data-type="MCB-2P" title="MCB - 2 Pole">
+          <div class="comp-ico">2P</div>
+          <div>MCB<br><small class="meta">2P</small></div>
+        </div>
+
+        <div class="component" draggable="true" data-type="RCCB" title="RCCB / ELCB">
+          <div class="comp-ico">R</div>
+          <div>RCCB<br><small class="meta">ELCB</small></div>
+        </div>
+
+        <div class="component" draggable="true" data-type="Switch" title="Switch - Modular">
+          <div class="comp-ico">S</div>
+          <div>Switch<br><small class="meta">1-gang</small></div>
+        </div>
+
+        <div class="component" draggable="true" data-type="Socket" title="Power Socket">
+          <div class="comp-ico">P</div>
+          <div>Socket<br><small class="meta">16A</small></div>
+        </div>
+
+        <div class="component" draggable="true" data-type="Busbar" title="Busbar">
+          <div class="comp-ico">B</div>
+          <div>Busbar<br><small class="meta">Main</small></div>
+        </div>
+
+        <div class="component" draggable="true" data-type="Indicator-R" title="Indicator Red">
+          <div class="comp-ico">●</div>
+          <div>Indicator<br><small class="meta">Red</small></div>
+        </div>
+
+        <div class="component" draggable="true" data-type="Indicator-G" title="Indicator Green">
+          <div class="comp-ico">●</div>
+          <div>Indicator<br><small class="meta">Green</small></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="saveBtn">Save</button>
+        <button class="btn" id="exportBtn">Export JSON</button>
+        <label class="btn" style="cursor:pointer">
+          Import JSON <input id="importFile" accept="application/json" type="file" style="display:none" />
+        </label>
+      </div>
+
+      <div style="margin-top:12px; color:var(--muted); font-size:13px">
+        Tip: Drag components into the panel grid. Right-click a placed item to remove. Double-click to edit label.
+      </div>
+    </div>
+
+    <!-- panel area -->
+    <div class="card panel-wrapper">
+      <div class="panel-header">
+        <div>
+          <div class="meta">Panel layout (drag components into slots)</div>
+          <div style="font-weight:700; margin-top:6px">Standard 6×4 Slot Grid</div>
+        </div>
+        <div class="meta">Slots: <span id="slotCount">24</span></div>
+      </div>
+
+      <div class="panel-box" id="panelBox" aria-label="Panel Board">
+        <!-- grid slots injected by JS -->
+      </div>
+
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn" id="loadBtn">Load Last</button>
+        <button class="btn warn" id="clearLocalBtn">Clear Saved</button>
+        <div class="meta" style="margin-left:auto">Design will be saved to browser localStorage</div>
+      </div>
+    </div>
   </div>
 
-  <div class="actions">
-    <button onclick="saveAsImage()">Download Design</button>
-  </div>
+  <div class="footer">Electric Master • Panel Board Designer — Export, save & print</div>
 
-  <a href="index.html" class="back-link">← Back to Home</a>
+  <div id="toast" class="toast"></div>
 
-  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   <script>
-    const panel = document.getElementById("panel");
+    // ----- utilities -----
+    const pcKey = "panel-design-v1";
+    const panelBox = document.getElementById("panelBox");
+    const slotCountEl = document.getElementById("slotCount");
+    const toastEl = document.getElementById("toast");
 
-    // Generate slots
-    for (let i = 0; i < 24; i++) {
-      let slot = document.createElement("div");
-      slot.classList.add("slot");
-      slot.innerText = "Empty";
-      slot.addEventListener("dragover", e => e.preventDefault());
-      slot.addEventListener("drop", handleDrop);
-      panel.appendChild(slot);
+    function showToast(msg, timeout=2000){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastEl._t);
+      toastEl._t = setTimeout(()=> toastEl.classList.remove("show"), timeout);
     }
 
-    // Drag drop
-    const components = document.querySelectorAll(".component");
-    components.forEach(c => {
-      c.addEventListener("dragstart", e => {
-        e.dataTransfer.setData("type", c.dataset.type);
+    // ----- create grid slots -----
+    const COLS = 6;
+    const ROWS = 4;
+    const TOTAL_SLOTS = COLS * ROWS;
+    slotCountEl.textContent = TOTAL_SLOTS;
+
+    function createSlot(index){
+      const slot = document.createElement("div");
+      slot.className = "slot";
+      slot.dataset.index = index;
+      slot.innerHTML = `<div class="empty">Drop here</div>`;
+      slot.addEventListener("dragover", e => { e.preventDefault(); slot.classList.add("dragover"); });
+      slot.addEventListener("dragleave", e => { slot.classList.remove("dragover"); });
+      slot.addEventListener("drop", handleDrop);
+      return slot;
+    }
+
+    for(let i=0;i<TOTAL_SLOTS;i++){
+      panelBox.appendChild(createSlot(i));
+    }
+
+    // ----- toolbox dragstart -----
+    document.querySelectorAll('.component').forEach(el=>{
+      el.addEventListener('dragstart', e=>{
+        e.dataTransfer.setData('text/plain', el.dataset.type);
+        // small effect
+        e.dataTransfer.effectAllowed = 'copy';
       });
     });
 
-    function handleDrop(e) {
-      let type = e.dataTransfer.getData("type");
-      this.innerHTML = `<div class="placed">${type}</div>`;
-      this.firstChild.addEventListener("contextmenu", (ev) => {
+    // ----- handle drop -----
+    function handleDrop(e){
+      e.preventDefault();
+      this.classList.remove("dragover");
+      const type = e.dataTransfer.getData('text/plain');
+      if(!type) return;
+      placeComponentInSlot(this, type);
+    }
+
+    function placeComponentInSlot(slotEl, type, label){
+      const lbl = label || defaultLabelFor(type);
+      slotEl.innerHTML = '';
+      const placed = document.createElement('div');
+      placed.className = 'placed';
+      placed.draggable = false;
+      placed.dataset.type = type;
+      placed.dataset.label = lbl;
+      placed.innerHTML = `
+        <div class="ico">${iconFor(type)}</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-start">
+          <div style="font-size:13px">${lbl}</div>
+          <div style="font-size:11px;color:rgba(0,0,0,0.45)">${type}</div>
+        </div>
+      `;
+      slotEl.appendChild(placed);
+
+      // right-click to remove
+      slotEl.addEventListener('contextmenu', function rmHandler(ev){
         ev.preventDefault();
-        this.innerText = "Empty";
+        if(!confirm('Remove component from slot?')) return;
+        slotEl.innerHTML = `<div class="empty">Drop here</div>`;
+      }, { once:true });
+
+      // double click to edit label
+      placed.addEventListener('dblclick', ev=>{
+        ev.stopPropagation();
+        const newLbl = prompt('Edit label', placed.dataset.label);
+        if(newLbl !== null) {
+          placed.dataset.label = newLbl;
+          placed.querySelector('div > div').textContent = newLbl;
+        }
+      });
+
+      // small pulse toast
+      showToast(type + ' placed');
+    }
+
+    // ----- helper labels/icons -----
+    function defaultLabelFor(type){
+      switch(type){
+        case 'MCB-1P': return 'MCB 1P';
+        case 'MCB-2P': return 'MCB 2P';
+        case 'RCCB': return 'RCCB';
+        case 'Switch': return 'Switch';
+        case 'Socket': return 'Socket';
+        case 'Busbar': return 'Busbar';
+        case 'Indicator-R': return 'Ind R';
+        case 'Indicator-G': return 'Ind G';
+        default: return type;
+      }
+    }
+    function iconFor(type){
+      switch(type){
+        case 'MCB-1P': return '1P';
+        case 'MCB-2P': return '2P';
+        case 'RCCB': return 'RCCB';
+        case 'Switch': return '⏻';
+        case 'Socket': return '🔌';
+        case 'Busbar': return '═';
+        case 'Indicator-R': return '●';
+        case 'Indicator-G': return '●';
+        default: return '◼';
+      }
+    }
+
+    // ----- Save / Load / Export -----
+    document.getElementById('saveBtn').addEventListener('click', saveDesign);
+    document.getElementById('loadBtn').addEventListener('click', loadDesign);
+    document.getElementById('exportBtn').addEventListener('click', exportJSON);
+    document.getElementById('importFile').addEventListener('change', importJSON);
+    document.getElementById('clearLocalBtn').addEventListener('click', ()=>{
+      if(confirm('Clear saved design from this browser?')) {
+        localStorage.removeItem(pcKey);
+        showToast('Saved design cleared');
+      }
+    });
+
+    function readCurrentDesign(){
+      const slots = Array.from(panelBox.querySelectorAll('.slot'));
+      return slots.map(s => {
+        const placed = s.querySelector('.placed');
+        if(!placed) return null;
+        return { type: placed.dataset.type, label: placed.dataset.label };
+      });
+    }
+
+    function applyDesign(arr){
+      const slots = Array.from(panelBox.querySelectorAll('.slot'));
+      slots.forEach((s, i) => {
+        const data = arr && arr[i];
+        if(data && data.type){
+          placeComponentInSlot(s, data.type, data.label);
+        } else {
+          s.innerHTML = `<div class="empty">Drop here</div>`;
+        }
+      });
+    }
+
+    function saveDesign(){
+      const design = readCurrentDesign();
+      const meta = { savedAt: new Date().toISOString(), design };
+      localStorage.setItem(pcKey, JSON.stringify(meta));
+      showToast('Design saved locally');
+    }
+
+    function loadDesign(){
+      const raw = localStorage.getItem(pcKey);
+      if(!raw){ showToast('No saved design'); return; }
+      const obj = JSON.parse(raw);
+      applyDesign(obj.design);
+      showToast('Design loaded');
+    }
+
+    function exportJSON(){
+      const design = readCurrentDesign();
+      const meta = { savedAt:new Date().toISOString(), design };
+      const blob = new Blob([JSON.stringify(meta, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `panel-design-${(new Date()).toISOString().slice(0,19).replace(/:/g,'')}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Exported JSON');
+    }
+
+    function importJSON(e){
+      const file = e.target.files[0];
+      if(!file) return;
+      const fr = new FileReader();
+      fr.onload = () => {
+        try{
+          const obj = JSON.parse(fr.result);
+          applyDesign(obj.design);
+          showToast('Imported design');
+        }catch(err){
+          alert('Invalid JSON');
+        }
+      }
+      fr.readAsText(file);
+      e.target.value = '';
+    }
+
+    // ----- clear panel -----
+    document.getElementById('clearBtn').addEventListener('click', ()=>{
+      if(confirm('Clear all slots?')) {
+        Array.from(panelBox.querySelectorAll('.slot')).forEach(s => s.innerHTML = `<div class="empty">Drop here</div>`);
+      }
+    });
+
+    // ----- download PNG using html2canvas -----
+    document.getElementById('downloadImageBtn').addEventListener('click', async ()=>{
+      showToast('Rendering image...');
+      // temporarily remove dashed borders to make image cleaner (optional)
+      const slots = Array.from(panelBox.querySelectorAll('.slot'));
+      slots.forEach(s => s.style.borderStyle = 'solid');
+      const canvas = await html2canvas(panelBox, {backgroundColor: null, scale: 2});
+      slots.forEach(s => s.style.borderStyle = '');
+      canvas.toBlob(blob=>{
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `panel-design-${(new Date()).toISOString().slice(0,19).replace(/:/g,'')}.png`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('PNG downloaded');
+      });
+    });
+
+    // ----- go home -----
+    function goHome(){ window.location.href = 'index.html'; }
+
+    // load last design on open (if any)
+    window.addEventListener('load', () => {
+      const raw = localStorage.getItem(pcKey);
+      if(raw) {
+        // auto populate with last saved design but don't overwrite until user clicks load
+        // we'll do nothing here to avoid surprising the user.
+      }
+    });
+  </script>
+</body>
+</html>

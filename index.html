@@ -1,149 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Electrician Toolkit</title>
-  <link rel="icon" href="weppage.png" type="image/png">
-  <!-- Google font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Electric Master</title>
+<link rel="icon" href="weppage.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="site">
-    <!-- HEADER -->
-    <header class="header">
-      <a class="brand" href="index.html">
-        <div class="logo">
-          <img src="weppage.png" alt="logo" style="width:120%;height:120%;object-fit:cover">
-        </div>
-        <div>
-          <h1>ELECTRIC MASTER</h1>
-          <p>Electrician Toolkit • Calculators • Guides</p>
-        </div>
-      </a>
-    </header>
+<div class="site">
 
-    <!-- HERO SECTION -->
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-left">
-        <h2 id="hero-title">Smart Tools for Electricians — Calculators, Pinouts & Field Guides</h2>
-        <p>
-          Fast calculators for solar, battery, inverter sizing, resistor codes, connector pinouts 
-          and real-world troubleshooting tips to help you on-site.
-        </p>
+<!-- HEADER -->
+<header class="header">
+  <a class="brand" href="index.html">
+    <div class="logo">
+      <img src="weppage.png" alt="logo" style="width:120%;height:120%;object-fit:cover">
+    </div>
+    <div>
+      <h1>ELECTRIC MASTER</h1>
+      <p>Electrician Toolkit • Calculators • Guides</p>
+    </div>
+  </a>
+</header>
 
-        <div class="hero-cta">
-          <a class="btn btn-primary" href="battery-calculator.html">🔋 Battery Calculator</a>
-          <a class="btn btn-accent" href="connectors.html">🔌 Connector Tool</a>
-        </div>
-
-        <div class="search" style="margin-top:16px">
-          <input class="input" type="search" placeholder="Search tools (e.g., inverter, RJ45, resistor)">
-        </div>
-      </div>
-
-      <div class="hero-right" role="img" aria-label="Engineer at work background"></div>
-    </section>
-
-    <!-- TOOLS GRID -->
-    <section class="tools" aria-labelledby="tools-title">
-      <h3 id="tools-title" style="grid-column:1/-1; margin:6px 0 0 0">Available Tools</h3>
-
-      <a class="tool-card" href="ohm-calculator.html">
-        <div class="tool-icon">Ω</div>
-        <div>
-          <div class="tool-title">Ohm's Law</div>
-          <div class="tool-desc">Voltage, current, resistance calculators</div>
-        </div>
-      </a>
-      
-      <a class="tool-card" href="work-calendar.html">
-  <div class="tool-icon">📅</div>
-  <div>
-    <div class="tool-title">Work Calendar</div>
-    <div class="tool-desc">Track work & upload photos</div>
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-left">
+    <h2 id="hero-title">Smart Tools for Electricians — Calculators, Pinouts & Field Guides</h2>
+    <p>
+      Fast calculators for solar, battery, inverter sizing, resistor codes, connector pinouts 
+      and real-world troubleshooting tips to help you on-site.
+    </p>
   </div>
-        
-</a>
-       <a class="tool-card" href="capacitor.html">
-  <div class="tool-icon">🧮</div>
-  <div>
-    <div class="tool-title">Capacitor Calculator</div>
-    <div class="tool-desc">Motor start/run & series/parallel capacitors</div>
+</section>
+
+<!-- TOOL GRID -->
+<section class="tools">
+  <h2>Available Tools</h2>
+  <div class="tool-grid">
+
+    <!-- Existing Tools -->
+    <a href="ohm-calculator.html" class="tool-card">
+      <h3>Ohm’s Law Calculator</h3>
+      <p>Voltage, Current, Resistance, Power calculator.</p>
+    </a>
+
+    <a href="resistor-color.html" class="tool-card">
+      <h3>Resistor Color Code</h3>
+      <p>Identify resistor values via color bands.</p>
+    </a>
+
+    <a href="connectors.html" class="tool-card">
+      <h3>Connector Pinouts</h3>
+      <p>All major electrical & electronic connectors.</p>
+    </a>
+
+    <!-- NEW TOOLS -->
+    <a href="conduit-calculator.html" class="tool-card new">
+      <h3>Conduit & Pipe Size Calculator</h3>
+      <p>Convert mm ↔ inch, plan conduit and open pipe runs.</p>
+    </a>
+
+    <a href="panel-designer.html" class="tool-card new">
+      <h3>Panel Board Designer</h3>
+      <p>Visual layout with MCBs, switches, breakers & distribution.</p>
+    </a>
+
+    <a href="symbols-library.html" class="tool-card new">
+      <h3>Electrical Symbols Library</h3>
+      <p>Comprehensive IEC/ANSI standard electrical symbols.</p>
+    </a>
+
+    <a href="maintenance-log.html" class="tool-card new">
+      <h3>Maintenance Logbook</h3>
+      <p>Digital logbook with PDF export for service records.</p>
+    </a>
+
+    <a href="bill-generator.html" class="tool-card new">
+      <h3>E-Bill Generator</h3>
+      <p>Create and download professional client bills in PDF.</p>
+    </a>
+
   </div>
-</a>
-</a>
-       <a class="tool-card" href="materials-calculator.html">
-  <div>
-    <div class="tool-title">MATERIALS ESTIMATOR</div>
-    <div class="tool-desc">GOOD LUCK!</div>
-  </div>
-</a>
-        <a class="tool-card" href="floor-planner.html">
-  <div>
-    <div class="tool-title">ANIMATION</div>
-    <div class="tool-desc">GET STARTED!</div>
-  </div>
-</a>
-       <a class="tool-card" href="winder.html">
-  <div>
-    <div class="tool-title">⚡ WINDER</div>
-    <div class="tool-desc">TRANSFORM INTO DESIGNS !</div>
-  </div>
-</a>
+</section>
 
-      
-      <a class="tool-card" href="solar-battery-calculator.html">
-        <div class="tool-icon">☀️</div>
-        <div>
-          <div class="tool-title">Solar & Battery</div>
-          <div class="tool-desc">Panel sizing & battery charge time</div>
-        </div>
-      
+<!-- FOOTER -->
+<footer class="footer">
+  <p>© 2025 Electric Master | Designed for Electricians</p>
+</footer>
 
-      <a class="tool-card" href="resistor-calculator.html">
-        <div class="tool-icon">🎨</div>
-        <div>
-          <div class="tool-title">Resistor Color Code</div>
-          <div class="tool-desc">4/5/6 band calculators</div>
-        </div>
-      </a>
-
-      <a class="tool-card" href="connectors.html">
-        <div class="tool-icon">🔌</div>
-        <div>
-          <div class="tool-title">Connector Pin Config</div>
-          <div class="tool-desc">Pinouts for 50+ connectors</div>
-        </div>
-      </a>
-
-      <a class="tool-card" href="unit-converter.html">
-        <div class="tool-icon">🔧</div>
-        <div>
-          <div class="tool-title">Unit Converter</div>
-          <div class="tool-desc">Quick unit conversions</div>
-        </div>
-      </a>
-
-      <a class="tool-card" href="pin-config.html">
-        <div class="tool-icon">🧩</div>
-        <div>
-          <div class="tool-title">Pin Configs</div>
-          <div class="tool-desc">USB, Ethernet and more</div>
-        </div>
-      </a>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="footer">
-      © <span id="year"></span> Balaji Audios & Electricals — Built for electricians.<br>
-      <small style="color:var(--muted)">Tip: Press Ctrl+F5 to refresh cached assets after update</small>
-    </footer>
-  </div>
-
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+</div>
 </body>
 </html>

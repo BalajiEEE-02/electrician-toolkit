@@ -1,159 +1,553 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Materials Calculator</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Materials Calculator — Premium</title>
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<!-- jsPDF + autoTable -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 </head>
-<body class="bg-gray-900 min-h-screen flex flex-col items-center p-6 text-white">
-<div class="bg-gray-800 shadow-2xl rounded-2xl p-6 w-full max-w-6xl">
-<h1 class="text-3xl font-bold text-center text-yellow-400 mb-4">Materials Calculator</h1>
+<body class="bg-gray-900 min-h-screen text-gray-100">
 
-<!-- Customer Details -->
-<div class="grid grid-cols-2 gap-4 mb-6">
-<input id="customerName" class="border p-2 rounded-lg text-black" placeholder="Customer Name">
-<input id="contactNo" class="border p-2 rounded-lg text-black" placeholder="Contact Number">
-<input id="location" class="border p-2 rounded-lg text-black" placeholder="Location">
-<input id="houseMeasure" class="border p-2 rounded-lg text-black" placeholder="House Measurements">
-<input id="electrician" class="border p-2 rounded-lg text-black" placeholder="Electrician Name">
-<input id="Address" class="border p-2 rounded-lg text-black" placeholder="Coustomer(or) Site Address">
-<input id="date" type="date" class="border p-2 rounded-lg text-black">
-</div>
+<div class="max-w-6xl mx-auto p-6">
 
-<!-- Material Form -->
-<div class="flex space-x-3 mb-4">
-<select id="material" class="border p-2 rounded-lg flex-1 text-black">
-    <option disabled selected>Select Material</option>
-    <optgroup label="🔧 Suggested Tools">
-        <option>Hammer</option>
-        <option>Screwdriver Set</option>
-        <option>Pliers</option>
-        <option>Drill Machine</option>
-        <option>Measuring Tape</option>
-        <option>Tester</option>
-    </optgroup>
+  <!-- Header -->
+  <div class="bg-gradient-to-r from-yellow-600 to-orange-500 rounded-2xl p-6 mb-6 shadow-2xl">
+    <h1 class="text-3xl font-bold text-center text-gray-900">Materials Calculator</h1>
+    <p class="text-center text-gray-900 mt-2">Dark · Warm · Premium — Wiring & Plumbing materials (300+)</p>
+  </div>
 
-    <optgroup label="⚡ Wiring Materials">
-        <option>1.5 sqmm Wire</option>
-        <option>2.5 sqmm Wire</option>
-        <option>4 sqmm Wire</option>
-        <option>6 sqmm Wire</option>
-        <option>MCB (Single Pole)</option>
-        <option>MCB (Double Pole)</option>
-        <option>Switch 6A</option>
-        <option>Switch 16A</option>
-        <option>Socket 6A</option>
-        <option>Socket 16A</option>
-        <option>Distribution Board</option>
-        <option>Conduit Pipe 20mm</option>
-        <option>Conduit Pipe 25mm</option>
-        <option>Junction Box</option>
-        <option>Ceiling Fan</option>
-        <option>Tubelights</option>
-        <option>LED Bulbs</option>
-        <!-- … Continue adding 200+ wiring materials -->
-    </optgroup>
+  <!-- Container -->
+  <div class="bg-gray-800 rounded-2xl p-6 shadow-xl">
 
-    <optgroup label="🚰 Plumbing Materials">
-        <option>1/2 inch PVC Pipe</option>
-        <option>3/4 inch PVC Pipe</option>
-        <option>1 inch PVC Pipe</option>
-        <option>PVC Elbow 90°</option>
-        <option>PVC Tee</option>
-        <option>Tap</option>
-        <option>Shower</option>
-        <option>Flush Tank</option>
-        <option>Sink Pipe</option>
-        <option>Water Tank</option>
-        <!-- … Continue adding 100+ plumbing materials -->
-    </optgroup>
+    <!-- Customer Details -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <input id="customerName" class="p-3 rounded-lg bg-gray-700 text-white border border-yellow-600" placeholder="Customer Name">
+      <input id="contactNo" class="p-3 rounded-lg bg-gray-700 text-white border border-yellow-600" placeholder="Contact Number">
+      <input id="location" class="p-3 rounded-lg bg-gray-700 text-white border border-yellow-600" placeholder="Location / City">
+      <input id="address" class="p-3 rounded-lg bg-gray-700 text-white border border-yellow-600" placeholder="Full Address">
+      <input id="houseMeasure" class="p-3 rounded-lg bg-gray-700 text-white border border-yellow-600" placeholder="House Measurements">
+      <input id="electrician" class="p-3 rounded-lg bg-gray-700 text-white border border-yellow-600" placeholder="Electrician Name">
+      <input id="date" type="date" class="p-3 rounded-lg bg-gray-700 text-white border border-yellow-600">
+    </div>
 
-    <optgroup label="✍ Custom Entry">
-        <option value="custom">-- Add Custom Material --</option>
-    </optgroup>
-</select>
+    <!-- Material input row -->
+    <div class="flex flex-col md:flex-row gap-3 items-center mb-4">
+      <div class="flex-1">
+        <label class="text-sm text-yellow-300">Select Material</label>
+        <select id="material" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600">
+          <option value="">-- Select Material (or use Custom Material box) --</option>
 
-<input id="type" class="border p-2 rounded-lg w-40 text-black" placeholder="Type (ex: 1.5 sqmm)">
-<input id="quantity" type="number" class="border p-2 rounded-lg w-32 text-black" placeholder="Qty">
-<select id="unit" class="border p-2 rounded-lg w-32 text-black">
-    <option value="Nos">Nos</option>
-    <option value="Meters">Meters</option>
-    <option value="Kg">Kg</option>
-    <option value="Feet">Feet</option>
-</select>
-<button onclick="addMaterial()" class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 rounded-lg shadow">Add</button>
-</div>
+          <!-- Suggested Tools (~20) -->
+         
 
-<!-- Table -->
-<table id="materialsTable" class="w-full border border-gray-600 text-center text-sm">
-<thead class="bg-yellow-500 text-black">
-<tr>
-    <th class="border border-gray-600 px-2 py-1">Material</th>
-    <th class="border border-gray-600 px-2 py-1">Type</th>
-    <th class="border border-gray-600 px-2 py-1">Quantity</th>
-    <th class="border border-gray-600 px-2 py-1">Unit</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
+          <!-- Wiring Materials (~200) -->
+          <optgroup label="⚡ Wiring Materials">
+            <option>1.0 sqmm Copper Wire</option>
+            <option>1.5 sqmm Copper Wire</option>
+            <option>2.5 sqmm Copper Wire</option>
+            <option>4 sqmm Copper Wire</option>
+            <option>6 sqmm Copper Wire</option>
+            <option>10 sqmm Copper Wire</option>
+            <option>16 sqmm Copper Wire</option>
+            <option>25 sqmm Copper Cable</option>
+            <option>35 sqmm Copper Cable</option>
+            <option>50 sqmm Copper Cable</option>
+            <option>70 sqmm Copper Cable</option>
+            <option>95 sqmm Copper Cable</option>
+            <option>Flexible Copper Wire</option>
+            <option>Aluminium Cable 2 Core</option>
+            <option>Aluminium Cable 3 Core</option>
+            <option>Control Cable 4 Core</option>
+            <option>Control Cable 6 Core</option>
+            <option>XLPE Cable 3 Core</option>
+            <option>Armoured Cable</option>
+            <option>Telephone Cable 2 Pair</option>
+            <option>Telephone Cable 4 Pair</option>
+            <option>Coaxial Cable RG6</option>
+            <option>LAN Cable Cat5e</option>
+            <option>LAN Cable Cat6</option>
+            <option>LAN Cable Cat6A</option>
+            <option>Fiber Optic Cable Single Mode</option>
+            <option>Fiber Optic Cable Multi Mode</option>
+            <option>Conduit Pipe 16mm</option>
+            <option>Conduit Pipe 20mm</option>
+            <option>Conduit Pipe 25mm</option>
+            <option>Conduit Pipe 32mm</option>
+            <option>Conduit Pipe 40mm</option>
+            <option>Conduit Bend 20mm</option>
+            <option>Conduit Bend 25mm</option>
+            <option>Conduit Bend 32mm</option>
+            <option>Conduit Coupler 20mm</option>
+            <option>Conduit Coupler 25mm</option>
+            <option>Conduit Saddle Clip</option>
+            <option>Conduit Clip 20mm</option>
+            <option>Conduit Clip 25mm</option>
+            <option>Junction Box 1 Gang</option>
+            <option>Junction Box 2 Gang</option>
+            <option>Junction Box 3 Gang</option>
+            <option>Junction Box Metal</option>
+            <option>Junction Box PVC</option>
+            <option>Metal Box 1M</option>
+            <option>Metal Box 2M</option>
+            <option>Metal Box 3M</option>
+            <option>Switch 6A</option>
+            <option>Switch 10A</option>
+            <option>Switch 16A</option>
+            <option>Switch 20A</option>
+            <option>Switch 32A</option>
+            <option>2-Way Switch</option>
+            <option>3-Way Switch</option>
+            <option>Dimmer Switch</option>
+            <option>Fan Regulator</option>
+            <option>Socket 6A</option>
+            <option>Socket 16A</option>
+            <option>Socket 6A with Shutter</option>
+            <option>Socket 16A with Shutter</option>
+            <option>Universal Socket</option>
+            <option>Modular Plate 1M</option>
+            <option>Modular Plate 2M</option>
+            <option>Modular Plate 3M</option>
+            <option>Switch Plate Stainless</option>
+            <option>MCB Single Pole 6A</option>
+            <option>MCB Single Pole 10A</option>
+            <option>MCB Single Pole 16A</option>
+            <option>MCB Single Pole 20A</option>
+            <option>MCB Single Pole 32A</option>
+            <option>MCB Double Pole 32A</option>
+            <option>MCB 63A</option>
+            <option>MCB 100A</option>
+            <option>RCCB 30mA</option>
+            <option>RCCB 100mA</option>
+            <option>ELCB</option>
+            <option>RCBO</option>
+            <option>MCCB 100A</option>
+            <option>MCCB 200A</option>
+            <option>HRC Fuse</option>
+            <option>Fuse Carrier</option>
+            <option>Busbar</option>
+            <option>Neutral Link</option>
+            <option>Earth Busbar</option>
+            <option>Main Isolator 63A</option>
+            <option>Main Isolator 100A</option>
+            <option>Changeover Switch</option>
+            <option>Automatic Changeover</option>
+            <option>Contactor 9A</option>
+            <option>Contactor 25A</option>
+            <option>Contactor 63A</option>
+            <option>Timer Relay</option>
+            <option>Overload Relay</option>
+            <option>Control Relay 24V</option>
+            <option>Control Relay 230V</option>
+            <option>Current Transformer CT</option>
+            <option>Potential Transformer PT</option>
+            <option>Voltage Stabilizer 1kVA</option>
+            <option>Voltage Stabilizer 2kVA</option>
+            <option>UPS 600VA</option>
+            <option>UPS 1kVA</option>
+            <option>Inverter 1kVA</option>
+            <option>Inverter 2kVA</option>
+            <option>Battery 100Ah</option>
+            <option>Battery 150Ah</option>
+            <option>Battery 200Ah</option>
+            <option>Battery Rack</option>
+            <option>Earthing Rod Copper</option>
+            <option>Earthing Rod GI</option>
+            <option>Earthing Clamp</option>
+            <option>Earthing Wire 10mm</option>
+            <option>Earthing Wire 25mm</option>
+            <option>Lightning Arrester</option>
+            <option>Surge Protector</option>
+            <option>Cable Tray Per Meter</option>
+            <option>Raceway Per Meter</option>
+            <option>Cable Gland Brass</option>
+            <option>Cable Gland Nylon</option>
+            <option>Cable Tie Nylon</option>
+            <option>Cable Tie Stainless</option>
+            <option>Cable Lug Copper</option>
+            <option>Ferrule Set</option>
+            <option>Heat Shrink Tube</option>
+            <option>Heat Shrink End Cap</option>
+            <option>Wire Marker</option>
+            <option>Cable Joint Kit</option>
+            <option>Panel Board 12 Way</option>
+            <option>Panel Board 18 Way</option>
+            <option>Panel Board 24 Way</option>
+            <option>Distribution Board Accessories</option>
+            <option>LED Bulb 7W</option>
+            <option>LED Bulb 9W</option>
+            <option>LED Bulb 12W</option>
+            <option>LED Flood Light 50W</option>
+            <option>LED Flood Light 100W</option>
+            <option>LED Street Light 60W</option>
+            <option>Tube Light 18W</option>
+            <option>Tube Light 36W</option>
+            <option>Tube Light Starter</option>
+            <option>CFL Bulb 20W</option>
+            <option>Fan Ceiling 1200mm</option>
+            <option>Exhaust Fan 250mm</option>
+            <option>Power Strip 4 Way</option>
+            <option>Switch Socket Combo</option>
+            <option>Switch Box Wooden</option>
+            <option>Switch Box Metal</option>
+            <option>PVC Raceway</option>
+            <option>Flexible Conduit</option>
+            <option>MCB Din Rail</option>
+            <!-- end wiring group -->
+          </optgroup>
 
-<!-- Generate PDF -->
-<div class="flex justify-center mt-6">
-    <button onclick="generatePDF()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg shadow-lg">Generate PDF</button>
-</div>
+          <!-- Plumbing Materials (~120) -->
+          <optgroup label="🚰 Plumbing Materials">
+            <option>PVC Pipe 1/2 inch</option>
+            <option>PVC Pipe 3/4 inch</option>
+            <option>PVC Pipe 1 inch</option>
+            <option>PVC Pipe 2 inch</option>
+            <option>CPVC Pipe 1/2 inch</option>
+            <option>CPVC Pipe 3/4 inch</option>
+            <option>PPR Pipe 20mm</option>
+            <option>PPR Pipe 25mm</option>
+            <option>GI Pipe 1/2 inch</option>
+            <option>GI Pipe 3/4 inch</option>
+            <option>MS Pipe 1 inch</option>
+            <option>MS Pipe 2 inch</option>
+            <option>PVC Elbow 90</option>
+            <option>PVC Elbow 45</option>
+            <option>PVC Tee</option>
+            <option>PVC Coupler</option>
+            <option>PVC Reducer</option>
+            <option>PVC Union</option>
+            <option>GI Elbow</option>
+            <option>GI Tee</option>
+            <option>GI Coupler</option>
+            <option>Brass Elbow</option>
+            <option>Brass Tee</option>
+            <option>Ball Valve PVC</option>
+            <option>Gate Valve</option>
+            <option>Check Valve</option>
+            <option>Angle Valve</option>
+            <option>Bib Cock</option>
+            <option>Pillar Cock</option>
+            <option>Sink Tap</option>
+            <option>Basin Mixer</option>
+            <option>Sink Mixer</option>
+            <option>Shower Mixer</option>
+            <option>Shower Set</option>
+            <option>Flush Tank</option>
+            <option>Flush Valve</option>
+            <option>Toilet Seat</option>
+            <option>Wash Basin</option>
+            <option>Kitchen Sink Single</option>
+            <option>Kitchen Sink Double</option>
+            <option>SS Sink</option>
+            <option>Floor Trap</option>
+            <option>Floor Drain</option>
+            <option>Trap P Type</option>
+            <option>Bottle Trap</option>
+            <option>Overflow Pipe</option>
+            <option>Waste Coupling</option>
+            <option>Flexible Hose 1/2"</option>
+            <option>Flexible Hose 3/4"</option>
+            <option>Hose Pipe 1/2"</option>
+            <option>Hose Pipe 3/4"</option>
+            <option>Submersible Pump 1HP</option>
+            <option>Submersible Pump 2HP</option>
+            <option>Openwell Pump</option>
+            <option>Pressure Pump</option>
+            <option>Water Tank 500L</option>
+            <option>Water Tank 1000L</option>
+            <option>Water Tank 2000L</option>
+            <option>Overhead Tank Fittings</option>
+            <option>Float Valve</option>
+            <option>Non Return Valve (NRV)</option>
+            <option>Foot Valve</option>
+            <option>Foot Valve Strainer</option>
+            <option>Floor Trap Grating</option>
+            <option>Pipe Hanger</option>
+            <option>Pipe Clamp</option>
+            <option>Plumber Tape (Teflon)</option>
+            <option>Thread Sealant</option>
+            <option>PTFE Tape</option>
+            <option>Silicon Sealant</option>
+            <option>Tank Connector</option>
+            <option>Air Vent</option>
+            <option>Geyser 15L</option>
+            <option>Geyser 25L</option>
+            <option>Geyser 50L</option>
+            <option>Solar Water Heater 100L</option>
+            <option>Solar Water Heater 200L</option>
+            <option>Sump Pump</option>
+            <option>Pipe Fitting Kit</option>
+            <option>Pipe Threader</option>
+            <option>Plumber Wrench</option>
+            <option>Drain Cleaner Chemical</option>
+            <option>Septic Tank Access Cover</option>
+            <option>Grease Trap</option>
+            <option>Sanitary Fittings Set</option>
+            <option>PVC Solvent Cement</option>
+            <option>Seal Washer Rubber</option>
+            <option>Brass Nut & Bolt</option>
+            <option>Stainless Steel Nut & Bolt</option>
+            <option>Brass Connector</option>
+            <option>Tank Cover 1</option>
+            <option>Bleeder Valve</option>
+            <option>Hydro Jet Hose</option>
+            <option>Floor Channel Drain</option>
+            <option>Wet Area Grating</option>
+            <option>Water Meter</option>
+            <option>Pressure Gauge</option>
+            <option>Backflow Preventer</option>
+            <option>Pipe Insulation</option>
+            <option>Pipe Repair Clamp</option>
+            <option>Plumbing Repair Kit</option>
+            <!-- end plumbing group -->
+          </optgroup>
+             <optgroup label="🔧 Suggested Tools">
+            <option>Hammer</option>
+            <option>Screwdriver Set</option>
+            <option>Pliers - Cutting</option>
+            <option>Pliers - Nose</option>
+            <option>Combination Pliers</option>
+            <option>Drill Machine (Hand)</option>
+            <option>Drill Machine (Bench)</option>
+            <option>Measuring Tape 5m</option>
+            <option>Wire Stripper</option>
+            <option>Hacksaw</option>
+            <option>Spirit Level</option>
+            <option>Multimeter</option>
+            <option>Clamp Meter</option>
+            <option>Crimping Tool</option>
+            <option>Insulation Tape</option>
+            <option>Pipe Bender</option>
+            <option>Ladder (6ft)</option>
+            <option>Safety Gloves</option>
+            <option>Safety Helmet</option>
+            <option>Torch/Headlamp</option>
+             </optgroup>
+
+        </select>
+      </div>
+
+      <!-- Custom typing (overrides select if filled) -->
+      <div class="w-72">
+        <label class="text-sm text-yellow-300">Custom Material (type if not listed)</label>
+        <input id="customMaterial" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600" placeholder="Custom material (overrides select)">
+      </div>
+
+      <!-- Type, Qty, Unit -->
+      <div class="w-40">
+        <label class="text-sm text-yellow-300">Type</label>
+        <input id="type" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600" placeholder="e.g., 1.5 sqmm">
+      </div>
+      <div class="w-32">
+        <label class="text-sm text-yellow-300">Qty</label>
+        <input id="quantity" type="number" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600" placeholder="Qty">
+      </div>
+      <div class="w-32">
+        <label class="text-sm text-yellow-300">Unit</label>
+        <select id="unit" class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600">
+          <option>Nos</option>
+          <option>Meters</option>
+          <option>Kg</option>
+          <option>Feet</option>
+        </select>
+      </div>
+
+      <!-- Add button -->
+      <div class="flex items-end">
+        <button onclick="addMaterial()" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-5 py-3 rounded-lg shadow-lg">Add</button>
+      </div>
+    </div>
+
+    <!-- Table (web — no Amount column) -->
+    <div class="overflow-x-auto">
+      <table class="w-full table-auto border-collapse border border-gray-700 text-sm">
+        <thead class="bg-yellow-500 text-black">
+          <tr>
+            <th class="border border-gray-700 px-3 py-2">#</th>
+            <th class="border border-gray-700 px-3 py-2">Material</th>
+            <th class="border border-gray-700 px-3 py-2">Type</th>
+            <th class="border border-gray-700 px-3 py-2">Quantity</th>
+            <th class="border border-gray-700 px-3 py-2">Unit</th>
+            <th class="border border-gray-700 px-3 py-2">Remove</th>
+          </tr>
+        </thead>
+        <tbody id="materialsList" class="bg-gray-900"></tbody>
+      </table>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end mt-6 space-x-3">
+      <button onclick="clearAll()" class="bg-gray-600 hover:bg-gray-500 text-white px-5 py-2 rounded-lg">Clear</button>
+      <button onclick="generatePDF()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg shadow-lg">Export PDF</button>
+    </div>
+
+  </div>
 </div>
 
 <script>
-let materials = [];
+  // materials array
+  let materials = [];
 
-function addMaterial() {
-    const materialSelect = document.getElementById("material");
-    let material = materialSelect.value;
-    if(material === "custom"){
-        material = prompt("Enter Custom Material:");
+  // Add material to array and update table
+  function addMaterial(){
+    const sel = document.getElementById('material');
+    let material = (document.getElementById('customMaterial').value || '').trim();
+    if(!material){
+      material = sel.value.trim();
     }
-    const type = document.getElementById("type").value;
-    const quantity = document.getElementById("quantity").value;
-    const unit = document.getElementById("unit").value;
+    const type = document.getElementById('type').value.trim();
+    const qty = document.getElementById('quantity').value.trim();
+    const unit = document.getElementById('unit').value;
 
-    if(!material || !quantity) return;
+    if(!material){
+      alert('Please select or type a material.');
+      return;
+    }
+    if(!qty || isNaN(qty) || Number(qty) <= 0){
+      alert('Please enter a valid quantity.');
+      return;
+    }
 
-    materials.push({material, type, quantity, unit});
-    updateTable();
-}
+    materials.push({material, type, qty, unit});
+    document.getElementById('customMaterial').value = '';
+    document.getElementById('quantity').value = '';
+    document.getElementById('type').value = '';
+    document.getElementById('material').selectedIndex = 0;
+    renderTable();
+  }
 
-function updateTable(){
-    const tbody = document.getElementById("materialsTable").querySelector("tbody");
-    tbody.innerHTML = "";
-    materials.forEach((m)=>{
-        tbody.innerHTML += `
-            <tr>
-                <td class="border border-gray-600 px-2 py-1">${m.material}</td>
-                <td class="border border-gray-600 px-2 py-1">${m.type}</td>
-                <td class="border border-gray-600 px-2 py-1">${m.quantity}</td>
-                <td class="border border-gray-600 px-2 py-1">${m.unit}</td>
-            </tr>`;
+  function renderTable(){
+    const tbody = document.getElementById('materialsList');
+    tbody.innerHTML = '';
+    materials.forEach((m, idx) => {
+      const tr = document.createElement('tr');
+      tr.className = (idx % 2 === 0) ? 'bg-gray-800' : 'bg-gray-900';
+      tr.innerHTML = `
+        <td class="border border-gray-700 px-3 py-2 text-center">${idx+1}</td>
+        <td class="border border-gray-700 px-3 py-2">${escapeHtml(m.material)}</td>
+        <td class="border border-gray-700 px-3 py-2">${escapeHtml(m.type)}</td>
+        <td class="border border-gray-700 px-3 py-2 text-center">${m.qty}</td>
+        <td class="border border-gray-700 px-3 py-2 text-center">${m.unit}</td>
+        <td class="border border-gray-700 px-3 py-2 text-center"><button onclick="removeItem(${idx})" class="bg-red-500 hover:bg-red-600 px-2 py-1 rounded text-white">X</button></td>
+      `;
+      tbody.appendChild(tr);
     });
-}
+  }
 
-function generatePDF(){
+  function removeItem(index){
+    if(!confirm('Remove this item?')) return;
+    materials.splice(index,1);
+    renderTable();
+  }
+
+  function clearAll(){
+    if(!confirm('Clear all materials?')) return;
+    materials = [];
+    renderTable();
+  }
+
+  // generate PDF with Amount column empty (for handwriting)
+  function generatePDF(){
+    if(materials.length === 0){
+      alert('Add at least one material before exporting.');
+      return;
+    }
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    const doc = new jsPDF({unit:'mm', format:'a4'});
+    const pageWidth = doc.internal.pageSize.getWidth();
 
+    // Header - dark band with title and business info
+    doc.setFillColor(30,30,30);
+    doc.rect(0,0,pageWidth,24,'F');
     doc.setFontSize(16);
-    doc.text("Premium Materials Bill", 14, 20);
+    doc.setTextColor(255,215,0); // amber
+    doc.text('Materials Bill', 14, 16);
 
+    // Company / generated info (you can customize)
+    doc.setFontSize(10);
+    doc.setTextColor(255,255,255);
+    doc.text('Electric Master', pageWidth - 14, 8, { align: 'right' });
+    doc.text('Phone: +91-XXXXXXXXXX', pageWidth - 14, 14, { align: 'right' });
+    doc.text('Email: info@example.com', pageWidth - 14, 20, { align: 'right' });
+
+    // Customer details
+    const name = document.getElementById('customerName').value || '-';
+    const contact = document.getElementById('contactNo').value || '-';
+    const address = document.getElementById('address').value || '-';
+    const location = document.getElementById('location').value || '-';
+    const house = document.getElementById('houseMeasure').value || '-';
+    const electrician = document.getElementById('electrician').value || '-';
+    const date = document.getElementById('date').value || (new Date()).toISOString().slice(0,10);
+
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(11);
+    let curY = 34;
+    doc.text(`Customer: ${name}`, 14, curY); curY += 6;
+    doc.text(`Contact: ${contact}`, 14, curY); curY += 6;
+    doc.text(`Address: ${address}`, 14, curY); curY += 6;
+    doc.text(`Location: ${location}`, 14, curY); curY += 6;
+    doc.text(`House: ${house}`, 14, curY); curY += 6;
+    doc.text(`Electrician: ${electrician}`, 14, curY); curY += 6;
+    doc.text(`Date: ${date}`, 14, curY); curY += 8;
+
+    // Prepare table rows - include blank Amount column
+    const rows = materials.map((m, i) => [
+      String(i+1),
+      m.material,
+      m.type || '',
+      m.qty,
+      m.unit,
+      '' // blank Amount cell
+    ]);
+
+    // Draw table using autoTable
     doc.autoTable({
-        startY: 30,
-        head: [['Material', 'Type', 'Quantity', 'Unit', 'Amount']],
-        body: materials.map(m => [m.material, m.type, m.quantity, m.unit, " "]), // blank Amount column
+      startY: curY,
+      head: [['#', 'Material', 'Type', 'Quantity', 'Unit', 'Amount']],
+      body: rows,
+      styles: { textColor: 255, fillColor: [45,45,45], fontSize: 10 },
+      headStyles: { fillColor: [255,215,0], textColor: 0 },
+      columnStyles: {
+        0: { cellWidth: 10 },
+        1: { cellWidth: 70 },
+        2: { cellWidth: 40 },
+        3: { cellWidth: 20 },
+        4: { cellWidth: 20 },
+        5: { cellWidth: 30 }
+      },
+      didDrawPage: function (data) {
+        // footer on each page
+        const str = "Generated by Electric Master";
+        doc.setFontSize(9);
+        doc.setTextColor(200);
+        doc.text(str, data.settings.margin.left, doc.internal.pageSize.getHeight() - 8);
+        doc.text(`Page ${doc.internal.getNumberOfPages()}`, pageWidth - data.settings.margin.right - 10, doc.internal.pageSize.getHeight() - 8);
+      }
     });
 
-    doc.save("Materials_Bill.pdf");
-}
+    // Save
+    doc.save('Materials_Bill.pdf');
+  }
+
+  // simple html escape
+  function escapeHtml(text){
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  // allow selecting "custom" style from dropdown - if user chooses the placeholder, they can type
+  document.getElementById('material').addEventListener('change', function(){
+    if(this.value === ''){
+      // no op
+    }
+  });
 </script>
+
 </body>
 </html>

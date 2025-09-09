@@ -8,58 +8,153 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 </head>
-<body class="bg-gray-900 min-h-screen flex flex-col items-center p-6 text-gray-100">
+<body class="bg-gray-900 min-h-screen flex flex-col items-center p-6 text-white">
+<div class="bg-gray-800 shadow-2xl rounded-2xl p-6 w-full max-w-6xl">
+<h1 class="text-3xl font-bold text-center text-yellow-400 mb-4">Materials Calculator</h1>
 
-<div class="bg-gray-800 shadow-2xl rounded-2xl p-6 w-full max-w-5xl border border-yellow-600">
-  <h1 class="text-3xl font-bold text-center text-yellow-500 mb-4">Materials Calculator</h1>
+<!-- Customer Details -->
+<div class="grid grid-cols-2 gap-4 mb-6">
+<input id="customerName" class="border p-2 rounded-lg text-black" placeholder="Customer Name">
+<input id="contactNo" class="border p-2 rounded-lg text-black" placeholder="Contact Number">
+<input id="location" class="border p-2 rounded-lg text-black" placeholder="Location">
+<input id="address" class="border p-2 rounded-lg text-black" placeholder="Full Address">
+<input id="houseMeasure" class="border p-2 rounded-lg text-black" placeholder="House Measurements">
+<input id="electrician" class="border p-2 rounded-lg text-black" placeholder="Electrician Name">
+<input id="Address" class="border p-2 rounded-lg text-black" placeholder="Coustomer(or) Site Address">
+<input id="date" type="date" class="border p-2 rounded-lg text-black">
+</div>
 
-  <!-- Customer Details -->
-  <div class="grid grid-cols-2 gap-4 mb-6">
-    <input id="customerName" class="border border-yellow-600 p-2 rounded-lg bg-gray-700 text-gray-100" placeholder="Customer Name">
-    <input id="contactNo" class="border border-yellow-600 p-2 rounded-lg bg-gray-700 text-gray-100" placeholder="Contact Number">
-    <input id="location" class="border border-yellow-600 p-2 rounded-lg bg-gray-700 text-gray-100" placeholder="Location">
-    <input id="houseMeasure" class="border border-yellow-600 p-2 rounded-lg bg-gray-700 text-gray-100" placeholder="House Measurements">
-    <input id="electrician" class="border border-yellow-600 p-2 rounded-lg bg-gray-700 text-gray-100" placeholder="Electrician Name">
-    <input id="date" type="date" class="border border-yellow-600 p-2 rounded-lg bg-gray-700 text-gray-100">
-  </div>
+<!-- Material Form -->
+<div class="flex space-x-3 mb-4">
+<select id="material" class="border p-2 rounded-lg flex-1 text-black">
+    <option disabled selected>Select Material</option>
+    <optgroup label="🔧 Suggested Tools">
+        <option>Hammer</option>
+        <option>Screwdriver Set</option>
+        <option>Pliers</option>
+        <option>Drill Machine</option>
+        <option>Measuring Tape</option>
+        <option>Tester</option>
+    </optgroup>
 
-  <!-- Material Form -->
-  <div class="flex space-x-3 mb-4">
-    <select id="material" class="border border-yellow-600 p-2 rounded-lg flex-1 bg-gray-700 text-gray-100"></select>
-    <input id="type" class="border border-yellow-600 p-2 rounded-lg w-40 bg-gray-700 text-gray-100" placeholder="Type (ex: 1.5 sqmm)">
-    <input id="quantity" type="number" class="border border-yellow-600 p-2 rounded-lg w-32 bg-gray-700 text-gray-100" placeholder="Qty">
-    <select id="unit" class="border border-yellow-600 p-2 rounded-lg w-32 bg-gray-700 text-gray-100">
-      <option value="Nos">Nos</option>
-      <option value="Meters">Meters</option>
-      <option value="Kg">Kg</option>
-      <option value="Feet">Feet</option>
-    </select>
-    <button onclick="addMaterial()" class="bg-yellow-600 hover:bg-yellow-500 text-white px-4 rounded-lg shadow-lg">Add</button>
-  </div>
+    <optgroup label="⚡ Wiring Materials">
+        <option>1.5 sqmm Wire</option>
+        <option>2.5 sqmm Wire</option>
+        <option>4 sqmm Wire</option>
+        <option>6 sqmm Wire</option>
+        <option>MCB (Single Pole)</option>
+        <option>MCB (Double Pole)</option>
+        <option>Switch 6A</option>
+        <option>Switch 16A</option>
+        <option>Socket 6A</option>
+        <option>Socket 16A</option>
+        <option>Distribution Board</option>
+        <option>Conduit Pipe 20mm</option>
+        <option>Conduit Pipe 25mm</option>
+        <option>Junction Box</option>
+        <option>Ceiling Fan</option>
+        <option>Tubelights</option>
+        <option>LED Bulbs</option>
+        <!-- … Continue adding 200+ wiring materials -->
+    </optgroup>
+
+    <optgroup label="🚰 Plumbing Materials">
+        <option>1/2 inch PVC Pipe</option>
+        <option>3/4 inch PVC Pipe</option>
+        <option>1 inch PVC Pipe</option>
+        <option>PVC Elbow 90°</option>
+        <option>PVC Tee</option>
+        <option>Tap</option>
+        <option>Shower</option>
+        <option>Flush Tank</option>
+        <option>Sink Pipe</option>
+        <option>Water Tank</option>
+        <!-- … Continue adding 100+ plumbing materials -->
+    </optgroup>
+
+    <optgroup label="✍ Custom Entry">
+        <option value="custom">-- Add Custom Material --</option>
+    </optgroup>
+</select>
+
+<input id="type" class="border p-2 rounded-lg w-40 text-black" placeholder="Type (ex: 1.5 sqmm)">
+<input id="quantity" type="number" class="border p-2 rounded-lg w-32 text-black" placeholder="Qty">
+<select id="unit" class="border p-2 rounded-lg w-32 text-black">
+    <option value="Nos">Nos</option>
+    <option value="Meters">Meters</option>
+    <option value="Kg">Kg</option>
+    <option value="Feet">Feet</option>
+</select>
+<button onclick="addMaterial()" class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 rounded-lg shadow">Add</button>
+</div>
+
+<!-- Table -->
+<table id="materialsTable" class="w-full border border-gray-600 text-center text-sm">
+<thead class="bg-yellow-500 text-black">
+<tr>
+    <th class="border border-gray-600 px-2 py-1">Material</th>
+    <th class="border border-gray-600 px-2 py-1">Type</th>
+    <th class="border border-gray-600 px-2 py-1">Quantity</th>
+    <th class="border border-gray-600 px-2 py-1">Unit</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<!-- Generate PDF -->
+<div class="flex justify-center mt-6">
+    <button onclick="generatePDF()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg shadow-lg">Generate PDF</button>
+</div>
 </div>
 
 <script>
+let materials = [];
+
 function addMaterial() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+    const materialSelect = document.getElementById("material");
+    let material = materialSelect.value;
+    if(material === "custom"){
+        material = prompt("Enter Custom Material:");
+    }
+    const type = document.getElementById("type").value;
+    const quantity = document.getElementById("quantity").value;
+    const unit = document.getElementById("unit").value;
 
-  // Dark warm header
-  doc.setFillColor(40, 40, 40); // dark gray background
-  doc.rect(0, 0, 210, 20, "F");
-  doc.setTextColor(255, 193, 7); // amber text
-  doc.setFontSize(16);
-  doc.text("Materials Calculator Report", 14, 14);
+    if(!material || !quantity) return;
 
-  // Example content (you can extend it with your table)
-  doc.setFontSize(12);
-  doc.setTextColor(255,255,255);
-  doc.setFillColor(55, 55, 55);
-  doc.rect(10, 30, 190, 10, "F");
-  doc.text("Customer details will appear here...", 14, 37);
+    materials.push({material, type, quantity, unit});
+    updateTable();
+}
 
-  doc.save("Materials.pdf");
+function updateTable(){
+    const tbody = document.getElementById("materialsTable").querySelector("tbody");
+    tbody.innerHTML = "";
+    materials.forEach((m)=>{
+        tbody.innerHTML += `
+            <tr>
+                <td class="border border-gray-600 px-2 py-1">${m.material}</td>
+                <td class="border border-gray-600 px-2 py-1">${m.type}</td>
+                <td class="border border-gray-600 px-2 py-1">${m.quantity}</td>
+                <td class="border border-gray-600 px-2 py-1">${m.unit}</td>
+            </tr>`;
+    });
+}
+
+function generatePDF(){
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(16);
+    doc.text("Premium Materials Bill", 14, 20);
+
+    doc.autoTable({
+        startY: 30,
+        head: [['Material', 'Type', 'Quantity', 'Unit', 'Amount']],
+        body: materials.map(m => [m.material, m.type, m.quantity, m.unit, " "]), // blank Amount column
+    });
+
+    doc.save("Materials_Bill.pdf");
 }
 </script>
-
 </body>
 </html>

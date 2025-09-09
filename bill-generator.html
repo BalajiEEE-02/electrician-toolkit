@@ -3,21 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bill Generator</title>
+<title>Premium Bill Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <style>
-body{font-family:'Roboto',sans-serif;background:#f3f7ff;margin:0;padding:0;}
-header{text-align:center;padding:30px 0;background:linear-gradient(90deg,#4a90e2,#357ABD);color:white;font-size:2rem;font-weight:bold;}
-.container{width:90%;max-width:800px;margin:20px auto;background:white;padding:20px;border-radius:15px;box-shadow:0 10px 25px rgba(0,0,0,0.1);}
-input, button{padding:10px;margin:5px 0;width:100%;border-radius:8px;border:1px solid #ccc;}
-button{background:#4a90e2;color:white;font-weight:bold;border:none;cursor:pointer;transition:0.3s;}
-button:hover{background:#357ABD;}
-table{width:100%;border-collapse:collapse;margin-top:20px;}
-th,td{border:1px solid #ddd;padding:10px;text-align:center;}
-th{background:#4a90e2;color:white;}
-#export-pdf{margin-top:15px;padding:10px;width:100%;background:#4a90e2;color:white;font-weight:bold;border:none;border-radius:8px;cursor:pointer;}
-#export-pdf:hover{background:#357ABD;}
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #1e1e1e;
+  margin: 0;
+  padding: 0;
+  color: #f5f5f5;
+}
+header {
+  text-align: center;
+  padding: 25px 0;
+  background: linear-gradient(90deg, #ff7e00, #ff5500);
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.container {
+  width: 90%;
+  max-width: 850px;
+  margin: 20px auto;
+  background: #2a2a2a;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+input, button {
+  padding: 10px;
+  margin: 8px 0;
+  width: 100%;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+input {
+  background: #3a3a3a;
+  color: #f5f5f5;
+  border: 1px solid #555;
+}
+button {
+  background: #ff7e00;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+button:hover {
+  background: #ff5500;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+th, td {
+  border: 1px solid #444;
+  padding: 10px;
+  text-align: center;
+}
+th {
+  background: #ff7e00;
+  color: white;
+}
+tfoot td {
+  font-weight: bold;
+  background: #333;
+}
 </style>
 </head>
 <body>
@@ -25,12 +82,21 @@ th{background:#4a90e2;color:white;}
 <header>Bill Generator</header>
 
 <div class="container">
+  <h3>Client Details</h3>
   <input type="text" id="client-name" placeholder="Client Name" required>
   <input type="text" id="client-address" placeholder="Client Address" required>
+  <input type="text" id="client-contact" placeholder="Client Contact" required>
+  <input type="text" id="client-location" placeholder="Client Location" required>
 
+  <h3>Bill Items</h3>
   <table id="bill-table">
-    <thead><tr><th>Item</th><th>Quantity</th><th>Rate</th><th>Total</th></tr></thead>
+    <thead>
+      <tr><th>Item</th><th>Quantity</th><th>Rate</th><th>Total</th></tr>
+    </thead>
     <tbody></tbody>
+    <tfoot>
+      <tr><td colspan="3">Grand Total</td><td id="grand-total">0</td></tr>
+    </tfoot>
   </table>
 
   <button id="add-item">Add Item</button>
@@ -38,32 +104,74 @@ th{background:#4a90e2;color:white;}
 </div>
 
 <script>
-const billTable=document.querySelector('#bill-table tbody');
-document.getElementById('add-item').addEventListener('click',()=>{
-  const item=prompt("Enter Item Name:");
-  const qty=prompt("Quantity:");
-  const rate=prompt("Rate per Item:");
-  const total=qty*rate;
-  billTable.innerHTML+=`<tr><td>${item}</td><td>${qty}</td><td>${rate}</td><td>${total}</td></tr>`;
+const billTable = document.querySelector('#bill-table tbody');
+const grandTotalCell = document.getElementById('grand-total');
+let grandTotal = 0;
+
+document.getElementById('add-item').addEventListener('click', () => {
+  const item = prompt("Enter Item Name:");
+  const qty = parseFloat(prompt("Quantity:")) || 0;
+  const rate = parseFloat(prompt("Rate per Item:")) || 0;
+  const total = qty * rate;
+  grandTotal += total;
+
+  const row = `<tr>
+    <td>${item}</td>
+    <td>${qty}</td>
+    <td>${rate.toFixed(2)}</td>
+    <td>${total.toFixed(2)}</td>
+  </tr>`;
+  billTable.innerHTML += row;
+  grandTotalCell.innerText = grandTotal.toFixed(2);
 });
 
-document.getElementById('export-pdf').addEventListener('click',()=>{
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF();
-  const clientName=document.getElementById('client-name').value;
-  const clientAddr=document.getElementById('client-address').value;
-  doc.setFontSize(16);
-  doc.text(`Bill for ${clientName}`,20,20);
-  doc.text(clientAddr,20,28);
-  let rows=[];
-  billTable.querySelectorAll('tr').forEach(tr=>{
-    rows.push([...tr.children].map(td=>td.innerText));
+document.getElementById('export-pdf').addEventListener('click', () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Header
+  doc.setFillColor(40,40,40);
+  doc.rect(0,0,210,30,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(18);
+  doc.text("Premium Bill", 14, 20);
+
+  // Client details
+  doc.setFontSize(12);
+  doc.setTextColor(0);
+  let y = 40;
+  const clientName = document.getElementById('client-name').value;
+  const clientAddr = document.getElementById('client-address').value;
+  const clientContact = document.getElementById('client-contact').value;
+  const clientLocation = document.getElementById('client-location').value;
+
+  doc.text(`Client: ${clientName}`, 14, y); y+=7;
+  doc.text(`Address: ${clientAddr}`, 14, y); y+=7;
+  doc.text(`Contact: ${clientContact}`, 14, y); y+=7;
+  doc.text(`Location: ${clientLocation}`, 14, y); y+=10;
+
+  // Table
+  let rows = [];
+  billTable.querySelectorAll('tr').forEach(tr => {
+    rows.push([...tr.children].map(td => td.innerText));
   });
-  doc.autoTable({head:[['Item','Qty','Rate','Total']],body:rows,startY:40});
-  doc.save('Bill.pdf');
+  doc.autoTable({
+    head: [['Item','Qty','Rate','Total']],
+    body: rows,
+    startY: y,
+    styles: { fillColor: [230, 230, 230], textColor: [0,0,0] },
+    headStyles: { fillColor: [255,126,0], textColor:[255,255,255] }
+  });
+
+  // Grand Total
+  let finalY = doc.lastAutoTable.finalY + 10;
+  doc.setFontSize(14);
+  doc.setTextColor(255,0,0);
+  doc.text(`Grand Total: ${grandTotal.toFixed(2)}`, 14, finalY);
+
+  doc.save("Bill.pdf");
 });
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 </body>
 </html>

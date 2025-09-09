@@ -1,457 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Materials Calculator — Premium</title>
-
-<!-- jsPDF + autoTable -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premium Materials Calculator</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-
-<!-- Inline styles (premium dark + warm) -->
-<style>
-  :root{
-    --bg:#0f0f0f; --card:#171717; --muted:#bdbdbd; --accent:#ffb74d; --accent-2:#ff8c42; --panel:#1f1f1f;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,Helvetica,Arial;color:#fff;background:linear-gradient(180deg,#070707,var(--bg));-webkit-font-smoothing:antialiased}
-  .wrap{max-width:1200px;margin:28px auto;padding:22px}
-  .header{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:18px;border-radius:14px;color:#111;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,0.6)}
-  .header h1{margin:0;font-size:1.6rem;letter-spacing:0.6px}
-  .sub{margin-top:6px;color:#222;font-weight:600;font-size:0.95rem}
-
-  .card{background:linear-gradient(180deg,var(--card),#141414);padding:18px;border-radius:12px;margin-top:18px;box-shadow:0 10px 30px rgba(0,0,0,0.6);border:1px solid rgba(255,183,77,0.06)}
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  .row{display:flex;gap:12px;flex-wrap:wrap}
-  label{display:block;font-size:0.82rem;color:var(--muted);margin-bottom:6px}
-  input[type="text"], input[type="number"], input[type="date"], select, textarea{
-    width:100%;padding:10px;border-radius:8px;background:#121212;border:1px solid rgba(255,255,255,0.04);color:#fff;font-size:0.95rem
-  }
-  .controls{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
-  .btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#111;padding:10px 14px;border-radius:10px;border:none;font-weight:700;cursor:pointer;box-shadow:0 8px 18px rgba(255,140,66,0.12)}
-  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
-  .btn.danger{background:linear-gradient(90deg,#e94e3c,#d83b2a); color:#fff}
-  .label-inline{font-size:0.82rem;color:var(--muted);margin-bottom:6px;display:block}
-
-  /* Table styles */
-  .table-wrap{overflow:auto;margin-top:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04)}
-  table{width:100%;border-collapse:collapse;font-size:0.92rem}
-  thead th{background:linear-gradient(90deg,var(--accent),#ff9a4a);color:#111;padding:10px;text-align:left;position:sticky;top:0}
-  th, td{padding:10px;border-bottom:1px dashed rgba(255,255,255,0.03);vertical-align:middle}
-  tbody tr:nth-child(even){background:linear-gradient(180deg,transparent,rgba(255,255,255,0.01))}
-  .small{font-size:0.85rem;color:var(--muted)}
-  .center{text-align:center}
-  input.amount{width:110px;padding:8px;border-radius:8px;background:#0f0f0f;border:1px solid rgba(255,255,255,0.03);color:#fff}
-  .removeBtn{background:#2a2a2a;color:#fff;padding:6px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
-
-  /* footer */
-  .footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:12px}
-  .grand{font-size:1.1rem;font-weight:800;color:var(--accent-2)}
-  @media(max-width:880px){
-    .grid{grid-template-columns:1fr}
-    .row{flex-direction:column}
-    .controls{align-items:stretch}
-    input.amount{width:100%}
-    thead th{font-size:0.85rem}
-  }
-</style>
 </head>
-<body>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col items-center p-6">
 
-<div class="wrap">
-  <div class="header">
-    <h1>Electric Master — Materials Calculator</h1>
-    <div class="sub">Premium dark · warm accents · export professional PDF with signatures</div>
+<div class="bg-gray-800 shadow-2xl rounded-2xl p-6 w-full max-w-6xl">
+  <h1 class="text-3xl font-bold text-center text-yellow-400 mb-6">⚡ Premium Materials Calculator ⚡</h1>
+
+  <!-- Customer Details -->
+  <div class="grid grid-cols-2 gap-4 mb-6">
+    <input id="customerName" class="border p-2 rounded-lg bg-gray-700 text-white" placeholder="Customer Name">
+    <input id="contactNo" class="border p-2 rounded-lg bg-gray-700 text-white" placeholder="Contact Number">
+    <input id="location" class="border p-2 rounded-lg bg-gray-700 text-white" placeholder="Location / Address">
+    <input id="houseMeasure" class="border p-2 rounded-lg bg-gray-700 text-white" placeholder="House Measurements">
+    <input id="electrician" class="border p-2 rounded-lg bg-gray-700 text-white" placeholder="Electrician Name">
+    <input id="date" type="date" class="border p-2 rounded-lg bg-gray-700 text-white">
   </div>
 
-  <!-- Main card -->
-  <div class="card">
+  <!-- Material Form -->
+  <div class="flex flex-wrap gap-3 mb-6">
+    <select id="material" class="border p-2 rounded-lg bg-gray-700 text-white flex-1">
+      <option value="">-- Select Material --</option>
+      <optgroup label="🛠 Suggested Tools">
+        <option>Hammer</option><option>Screwdriver Set</option><option>Pliers</option>
+        <option>Drill Machine</option><option>Tester</option><option>Measuring Tape</option>
+        <option>Wire Stripper</option><option>Spanner Set</option><option>Wrench</option>
+        <option>Spirit Level</option><option>Multimeter</option><option>Clamp Meter</option>
+        <option>Insulation Tape</option><option>Crimping Tool</option><option>Pipe Bender</option>
+        <option>Ladder</option><option>Safety Gloves</option><option>Safety Helmet</option>
+        <option>Torch</option>
+      </optgroup>
+      <optgroup label="⚡ Wiring Materials">
+        <option>1.0 sqmm Wire</option><option>1.5 sqmm Wire</option><option>2.5 sqmm Wire</option>
+        <option>4 sqmm Wire</option><option>6 sqmm Wire</option><option>10 sqmm Wire</option>
+        <option>16 sqmm Wire</option><option>Flexible Copper Wire</option>
+        <option>Conduit Pipe 20mm</option><option>Conduit Pipe 25mm</option>
+        <option>Junction Box 2 Way</option><option>Switch 6A</option><option>Switch 16A</option>
+        <option>Socket 6A</option><option>Socket 16A</option><option>Fan Regulator</option>
+        <option>Distribution Board 8 Way</option><option>MCB Single Pole 6A</option>
+        <option>RCCB 40A</option><option>MCCB 100A</option><option>LED Tube Light</option>
+        <option>LED Bulb 9W</option><option>Street Light 90W</option><option>UPS 1kVA</option>
+        <option>Battery 150Ah</option><option>Earthing Rod Copper</option><option>Lightning Arrester</option>
+        <option>Cable Tray</option><option>Cable Tie Nylon</option><option>Cable Lugs Copper</option>
+      </optgroup>
+      <optgroup label="🚰 Plumbing Materials">
+        <option>PVC Pipe 1/2”</option><option>PVC Pipe 1”</option><option>CPVC Pipe 1/2”</option>
+        <option>PPR Pipe 25mm</option><option>GI Pipe 1/2”</option><option>Elbow PVC 90°</option>
+        <option>Tee PVC</option><option>Ball Valve PVC</option><option>Gate Valve Brass</option>
+        <option>Stop Cock</option><option>Bib Cock</option><option>Shower Head</option>
+        <option>Flush Tank</option><option>Wall Mixer</option><option>Sink Mixer</option>
+        <option>Water Tank 1000L</option><option>Float Valve</option><option>NRV Valve</option>
+        <option>P-Trap</option><option>Floor Drain SS</option><option>Flexible Connection Pipe</option>
+        <option>Teflon Tape</option><option>Solar Water Heater 200L</option><option>Submersible Pump 2HP</option>
+      </optgroup>
+    </select>
+    <input id="customMaterial" class="border p-2 rounded-lg bg-gray-700 text-white flex-1" placeholder="Custom Material (if not in list)">
+    <input id="type" class="border p-2 rounded-lg bg-gray-700 text-white w-40" placeholder="Type (e.g., 1.5 sqmm)">
+    <input id="quantity" type="number" class="border p-2 rounded-lg bg-gray-700 text-white w-28" placeholder="Qty">
+    <select id="unit" class="border p-2 rounded-lg bg-gray-700 text-white w-28">
+      <option value="Nos">Nos</option><option value="Meters">Meters</option><option value="Kg">Kg</option><option value="Feet">Feet</option>
+    </select>
+    <input id="rate" type="number" class="border p-2 rounded-lg bg-gray-700 text-white w-28" placeholder="Rate">
+    <button onclick="addMaterial()" class="bg-yellow-500 text-gray-900 px-4 rounded-lg shadow font-bold">➕ Add</button>
+  </div>
 
-    <!-- Customer details -->
-    <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
-      <div style="flex:1;min-width:220px">
-        <label class="label-inline">Customer Name</label>
-        <input id="customerName" type="text" placeholder="e.g., Mr. Ramesh">
-      </div>
-      <div style="flex:1;min-width:220px">
-        <label class="label-inline">Contact Number</label>
-        <input id="contactNo" type="text" placeholder="e.g., +91 9XXXXXXXXX">
-      </div>
-      <div style="flex:1;min-width:220px">
-        <label class="label-inline">Location / City</label>
-        <input id="location" type="text" placeholder="City / Area">
-      </div>
-      <div style="flex:1;min-width:220px">
-        <label class="label-inline">Address</label>
-        <input id="address" type="text" placeholder="Full postal address">
-      </div>
-      <div style="flex:1;min-width:220px">
-        <label class="label-inline">House / Project Size</label>
-        <input id="houseMeasure" type="text" placeholder="e.g., 20x20, 3 BHK">
-      </div>
-      <div style="flex:1;min-width:220px">
-        <label class="label-inline">Electrician Name</label>
-        <input id="electrician" type="text" placeholder="Your / Technician name">
-      </div>
-      <div style="flex:1;min-width:220px">
-        <label class="label-inline">Date</label>
-        <input id="date" type="date">
-      </div>
-    </div>
+  <!-- Table -->
+  <table class="w-full text-left border border-gray-700" id="materialsTable">
+    <thead class="bg-yellow-500 text-gray-900">
+      <tr><th class="p-2">Material</th><th class="p-2">Type</th><th class="p-2">Qty</th><th class="p-2">Unit</th><th class="p-2">Rate</th><th class="p-2">Amount</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    <!-- Material selection row -->
-    <div style="margin-top:12px" class="row">
-      <div style="flex:2;min-width:260px">
-        <label class="label-inline">Select Material (300+ list)</label>
-        <select id="material" style="width:100%;padding:10px;border-radius:8px;background:#121212;color:#fff;border:1px solid rgba(255,255,255,0.04)">
-          <option value="">-- pick a material (or type custom below) --</option>
-
-          <!-- Suggested Tools -->
-          <optgroup label="🔧 Suggested Tools">
-            <option>Hammer</option><option>Screwdriver Set</option><option>Pliers - Cutting</option>
-            <option>Pliers - Nose</option><option>Combination Pliers</option><option>Drill Machine (Hand)</option>
-            <option>Drill Machine (Bench)</option><option>Measuring Tape 5m</option><option>Wire Stripper</option>
-            <option>Hacksaw</option><option>Spirit Level</option><option>Multimeter</option><option>Clamp Meter</option>
-            <option>Crimping Tool</option><option>Insulation Tape</option><option>Pipe Bender</option>
-            <option>Ladder 6ft</option><option>Safety Gloves</option><option>Safety Helmet</option><option>Torch/Headlamp</option>
-          </optgroup>
-
-          <!-- Wiring (many items) -->
-          <optgroup label="⚡ Wiring Materials">
-            <option>1.0 sqmm Copper Wire</option><option>1.5 sqmm Copper Wire</option><option>2.5 sqmm Copper Wire</option>
-            <option>4 sqmm Copper Wire</option><option>6 sqmm Copper Wire</option><option>10 sqmm Copper Wire</option>
-            <option>16 sqmm Copper Wire</option><option>25 sqmm Copper Cable</option><option>35 sqmm Copper Cable</option>
-            <option>50 sqmm Copper Cable</option><option>70 sqmm Copper Cable</option><option>95 sqmm Copper Cable</option>
-            <option>Flexible Copper Wire</option><option>Aluminium Cable 2 Core</option><option>Aluminium Cable 3 Core</option>
-            <option>Control Cable 4 Core</option><option>Control Cable 6 Core</option><option>XLPE Cable 3 Core</option>
-            <option>Armoured Cable</option><option>Telephone Cable 2 Pair</option><option>Telephone Cable 4 Pair</option>
-            <option>Coaxial Cable RG6</option><option>LAN Cable Cat5e</option><option>LAN Cable Cat6</option>
-            <option>LAN Cable Cat6A</option><option>Fiber Optic Cable SM</option><option>Fiber Optic Cable MM</option>
-            <option>Conduit Pipe 16mm</option><option>Conduit Pipe 20mm</option><option>Conduit Pipe 25mm</option>
-            <option>Conduit Pipe 32mm</option><option>Conduit Pipe 40mm</option><option>Conduit Bend 20mm</option>
-            <option>Conduit Bend 25mm</option><option>Conduit Bend 32mm</option><option>Conduit Coupler 20mm</option>
-            <option>Conduit Coupler 25mm</option><option>Conduit Saddle Clip</option><option>Conduit Clip 20mm</option>
-            <option>Junction Box 1 Gang</option><option>Junction Box 2 Gang</option><option>Junction Box 3 Gang</option>
-            <option>Metal Box 1M</option><option>Metal Box 2M</option><option>Switch 6A</option><option>Switch 10A</option>
-            <option>Switch 16A</option><option>Switch 20A</option><option>2-Way Switch</option><option>3-Way Switch</option>
-            <option>Dimmer Switch</option><option>Fan Regulator</option><option>Socket 6A</option><option>Socket 16A</option>
-            <option>Socket with Shutter</option><option>Universal Socket</option><option>Modular Plate 1M</option>
-            <option>Modular Plate 2M</option><option>MCB Single Pole 6A</option><option>MCB Single Pole 10A</option>
-            <option>MCB Single Pole 16A</option><option>MCB Single Pole 20A</option><option>MCB Single Pole 32A</option>
-            <option>MCB Double Pole 32A</option><option>MCB 63A</option><option>RCCB 30mA</option>
-            <option>RCCB 100mA</option><option>RCBO</option><option>MCCB 100A</option><option>HRC Fuse</option>
-            <option>Fuse Carrier</option><option>Busbar</option><option>Neutral Link</option><option>Earth Busbar</option>
-            <option>Main Isolator 63A</option><option>Changeover Switch</option><option>Contactor 9A</option>
-            <option>Contactor 25A</option><option>Contactor 63A</option><option>Timer Relay</option><option>Control Relay 24V</option>
-            <option>Voltage Stabilizer 1kVA</option><option>UPS 600VA</option><option>Inverter 1kVA</option><option>Battery 100Ah</option>
-            <option>Battery 150Ah</option><option>Battery 200Ah</option><option>Earthing Rod Copper</option><option>Earthing Clamp</option>
-            <option>Lightning Arrester</option><option>Surge Protector</option><option>Cable Tray (per meter)</option><option>Raceway (per meter)</option>
-            <option>Cable Gland Brass</option><option>Cable Tie Nylon</option><option>Cable Lug Copper</option><option>Heat Shrink Tube</option>
-            <option>Wire Marker</option><option>Cable Joint Kit</option><option>LED Bulb 7W</option><option>LED Bulb 9W</option>
-            <option>LED Bulb 12W</option><option>LED Flood Light 50W</option><option>LED Flood Light 100W</option><option>Tube Light 18W</option>
-            <option>Tube Light 36W</option><option>Fan Ceiling 1200mm</option><option>Exhaust Fan 250mm</option><option>Power Strip 4 Way</option>
-            <option>Panel Board 12 Way</option><option>Panel Board 18 Way</option><option>Panel Board 24 Way</option><option>Switch Box Metal</option>
-            <option>Flexible Conduit</option><option>MCB Din Rail</option>
-            <!-- (List has 140+ wiring items here; you can add more similarly) -->
-          </optgroup>
-
-          <!-- Plumbing (many items) -->
-          <optgroup label="🚰 Plumbing Materials">
-            <option>PVC Pipe 1/2 inch</option><option>PVC Pipe 3/4 inch</option><option>PVC Pipe 1 inch</option>
-            <option>PVC Pipe 2 inch</option><option>CPVC Pipe 1/2 inch</option><option>PPR Pipe 20mm</option>
-            <option>PPR Pipe 25mm</option><option>GI Pipe 1/2 inch</option><option>GI Pipe 3/4 inch</option>
-            <option>PVC Elbow 90</option><option>PVC Elbow 45</option><option>PVC Tee</option><option>PVC Coupler</option>
-            <option>Brass Elbow</option><option>Brass Tee</option><option>Ball Valve PVC</option><option>Gate Valve</option><option>Check Valve</option>
-            <option>Angle Valve</option><option>Bib Cock</option><option>Pillar Cock</option><option>Sink Tap</option><option>Basin Mixer</option>
-            <option>Kitchen Sink Single</option><option>Kitchen Sink Double</option><option>SS Sink</option><option>Floor Trap</option><option>Floor Drain</option>
-            <option>Trap P Type</option><option>Bottle Trap</option><option>Flexible Hose 1/2"</option><option>Flexible Hose 3/4"</option>
-            <option>Submersible Pump 1HP</option><option>Submersible Pump 2HP</option><option>Openwell Pump</option><option>Water Tank 500L</option>
-            <option>Water Tank 1000L</option><option>Float Valve</option><option>Non Return Valve</option><option>PTFE Tape</option><option>Plumber Wrench</option>
-            <option>Pipe Hanger</option><option>Pipe Clamp</option><option>PVC Solvent Cement</option><option>Seal Washer Rubber</option><option>Drain Cleaner</option>
-            <option>Geyser 15L</option><option>Geyser 25L</option><option>Geyser 50L</option><option>Solar Water Heater 100L</option><option>Pressure Gauge</option>
-            <!-- (100+ plumbing items similar) -->
-          </optgroup>
-
-        </select>
-      </div>
-
-      <!-- custom text input -->
-      <div style="min-width:220px">
-        <label class="label-inline">Custom Material (overrides select)</label>
-        <input id="customMaterial" type="text" placeholder="Type custom material name">
-      </div>
-
-      <div style="min-width:180px">
-        <label class="label-inline">Type / Spec</label>
-        <input id="type" type="text" placeholder="e.g., 1.5 sqmm">
-      </div>
-
-      <div style="min-width:120px">
-        <label class="label-inline">Qty</label>
-        <input id="quantity" type="number" min="0" placeholder="Qty">
-      </div>
-
-      <div style="min-width:120px">
-        <label class="label-inline">Unit</label>
-        <select id="unit" style="padding:10px;border-radius:8px;background:#121212;color:#fff;border:1px solid rgba(255,255,255,0.04)">
-          <option>Nos</option><option>Meters</option><option>Kg</option><option>Feet</option>
-        </select>
-      </div>
-
-      <div style="min-width:160px">
-        <label class="label-inline">Amount (per item / total)</label>
-        <input id="amountInput" type="number" step="0.01" placeholder="Amount (optional)" style="padding:10px;border-radius:8px;background:#121212;color:#fff">
-      </div>
-
-      <div style="display:flex;align-items:flex-end">
-        <button class="btn" onclick="addMaterial()">Add Item</button>
-      </div>
-    </div>
-
-    <!-- Table -->
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px">#</th>
-            <th>Material</th>
-            <th>Type / Spec</th>
-            <th style="width:80px">Qty</th>
-            <th style="width:80px">Unit</th>
-            <th style="width:120px">Amount</th>
-            <th style="width:100px">Remove</th>
-          </tr>
-        </thead>
-        <tbody id="materialsList"></tbody>
-      </table>
-    </div>
-
-    <div class="footer">
-      <div class="small">Note: Amount is editable. If blank, PDF will leave it empty for handwriting.</div>
-      <div class="grand">Grand Total: ₹ <span id="grandTotal">0.00</span></div>
-    </div>
-
-    <!-- actions -->
-    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px">
-      <button class="btn ghost" onclick="clearAll()">Clear All</button>
-      <button class="btn ghost" onclick="downloadCSV()">Download CSV</button>
-      <button class="btn danger" onclick="generatePDF()">Export Professional PDF</button>
-    </div>
-
+  <div class="mt-6 text-right">
+    <button onclick="exportPDF()" class="bg-yellow-500 text-gray-900 px-6 py-2 rounded-lg shadow font-bold">📄 Export PDF</button>
   </div>
 </div>
 
-<!-- Script -->
 <script>
-/* ---------- state ---------- */
-let materials = []; // {material,type,qty,unit,amount}
-
-/* ---------- helpers ---------- */
-function formatNumber(x){ return Number(x||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function recalcTotal(){
-  const total = materials.reduce((s,it)=> s + (parseFloat(it.amount || 0) || 0), 0);
-  document.getElementById('grandTotal').innerText = formatNumber(total);
-}
-
-/* escape helper for table HTML */
-function esc(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-/* ---------- UI operations ---------- */
 function addMaterial(){
-  const sel = document.getElementById('material');
-  let material = (document.getElementById('customMaterial').value || '').trim();
-  if(!material) material = sel.value.trim();
-  const type = document.getElementById('type').value.trim();
-  const qty = document.getElementById('quantity').value.trim();
-  const unit = document.getElementById('unit').value;
-  const amountVal = document.getElementById('amountInput').value.trim();
+  const material = document.getElementById("customMaterial").value || document.getElementById("material").value;
+  const type = document.getElementById("type").value;
+  const qty = document.getElementById("quantity").value;
+  const unit = document.getElementById("unit").value;
+  const rate = document.getElementById("rate").value;
+  const amount = qty * rate;
 
-  if(!material) { alert('Please select or type a material'); return; }
-  if(!qty || Number(qty) <= 0) { alert('Please enter a valid quantity'); return; }
+  if(!material || !qty || !rate){ alert("Fill all fields"); return; }
 
-  const amount = amountVal === '' ? '' : parseFloat(amountVal).toFixed(2);
-
-  materials.push({material,type,qty,unit,amount});
-  document.getElementById('customMaterial').value='';
-  document.getElementById('type').value='';
-  document.getElementById('quantity').value='';
-  document.getElementById('amountInput').value='';
-  sel.selectedIndex = 0;
-  renderTable();
-  recalcTotal();
+  const row = `<tr class="border border-gray-700">
+    <td class="p-2">${material}</td>
+    <td class="p-2">${type}</td>
+    <td class="p-2">${qty}</td>
+    <td class="p-2">${unit}</td>
+    <td class="p-2">${rate}</td>
+    <td class="p-2">${amount}</td>
+  </tr>`;
+  document.querySelector("#materialsTable tbody").insertAdjacentHTML('beforeend', row);
 }
 
-function renderTable(){
-  const tbody = document.getElementById('materialsList');
-  tbody.innerHTML = '';
-  materials.forEach((m, i)=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="center">${i+1}</td>
-      <td>${esc(m.material)}</td>
-      <td>${esc(m.type)}</td>
-      <td class="center">${esc(m.qty)}</td>
-      <td class="center">${esc(m.unit)}</td>
-      <td class="center"><input class="amount" value="${m.amount||''}" onchange="updateAmount(${i}, this.value)"></td>
-      <td class="center"><button class="removeBtn" onclick="removeItem(${i})">Remove</button></td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-
-function updateAmount(index, val){
-  materials[index].amount = val === '' ? '' : parseFloat(val).toFixed(2);
-  recalcTotal();
-}
-
-function removeItem(i){ if(!confirm('Remove this item?')) return; materials.splice(i,1); renderTable(); recalcTotal(); }
-
-function clearAll(){ if(!confirm('Clear all items?')) return; materials = []; renderTable(); recalcTotal(); }
-
-/* ---------- export utilities ---------- */
-
-function generatePDF(){
-  if(materials.length===0){ alert('Add items before exporting PDF'); return; }
+function exportPDF(){
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({unit:'mm', format:'a4'});
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const margin = 14;
-  let y = 12;
+  const doc = new jsPDF("p","pt","a4");
 
-  // Header band
+  // Title Bar
   doc.setFillColor(40,40,40);
-  doc.rect(0,0,pageWidth,26,'F');
+  doc.rect(0,0,600,40,"F");
+  doc.setTextColor(255,215,0);
   doc.setFontSize(18);
-  doc.setTextColor(255,215,0); // amber
-  doc.text('Electric Master', margin, 8+4);
-  doc.setFontSize(10);
-  doc.setTextColor(230);
-  doc.text('Materials Bill', margin, 18+4);
+  doc.text("⚡ Premium Materials Bill ⚡", 200,25);
 
-  // right side company details
-  doc.setFontSize(9);
-  doc.setTextColor(255);
-  doc.text('Phone: +91-XXXXXXXXXX', pageWidth - margin, 8+4, {align:'right'});
-  doc.text('Email: info@example.com', pageWidth - margin, 14+4, {align:'right'});
-  doc.text('www.electricmaster.example', pageWidth - margin, 20+4, {align:'right'});
+  // Customer details
+  doc.setFontSize(12);
+  doc.setTextColor(255,255,255);
+  let y=60;
+  const details=[
+    ["Customer:",document.getElementById("customerName").value],
+    ["Contact:",document.getElementById("contactNo").value],
+    ["Address:",document.getElementById("location").value],
+    ["House:",document.getElementById("houseMeasure").value],
+    ["Electrician:",document.getElementById("electrician").value],
+    ["Date:",document.getElementById("date").value]
+  ];
+  details.forEach(d=>{ doc.text(`${d[0]} ${d[1]}`,40,y); y+=20; });
 
-  y = 34;
-
-  // Customer block with warm bg
-  doc.setFillColor(50,50,50);
-  doc.rect(margin, y-4, pageWidth - margin*2, 28, 'F');
-  doc.setFontSize(10);
-  doc.setTextColor(255,215,0);
-  doc.text('Customer Details', margin+2, y+4);
-  doc.setFontSize(9);
-  doc.setTextColor(255);
-  const name = document.getElementById('customerName').value || '-';
-  const contact = document.getElementById('contactNo').value || '-';
-  const address = document.getElementById('address').value || '-';
-  const location = document.getElementById('location').value || '-';
-  const house = document.getElementById('houseMeasure').value || '-';
-  const electrician = document.getElementById('electrician').value || '-';
-  const date = document.getElementById('date').value || new Date().toISOString().slice(0,10);
-
-  doc.setTextColor(230);
-  doc.text(`Name: ${name}`, margin+2, y+12);
-  doc.text(`Contact: ${contact}`, margin+70, y+12);
-  doc.text(`Date: ${date}`, pageWidth - margin - 40, y+12);
-  doc.text(`Address: ${address}`, margin+2, y+20);
-  doc.text(`Location: ${location}`, margin+2, y+28);
-  doc.text(`House: ${house}`, margin+70, y+28);
-  doc.text(`Electrician: ${electrician}`, pageWidth - margin - 58, y+28);
-
-  y += 40;
-
-  // Prepare table rows (with blank Amount if not provided)
-  const tableBody = materials.map((m, idx) => [
-    (idx+1).toString(),
-    m.material,
-    m.type || '',
-    m.qty,
-    m.unit,
-    (m.amount && m.amount !== '') ? formatNumberForPDF(m.amount) : ''
-  ]);
-
-  // autoTable
+  // Table
+  const rows=[];
+  document.querySelectorAll("#materialsTable tbody tr").forEach(tr=>{
+    rows.push([...tr.children].map(td=>td.innerText));
+  });
   doc.autoTable({
-    startY: y,
-    head: [['#','Material','Type / Spec','Qty','Unit','Amount (₹)']],
-    body: tableBody,
-    styles: { fillColor: [30,30,30], textColor: 255, fontSize: 9 },
-    headStyles: { fillColor: [255,183,77], textColor: 0, halign:'center' },
-    columnStyles: {
-      0: {cellWidth: 8, halign:'center'},
-      1: {cellWidth: 70},
-      2: {cellWidth: 50},
-      3: {cellWidth: 18, halign:'center'},
-      4: {cellWidth: 20, halign:'center'},
-      5: {cellWidth: 30, halign:'right'}
-    },
-    didDrawPage: function(data){
-      // page footer
-      const pageSize = doc.internal.pageSize;
-      doc.setFontSize(9);
-      doc.setTextColor(200);
-      doc.text('Generated by Electric Master', margin, pageSize.getHeight() - 10);
-      doc.text('Page ' + doc.internal.getNumberOfPages(), pageSize.getWidth() - margin - 10, pageSize.getHeight() - 10);
-    }
+    head:[["Material","Type","Qty","Unit","Rate","Amount"]],
+    body:rows,
+    startY: y+10,
+    headStyles:{fillColor:[255,215,0],textColor:[30,30,30],fontStyle:"bold"},
+    bodyStyles:{fillColor:[50,50,50],textColor:[255,255,255]},
+    alternateRowStyles:{fillColor:[70,70,70]},
+    margin:{left:40,right:40}
   });
 
-  // After table: Grand total & signature lines
-  let finalY = doc.lastAutoTable.finalY + 8;
-  const grand = materials.reduce((s,it) => s + (parseFloat(it.amount || 0) || 0), 0);
-  doc.setFontSize(11);
-  doc.setTextColor(255,215,0);
-  doc.text('Grand Total (₹):', pageWidth - margin - 60, finalY + 6, {align:'right'});
-  doc.setTextColor(255);
-  doc.text(formatNumberForPDF(grand.toFixed(2)), pageWidth - margin - 6, finalY + 6, {align:'right'});
+  // Signatures
+  const finalY = doc.lastAutoTable.finalY + 40;
+  doc.setTextColor(255,255,255);
+  doc.text("Customer Signature",60,finalY);
+  doc.text("Electrician Signature",240,finalY);
+  doc.text("Retailer Signature",440,finalY);
 
-  // signature block (three columns)
-  finalY += 24;
-  const sigY = finalY;
-  const colW = (pageWidth - margin*2) / 3;
-  doc.setLineWidth(0.2);
-  // Draw signature lines
-  for(let i=0;i<3;i++){
-    const x = margin + i*colW;
-    doc.line(x, sigY+18, x + colW - 20, sigY+18); // signature line
-  }
-  doc.setFontSize(9);
-  doc.setTextColor(200);
-  doc.text('Electrician Signature', margin+8, sigY+28);
-  doc.text('Customer Signature', margin+colW+8, sigY+28);
-  doc.text('Retailer Signature', margin+2*colW+8, sigY+28);
-
-  // Save file
-  doc.save('Materials_Bill.pdf');
+  doc.save("Premium-Materials-Bill.pdf");
 }
-
-/* helper to format numeric string nicely for PDF */
-function formatNumberForPDF(v){
-  if(!v && v !== 0) return '';
-  const n = parseFloat(v) || 0;
-  return n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
-}
-
-/* CSV export (optional) */
-function downloadCSV(){
-  if(materials.length === 0){ alert('Add items first'); return; }
-  let csv = 'SNo,Material,Type,Qty,Unit,Amount\n';
-  materials.forEach((m,i) => {
-    csv += `${i+1},"${m.material.replace(/"/g,"""")}","${(m.type||'').replace(/"/g,"""')}",${m.qty},${m.unit},${m.amount||''}\n`;
-  });
-  const blob = new Blob([csv], {type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'materials.csv'; a.click();
-  URL.revokeObjectURL(url);
-}
-
-/* initial render */
-renderTable();
-recalcTotal();
 </script>
 
 </body>

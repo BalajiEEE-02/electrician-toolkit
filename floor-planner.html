@@ -1,76 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Animated Floor Planner</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { background: #f9fafb; }
-    canvas { border: 2px solid #374151; border-radius: 12px; }
-    .fade-in { animation: fadeIn 1s ease-in-out; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motor Winding Designer</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#1abc9c,#16a085);
+    color: #fff;
+    margin:0;
+    padding:0;
+  }
+  .container {
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  input, select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 5px;
+    box-sizing: border-box;
+  }
+  button {
+    margin-top: 20px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 15px;
+    background: #e74c3c;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover {
+    background: #c0392b;
+  }
+  .output {
+    margin-top: 30px;
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 15px;
+  }
+  canvas {
+    display: block;
+    margin: 20px auto;
+    background: #2c3e50;
+    border-radius: 15px;
+  }
+</style>
 </head>
-<body class="flex flex-col items-center p-6">
-  <h1 class="text-3xl font-bold text-indigo-600 mb-6">🏠 Animated Floor Planner</h1>
+<body>
+<div class="container">
+  <h1>Motor Winding Designer</h1>
+  <label>Number of Slots</label>
+  <input type="number" id="slots" placeholder="e.g., 24">
 
-  <!-- Input Section -->
-  <div class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-2xl mb-6">
-    <label class="block mb-2 font-semibold">Enter Plot Size (ft):</label>
-    <div class="flex gap-2">
-      <input type="number" id="plotWidth" placeholder="Width" class="border p-2 rounded w-1/2">
-      <input type="number" id="plotHeight" placeholder="Height" class="border p-2 rounded w-1/2">
-    </div>
-    <button onclick="drawFloorPlan()" 
-            class="mt-4 w-full bg-indigo-600 text-white font-semibold p-3 rounded-xl shadow hover:bg-indigo-700">
-      Generate Floor Plan
-    </button>
-  </div>
+  <label>Motor Power (HP)</label>
+  <input type="number" id="power" placeholder="e.g., 0.5">
 
-  <!-- Canvas -->
-  <canvas id="floorCanvas" width="600" height="400" class="fade-in"></canvas>
+  <label>Supply Voltage (V)</label>
+  <input type="number" id="voltage" placeholder="e.g., 230">
 
-  <!-- Instructions -->
-  <p class="mt-6 text-gray-600 text-center">💡 Coming soon: add rooms, stairs, lofts, and concealed wiring!</p>
+  <label>Motor Speed (RPM)</label>
+  <input type="number" id="speed" placeholder="e.g., 1500">
 
-  <script>
-    const canvas = document.getElementById("floorCanvas");
-    const ctx = canvas.getContext("2d");
+  <label>Phase</label>
+  <select id="phase">
+    <option value="">Select phase</option>
+    <option value="1">Single-phase</option>
+    <option value="3">Three-phase</option>
+  </select>
 
-    function drawFloorPlan() {
-      const width = document.getElementById("plotWidth").value || 400;
-      const height = document.getElementById("plotHeight").value || 300;
+  <button onclick="calculateMotor()">Design Motor</button>
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  <div class="output" id="output"></div>
 
-      // Draw boundary
-      ctx.strokeStyle = "#1f2937";
-      ctx.lineWidth = 3;
-      ctx.strokeRect(50, 50, width, height);
+  <canvas id="motorCanvas" width="500" height="500"></canvas>
+</div>
 
-      // Animate rooms (demo: Hall + Kitchen)
-      drawRoom("Hall", 60, 60, width/2 - 20, height/2 - 20, "#93c5fd");
-      drawRoom("Kitchen", width/2 + 40, 60, width/2 - 40, height/2 - 20, "#fca5a5");
-    }
+<script>
+function calculateMotor() {
+  const slots = parseInt(document.getElementById('slots').value);
+  const power = parseFloat(document.getElementById('power').value);
+  const voltage = parseFloat(document.getElementById('voltage').value);
+  const speed = parseInt(document.getElementById('speed').value);
+  const phase = document.getElementById('phase').value;
 
-    function drawRoom(name, x, y, w, h, color) {
-      ctx.fillStyle = color;
-      ctx.globalAlpha = 0.7;
-      ctx.fillRect(x, y, w, h);
+  let outputHTML = "";
 
-      ctx.globalAlpha = 1.0;
-      ctx.strokeStyle = "#111827";
-      ctx.lineWidth = 2;
-      ctx.strokeRect(x, y, w, h);
+  // Input validation
+  if(!slots || !power || !voltage || !speed || !phase){
+    outputHTML += "<p style='color:#f1c40f;'>Please fill in all inputs to get motor design.</p>";
+    document.getElementById('output').innerHTML = outputHTML;
+    return;
+  }
 
-      ctx.font = "16px Arial";
-      ctx.fillStyle = "#111827";
-      ctx.fillText(name, x + w/2 - ctx.measureText(name).width/2, y + h/2);
-    }
-  </script>
+  // Constants
+  let efficiencyPF = 0.64; // η*cosφ conservative
+  let turnsPerVolt = 0.6;
+  let J_run = 4; // A/mm²
+  let J_start = 6;
+
+  // Calculations
+  const N_coils = slots/2;
+  const I_run = (power*746)/(voltage*efficiencyPF);
+  const T_total = voltage * turnsPerVolt;
+
+  const C_run = Math.ceil(N_coils * 0.75);
+  const C_start = N_coils - C_run;
+
+  const turns_per_coil_run = Math.round(T_total / C_run);
+  const turns_per_coil_start = Math.round(turns_per_coil_run * 0.7);
+
+  const A_run = (I_run/J_run).toFixed(2);
+  const A_start = (I_run/J_start).toFixed(2);
+
+  // Output HTML
+  outputHTML += `<h2>Motor Design Results</h2>`;
+  outputHTML += `<p><strong>Calculated Running Current:</strong> ${I_run.toFixed(2)} A</p>`;
+  outputHTML += `<p><strong>Total Coils:</strong> ${N_coils} (Run: ${C_run}, Start: ${C_start})</p>`;
+  outputHTML += `<p><strong>Turns per Coil:</strong> Run: ${turns_per_coil_run}, Start: ${turns_per_coil_start}</p>`;
+  outputHTML += `<p><strong>Recommended Wire Size (mm²):</strong> Run: ${A_run}, Start: ${A_start}</p>`;
+  outputHTML += `<p><strong>Motor Speed:</strong> ${speed} RPM</p>`;
+  outputHTML += `<p><strong>Phase:</strong> ${phase}-phase</p>`;
+
+  document.getElementById('output').innerHTML = outputHTML;
+
+  drawMotorDiagram(slots, C_run, turns_per_coil_run, C_start, turns_per_coil_start);
+}
+
+function drawMotorDiagram(slots, C_run, turns_run, C_start, turns_start){
+  const canvas = document.getElementById('motorCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width, canvas.height);
+
+  const centerX = canvas.width/2;
+  const centerY = canvas.height/2;
+  const radius = 180;
+
+  // Draw circle for motor stator
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radius, 0, 2*Math.PI);
+  ctx.strokeStyle = '#ecf0f1';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+
+  // Draw slots
+  for(let i=0; i<slots; i++){
+    const angle = (i * 2 * Math.PI) / slots;
+    const x1 = centerX + (radius-10)*Math.cos(angle);
+    const y1 = centerY + (radius-10)*Math.sin(angle);
+    const x2 = centerX + radius*Math.cos(angle);
+    const y2 = centerY + radius*Math.sin(angle);
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = (i<C_run) ? '#3498db' : '#e74c3c';
+    ctx.lineWidth = 8;
+    ctx.stroke();
+
+    // Draw arrow for winding direction
+    const arrowAngle = angle + Math.PI/slots;
+    const arrowX = centerX + (radius-40)*Math.cos(arrowAngle);
+    const arrowY = centerY + (radius-40)*Math.sin(arrowAngle);
+    ctx.beginPath();
+    ctx.arc(arrowX, arrowY, 5, 0, 2*Math.PI);
+    ctx.fillStyle = (i<C_run) ? '#2980b9' : '#c0392b';
+    ctx.fill();
+  }
+
+  // Labels
+  ctx.font = "16px Segoe UI";
+  ctx.fillStyle = "#f1c40f";
+  ctx.fillText("Blue: Running Winding", 20, 30);
+  ctx.fillText("Red: Start Winding", 20, 50);
+}
+</script>
 </body>
 </html>

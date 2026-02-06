@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Job Notes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body{margin:0;font-family:Arial, sans-serif;background:#0f172a;color:#e5e7eb}
+    header{background:#020617;padding:20px;text-align:center;border-bottom:2px solid #a855f7}
+    header h1{margin:0;color:#a855f7}
+    .container{max-width:1000px;margin:30px auto;padding:25px;background:#020617;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+    h2{color:#38bdf8}
+    label{display:block;margin-top:14px;font-weight:bold}
+    input,textarea{width:100%;padding:12px;margin-top:6px;border-radius:8px;border:none;background:#1e293b;color:#fff;font-size:15px}
+    textarea{min-height:120px;resize:vertical}
+    .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+    button{margin-top:18px;padding:12px 18px;font-size:16px;border:none;border-radius:10px;background:#a855f7;color:#020617;font-weight:bold;cursor:pointer}
+    button.secondary{background:#334155;color:#e5e7eb;margin-left:10px}
+    button:hover{opacity:.9}
+    .list{margin-top:25px}
+    .note-card{background:#1e293b;border-radius:12px;padding:15px;margin-bottom:12px}
+    .note-card h4{margin:0 0 6px;color:#e9d5ff}
+    .note-card small{color:#cbd5f5}
+    .actions{margin-top:8px}
+    .actions button{font-size:14px;padding:8px 12px}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📝 Customer Job Notes</h1>
+  <p>Save service details for future reference</p>
+</header>
+
+<div class="container">
+
+  <h2>Add Job Note</h2>
+  <div class="row">
+    <div>
+      <label>Customer Name</label>
+      <input id="custName" placeholder="Eg: Ravi Kumar">
+    </div>
+    <div>
+      <label>Phone Number</label>
+      <input id="phone" placeholder="Eg: 9XXXXXXXXX">
+    </div>
+    <div>
+      <label>Date</label>
+      <input type="date" id="jobDate">
+    </div>
+  </div>
+
+  <label>Job / Complaint Details</label>
+  <textarea id="details" placeholder="Work done, issues, parts replaced..."></textarea>
+
+  <button onclick="saveNote()">Save Note</button>
+  <button class="secondary" onclick="clearAll()">Clear All</button>
+
+  <div class="list" id="notesList"></div>
+
+</div>
+
+<script>
+let notes = JSON.parse(localStorage.getItem('jobNotes') || '[]');
+render();
+
+function saveNote(){
+  const n = document.getElementById('custName').value.trim();
+  const p = document.getElementById('phone').value.trim();
+  const d = document.getElementById('jobDate').value;
+  const t = document.getElementById('details').value.trim();
+  if(!n || !t){alert('Enter customer name and details');return}
+  notes.unshift({n,p,d,t,ts:Date.now()});
+  localStorage.setItem('jobNotes', JSON.stringify(notes));
+  document.getElementById('custName').value='';
+  document.getElementById('phone').value='';
+  document.getElementById('details').value='';
+  render();
+}
+
+function del(i){
+  if(!confirm('Delete this note?')) return;
+  notes.splice(i,1);
+  localStorage.setItem('jobNotes', JSON.stringify(notes));
+  render();
+}
+
+function clearAll(){
+  if(!confirm('Delete all notes?')) return;
+  notes=[];
+  localStorage.removeItem('jobNotes');
+  render();
+}
+
+function render(){
+  const box = document.getElementById('notesList');
+  box.innerHTML = notes.map((x,i)=>`
+    <div class="note-card">
+      <h4>${x.n}</h4>
+      <small>${x.p || ''} ${x.d ? ' • '+x.d : ''}</small>
+      <p>${x.t}</p>
+      <div class="actions">
+        <button onclick="del(${i})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+</script>
+
+</body>
+</html>

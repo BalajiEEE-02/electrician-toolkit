@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Daily Work Log | Balaji Audios & Electricals</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Segoe UI, sans-serif;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#fff;
+  padding:20px;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+}
+
+h1{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.card{
+  background:#ffffff10;
+  backdrop-filter:blur(12px);
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.4);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
+}
+
+input,textarea{
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  outline:none;
+  width:100%;
+}
+
+textarea{resize:none}
+
+button{
+  background:#00e5ff;
+  border:none;
+  padding:12px;
+  border-radius:30px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover{opacity:0.9}
+
+table{
+  width:100%;
+  margin-top:20px;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:10px;
+  border-bottom:1px solid #ffffff33;
+  text-align:center;
+}
+
+.total{
+  margin-top:15px;
+  font-size:18px;
+  font-weight:bold;
+  text-align:right;
+}
+
+.print{
+  background:#4caf50;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>🗓 Daily Work Log</h1>
+
+<div class="card">
+
+<div class="grid">
+  <input id="date" type="date">
+  <input id="site" placeholder="Site / Customer Name">
+  <input id="start" type="time">
+  <input id="end" type="time">
+  <input id="rate" type="number" placeholder="Daily Charge ₹">
+</div>
+
+<textarea id="work" rows="3" placeholder="Work Description"></textarea>
+
+<button onclick="addLog()">Add Entry</button>
+
+<table>
+<thead>
+<tr>
+  <th>Date</th>
+  <th>Site</th>
+  <th>Hours</th>
+  <th>Work Done</th>
+  <th>Amount</th>
+</tr>
+</thead>
+<tbody id="logTable"></tbody>
+</table>
+
+<div class="total">
+Total Earnings: ₹ <span id="total">0</span>
+</div>
+
+<button class="print" onclick="window.print()">🖨 Print Work Log</button>
+
+</div>
+</div>
+
+<script>
+let logs=[];
+let sum=0;
+
+function addLog(){
+  let d=date.value;
+  let s=site.value;
+  let st=start.value;
+  let et=end.value;
+  let r=+rate.value;
+  let w=work.value;
+
+  if(!d||!s||!st||!et||!r) return;
+
+  let hours=(new Date(`1970-01-01T${et}`)-new Date(`1970-01-01T${st}`))/3600000;
+  hours=Math.max(hours,0);
+
+  logs.push({d,s,hours,w,r});
+  sum+=r;
+
+  render();
+  site.value=start.value=end.value=rate.value=work.value="";
+}
+
+function render(){
+  logTable.innerHTML="";
+  logs.forEach(l=>{
+    logTable.innerHTML+=`
+    <tr>
+      <td>${l.d}</td>
+      <td>${l.s}</td>
+      <td>${l.hours.toFixed(2)}</td>
+      <td>${l.w}</td>
+      <td>₹${l.r}</td>
+    </tr>`;
+  });
+  total.innerText=sum;
+}
+</script>
+
+</body>
+</html>

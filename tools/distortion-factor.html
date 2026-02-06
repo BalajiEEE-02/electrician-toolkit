@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Distortion Factor (THD) Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#0f172a;
+  color:white;
+}
+header{
+  background:#020617;
+  padding:15px;
+  text-align:center;
+}
+header h1{
+  color:#38bdf8;
+}
+.back{
+  color:#38bdf8;
+  text-decoration:none;
+  font-size:14px;
+}
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+.card{
+  background:#020617;
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:20px;
+}
+label{
+  display:block;
+  margin-top:10px;
+}
+input{
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  border-radius:8px;
+  border:none;
+}
+button{
+  margin-top:15px;
+  width:100%;
+  padding:12px;
+  background:#38bdf8;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  cursor:pointer;
+}
+.result{
+  background:#1e293b;
+  padding:15px;
+  border-radius:10px;
+  margin-top:15px;
+}
+img{
+  width:100%;
+  border-radius:10px;
+  margin-top:15px;
+}
+.note{
+  font-size:13px;
+  color:#cbd5f5;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>📊 Distortion Factor (THD)</h1>
+  <a class="back" href="index.html">⬅ Back to Tools</a>
+</header>
+
+<div class="container">
+
+<div class="card">
+  <label>Fundamental RMS Voltage (V₁)</label>
+  <input type="number" id="v1">
+
+  <label>Harmonic RMS Voltage (Vh)</label>
+  <input type="number" id="vh">
+
+  <button onclick="calculate()">Calculate THD</button>
+
+  <div class="result" id="result"></div>
+</div>
+
+<div class="card">
+  <h3>Harmonic Distortion Illustration</h3>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Total_harmonic_distortion.svg">
+  <p class="note">Image source: Wikipedia (Educational)</p>
+</div>
+
+<div class="card">
+  <h3>THD Interpretation</h3>
+  <p class="note">
+    • THD &lt; 5% → Good power quality<br>
+    • 5–10% → Acceptable<br>
+    • &gt; 10% → Harmonics problem<br>
+  </p>
+</div>
+
+</div>
+
+<script>
+function calculate(){
+  let v1 = document.getElementById("v1").value;
+  let vh = document.getElementById("vh").value;
+
+  if(v1=="" || vh==""){
+    alert("Enter all values");
+    return;
+  }
+
+  let thd = (vh / v1) * 100;
+  let status = "";
+
+  if(thd < 5){
+    status = "✅ Good Power Quality";
+  } else if(thd <= 10){
+    status = "⚠️ Acceptable, monitor harmonics";
+  } else {
+    status = "❌ Poor power quality – harmonics issue";
+  }
+
+  document.getElementById("result").innerHTML =
+    `<b>THD:</b> ${thd.toFixed(2)} %<br>
+     <b>Status:</b> ${status}`;
+}
+</script>
+
+</body>
+</html>

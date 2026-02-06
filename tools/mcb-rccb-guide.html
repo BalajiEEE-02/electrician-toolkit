@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MCB / RCCB Selection Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body{
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:#0f172a;
+      color:#e5e7eb;
+    }
+    header{
+      background:#020617;
+      padding:20px;
+      text-align:center;
+      border-bottom:2px solid #38bdf8;
+    }
+    header h1{
+      margin:0;
+      color:#38bdf8;
+    }
+    .container{
+      max-width:900px;
+      margin:30px auto;
+      padding:20px;
+      background:#020617;
+      border-radius:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.5);
+    }
+    label{
+      display:block;
+      margin-top:15px;
+      font-weight:bold;
+    }
+    select, input{
+      width:100%;
+      padding:12px;
+      margin-top:6px;
+      border-radius:8px;
+      border:none;
+      background:#1e293b;
+      color:white;
+      font-size:16px;
+    }
+    button{
+      margin-top:20px;
+      width:100%;
+      padding:14px;
+      font-size:18px;
+      border:none;
+      border-radius:10px;
+      background:#38bdf8;
+      color:#020617;
+      font-weight:bold;
+      cursor:pointer;
+    }
+    button:hover{
+      background:#0ea5e9;
+    }
+    .result{
+      margin-top:25px;
+      padding:20px;
+      background:#1e293b;
+      border-radius:12px;
+      line-height:1.6;
+    }
+    .note{
+      margin-top:20px;
+      font-size:14px;
+      color:#cbd5f5;
+    }
+    .img-box{
+      text-align:center;
+      margin-top:25px;
+    }
+    .img-box img{
+      max-width:250px;
+      border-radius:10px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🔌 MCB / RCCB Selection Guide</h1>
+  <p>Professional protection device recommendation</p>
+</header>
+
+<div class="container">
+
+  <label>Load Type</label>
+  <select id="loadType">
+    <option value="">-- Select Load Type --</option>
+    <option value="lighting">Lighting</option>
+    <option value="socket">Socket / General Power</option>
+    <option value="motor">Motor</option>
+    <option value="ac">AC / Refrigerator</option>
+  </select>
+
+  <label>Supply Type</label>
+  <select id="supply">
+    <option value="single">Single Phase (230V)</option>
+    <option value="three">Three Phase (415V)</option>
+  </select>
+
+  <button onclick="calculateMCB()">Get Recommendation</button>
+
+  <div class="result" id="resultBox" style="display:none"></div>
+
+  <div class="img-box">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/MCB_and_RCCB.jpg" alt="MCB RCCB">
+  </div>
+
+  <div class="note">
+    ⚠️ Always follow IS standards and local electrical regulations. This tool gives general guidance for technicians.
+  </div>
+
+</div>
+
+<script>
+function calculateMCB(){
+  const load = document.getElementById('loadType').value;
+  const supply = document.getElementById('supply').value;
+  let text = '';
+
+  if(!load){
+    alert('Please select load type');
+    return;
+  }
+
+  if(load === 'lighting'){
+    text = 'Recommended MCB: 6A – 10A (Type B)<br>RCCB: 30mA (Human Safety)';
+  }
+  else if(load === 'socket'){
+    text = 'Recommended MCB: 16A – 20A (Type B)<br>RCCB: 30mA';
+  }
+  else if(load === 'motor'){
+    text = 'Recommended MCB: Type C or Type D<br>Rating = Motor full load current × 1.25';
+  }
+  else if(load === 'ac'){
+    text = 'Recommended MCB: 20A – 32A (Type C)<br>RCCB: 30mA';
+  }
+
+  if(supply === 'three'){
+    text += '<br>Use 4-Pole MCB / RCCB for three phase systems';
+  }
+
+  document.getElementById('resultBox').style.display = 'block';
+  document.getElementById('resultBox').innerHTML = text;
+}
+</script>
+
+</body>
+</html>

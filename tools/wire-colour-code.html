@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Wire Colour Code – India</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#0f172a;
+  color:white;
+}
+header{
+  background:#020617;
+  padding:15px;
+  text-align:center;
+}
+header h1{
+  color:#38bdf8;
+}
+.back{
+  color:#38bdf8;
+  text-decoration:none;
+  font-size:14px;
+}
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:20px;
+}
+.card{
+  background:#020617;
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:20px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+  gap:20px;
+}
+.wire{
+  border-radius:12px;
+  padding:20px;
+  text-align:center;
+}
+.red{background:#b91c1c;}
+.yellow{background:#ca8a04;}
+.blue{background:#1d4ed8;}
+.black{background:#000000;}
+.green{background:#15803d;}
+.white{background:#475569;}
+
+.wire h3{
+  margin:0;
+}
+.wire p{
+  font-size:14px;
+}
+img{
+  width:100%;
+  border-radius:10px;
+  margin-top:10px;
+}
+.note{
+  font-size:13px;
+  color:#cbd5f5;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🎨 Wire Colour Code (India)</h1>
+  <a class="back" href="index.html">⬅ Back to Tools</a>
+</header>
+
+<div class="container">
+
+<div class="card">
+  <h2>Single & Three Phase AC Wiring</h2>
+
+  <div class="grid">
+    <div class="wire red">
+      <h3>RED</h3>
+      <p>Phase (R)</p>
+    </div>
+
+    <div class="wire yellow">
+      <h3>YELLOW</h3>
+      <p>Phase (Y)</p>
+    </div>
+
+    <div class="wire blue">
+      <h3>BLUE</h3>
+      <p>Phase (B)</p>
+    </div>
+
+    <div class="wire black">
+      <h3>BLACK</h3>
+      <p>Neutral</p>
+    </div>
+
+    <div class="wire green">
+      <h3>GREEN</h3>
+      <p>Earth (Protection)</p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>DC Wiring Colour Code</h2>
+  <div class="grid">
+    <div class="wire red">
+      <h3>RED</h3>
+      <p>DC Positive (+)</p>
+    </div>
+
+    <div class="wire black">
+      <h3>BLACK</h3>
+      <p>DC Negative (−)</p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Visual Reference</h2>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Electrical_wiring_colours.svg">
+  <p class="note">Image source: Wikipedia (Educational use)</p>
+</div>
+
+<div class="card">
+  <h2>Safety Notes</h2>
+  <p class="note">
+    • Always verify with tester before touching wires<br>
+    • Old installations may follow different colour codes<br>
+    • Earth wire must NEVER be used as neutral<br>
+  </p>
+</div>
+
+</div>
+
+</body>
+</html>
